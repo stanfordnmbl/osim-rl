@@ -22,12 +22,12 @@ int main()
 {
     try {
         // Create an OpenSim model from the model file provided.
-      Model osimModel( "models/gait10dof18musc_subject01.osim" );
+      Model osimModel( "models/gait9dof18musc_Thelen_BigSpheres_20161017.osim" );
 	osimModel.setUseVisualizer(true);
 
 	// Define the initial and final simulation times.
         double initialTime = 0.0;
-        double finalTime = 10.0;
+        double finalTime = 1.0;
 
 	// Define non-zero (defaults are 0) states for the free joint.
         CoordinateSet& modelCoordinateSet = osimModel.updCoordinateSet();
@@ -42,7 +42,7 @@ int main()
 	
 	// Muscle excitation is 0.3 for the first 0.5 seconds, then increases to 1.
 	brain->prescribeControlForActuator("hamstrings_r",
-					   new StepFunction(0.5, 3, 0.3, 1));
+					   new StepFunction(0.5, 3, 0.1, 1));
         osimModel.addController( brain );
 
         // Initialize the system and get the state representing the
