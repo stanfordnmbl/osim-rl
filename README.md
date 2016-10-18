@@ -9,6 +9,7 @@ OpenSim 4.0 - https://github.com/opensim-org/opensim-core
 Compile
 
     mkdir build
+    cd build
     cmake ../src/ -DCMAKE_PREFIX_PATH=/path/to/OpenSim/lib/cmake/OpenSim/
     make
     cd ..
