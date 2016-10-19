@@ -3,6 +3,7 @@
 ## Requirements
 
 OpenSim 4.0 - https://github.com/opensim-org/opensim-core
+
 Make sure you have python bindings installed
 
 ## Running the python example
