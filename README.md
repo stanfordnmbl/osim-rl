@@ -3,8 +3,14 @@
 ## Requirements
 
 OpenSim 4.0 - https://github.com/opensim-org/opensim-core
+Make sure you have python bindings installed
 
-## Compilation
+## Running the python example
+
+    cd python
+    python deepcontroller.py
+
+## Running the C++ example
 
 Compile
 
