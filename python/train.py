@@ -11,31 +11,24 @@ from rl.agents import ContinuousDQNAgent
 from rl.memory import SequentialMemory
 from rl.random import OrnsteinUhlenbeckProcess
 
+import argparse
+
 # Some meta parameters
 stepsize = 0.05
 nallsteps = 50000
-ninput = 4
+ninput = 10
 noutput = 18
-visualize = False
 nb_actions = noutput
 nepisodesteps = 50
 
-class Objective:
-    rewards = []
+# Command line parameters
+parser = argparse.ArgumentParser(description='Train or test neural net motor controller')
+parser.add_argument('--train', dest='train', action='store_true', default=True)
+parser.add_argument('--test', dest='train', action='store_false', default=True)
+args = parser.parse_args()
 
-    def __init__(self):
-        pass
-
-    def reset(self):
-        self.sum_rewards = 0
-    
-    def update(self, agent):
-        reward = agent.ground_pelvis.getCoordinate(1).getValue(agent.state)
-        self.sum_rewards = self.sum_rewards + reward
-        return reward
-
-    def reward(self):
-        return self.sum_rewards
+training = args.train
+visualize = True #not training
 
 class Environment:
     # Initialize simulation
@@ -43,9 +36,10 @@ class Environment:
     state = None
     state0 = None
 
-    obj = Objective()
-
     istep = 0
+
+    def compute_reward(self):
+        return self.ground_pelvis.getCoordinate(2).getValue(self.state)
     
     def __init__(self):
         # Get the model
@@ -79,7 +73,7 @@ class Environment:
         self.knee_l = osim.CustomJoint.safeDownCast(self.jointSet.get(7))
         self.ankle_l = osim.PinJoint.safeDownCast(self.jointSet.get(8))
         self.subtalar_l = osim.WeldJoint.safeDownCast(self.jointSet.get(9))
-        self.mtp_l = osim.PinJoint.safeDownCast(self.jointSet.get(10))
+        self.mtp_l = osim.WeldJoint.safeDownCast(self.jointSet.get(10))
 
         self.back = osim.PinJoint.safeDownCast(self.jointSet.get(11))
         self.back1 = osim.WeldJoint.safeDownCast(self.jointSet.get(12))
@@ -94,24 +88,32 @@ class Environment:
 
         self.model.equilibrateMuscles(self.state)
         self.manager = osim.Manager(self.model)
-        self.obj.reset()
         return self.get_observation()
 
     def get_observation(self):
         invars = np.array([0] * ninput)
 
-        invars[0] = self.ground_pelvis.getCoordinate(1).getValue(self.state)
-        invars[1] = self.ground_pelvis.getCoordinate(2).getValue(self.state)
-        invars[2] = self.hip_r.getCoordinate(0).getValue(self.state)
-        invars[3] = self.hip_l.getCoordinate(0).getValue(self.state)
+        invars[0] = self.ground_pelvis.getCoordinate(0).getValue(self.state)
+        invars[1] = self.ground_pelvis.getCoordinate(1).getValue(self.state)
+        invars[2] = self.ground_pelvis.getCoordinate(2).getValue(self.state)
+
+        invars[3] = self.hip_r.getCoordinate(0).getValue(self.state)
+        invars[4] = self.hip_l.getCoordinate(0).getValue(self.state)
+
+        invars[5] = self.ankle_r.getCoordinate(0).getValue(self.state)
+        invars[6] = self.ankle_l.getCoordinate(0).getValue(self.state)
+
+        invars[7] = self.knee_r.getCoordinate(0).getValue(self.state)
+        invars[8] = self.knee_l.getCoordinate(0).getValue(self.state)
+
+        invars[9] = self.back.getCoordinate(0).getValue(self.state)
+
         return invars
 
     def step(self, action):
         for j in range(noutput):
             muscle = self.muscleSet.get(j)
             muscle.setActivation(self.state, action[j] * 10)
-
-        reward = self.obj.update(self)
 
         # Integrate one step
         self.manager.setInitialTime(stepsize * self.istep)
@@ -120,10 +122,10 @@ class Environment:
 
         self.istep = self.istep + 1
 
-        return self.get_observation(), reward, self.is_done(), False
+        return self.get_observation(), self.compute_reward(), self.is_done(), False
 
     def is_done(self):
-        return self.istep >= nepisodesteps
+        return (self.istep >= nepisodesteps) or (self.compute_reward() < 0.8)
 
     def render(self, *args, **kwargs):
         return
@@ -172,21 +174,23 @@ env = Environment()
 # Finally, we configure and compile our agent. You can use every built-in Keras optimizer and
 # even the metrics!
 memory = SequentialMemory(limit=100000, window_length=1)
-random_process = OrnsteinUhlenbeckProcess(theta=.15, mu=0., sigma=.3, size=nb_actions)
+random_process = OrnsteinUhlenbeckProcess(theta=.15, mu=0., sigma=.1, size=nb_actions)
 agent = ContinuousDQNAgent(nb_actions=nb_actions, V_model=V_model, L_model=L_model, mu_model=mu_model,
                            memory=memory, nb_steps_warmup=100, random_process=random_process,
-                           gamma=.99, target_model_update=1e-3)
+                           gamma=.6, target_model_update=1e-3)
 agent.compile(Adam(lr=.001, clipnorm=1.), metrics=['mae'])
 
 # Okay, now it's time to learn something! We visualize the training here for show, but this
 # slows down training quite a lot. You can always safely abort the training prematurely using
 # Ctrl + C.
-agent.fit(env, nb_steps=nallsteps, visualize=True, verbose=1, nb_max_episode_steps=nepisodesteps)
+if training:
+    agent.fit(env, nb_steps=nallsteps, visualize=True, verbose=1, nb_max_episode_steps=nepisodesteps)
+    # After training is done, we save the final weights.
+    agent.save_weights('cdqn_weights.h5f', overwrite=True)
 
-# After training is done, we save the final weights.
-agent.save_weights('cdqn_weights.h5f', overwrite=True)
-
-# Finally, evaluate our algorithm for 5 episodes.
-agent.test(env, nb_episodes=10, visualize=True, nb_max_episode_steps=200)
+if not training:
+    agent.load_weights('cdqn_weights.h5f')
+    # Finally, evaluate our algorithm for 5 episodes.
+    agent.test(env, nb_episodes=10, visualize=True, nb_max_episode_steps=200)
 
 
