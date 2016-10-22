@@ -12,23 +12,25 @@ from rl.memory import SequentialMemory
 from rl.random import OrnsteinUhlenbeckProcess
 
 import argparse
+import math
 
 # Some meta parameters
-stepsize = 0.05
-nallsteps = 50000
+stepsize = 0.01
+nallsteps = 100000
 ninput = 10
 noutput = 18
 nb_actions = noutput
-nepisodesteps = 50
+nepisodesteps = 300
 
 # Command line parameters
 parser = argparse.ArgumentParser(description='Train or test neural net motor controller')
 parser.add_argument('--train', dest='train', action='store_true', default=True)
 parser.add_argument('--test', dest='train', action='store_false', default=True)
+parser.add_argument('--visualize', dest='visualize', action='store_true', default=False)
 args = parser.parse_args()
 
 training = args.train
-visualize = True #not training
+visualize = args.visualize
 
 class Environment:
     # Initialize simulation
@@ -37,10 +39,21 @@ class Environment:
     state0 = None
 
     istep = 0
+    prev_reward = 0
 
     def compute_reward(self):
-        return self.ground_pelvis.getCoordinate(2).getValue(self.state)
+        y = self.ground_pelvis.getCoordinate(2).getValue(self.state)
+        x = self.ground_pelvis.getCoordinate(1).getValue(self.state)
+        self.prev_reward = 0.9 * self.prev_reward + max(y, 0.9) #0.9 * self.prev_reward - x + y
+        return self.prev_reward
+
+    def is_head_too_low(self):
+        y = self.ground_pelvis.getCoordinate(2).getValue(self.state)
+        return y < 0.7
     
+    def is_done(self):
+        return (self.istep >= nepisodesteps) or self.is_head_too_low()
+
     def __init__(self):
         # Get the model
         self.model = osim.Model("../models/gait9dof18musc_Thelen_BigSpheres_20161017.osim")
@@ -88,6 +101,7 @@ class Environment:
 
         self.model.equilibrateMuscles(self.state)
         self.manager = osim.Manager(self.model)
+        self.prev_reward = 0
         return self.get_observation()
 
     def get_observation(self):
@@ -113,7 +127,7 @@ class Environment:
     def step(self, action):
         for j in range(noutput):
             muscle = self.muscleSet.get(j)
-            muscle.setActivation(self.state, action[j] * 10)
+            muscle.setActivation(self.state, action[j] * 1.0)
 
         # Integrate one step
         self.manager.setInitialTime(stepsize * self.istep)
@@ -123,9 +137,6 @@ class Environment:
         self.istep = self.istep + 1
 
         return self.get_observation(), self.compute_reward(), self.is_done(), False
-
-    def is_done(self):
-        return (self.istep >= nepisodesteps) or (self.compute_reward() < 0.8)
 
     def render(self, *args, **kwargs):
         return
@@ -174,10 +185,10 @@ env = Environment()
 # Finally, we configure and compile our agent. You can use every built-in Keras optimizer and
 # even the metrics!
 memory = SequentialMemory(limit=100000, window_length=1)
-random_process = OrnsteinUhlenbeckProcess(theta=.15, mu=0., sigma=.1, size=nb_actions)
+random_process = OrnsteinUhlenbeckProcess(theta=.15, mu=0., sigma=.5, size=nb_actions)
 agent = ContinuousDQNAgent(nb_actions=nb_actions, V_model=V_model, L_model=L_model, mu_model=mu_model,
-                           memory=memory, nb_steps_warmup=100, random_process=random_process,
-                           gamma=.6, target_model_update=1e-3)
+                           memory=memory, nb_steps_warmup=1000, random_process=random_process,
+                           gamma=.99, target_model_update=0.1)
 agent.compile(Adam(lr=.001, clipnorm=1.), metrics=['mae'])
 
 # Okay, now it's time to learn something! We visualize the training here for show, but this
