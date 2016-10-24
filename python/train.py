@@ -42,14 +42,15 @@ class Environment:
     prev_reward = 0
 
     def compute_reward(self):
-        y = self.ground_pelvis.getCoordinate(2).getValue(self.state)
         x = self.ground_pelvis.getCoordinate(1).getValue(self.state)
-        self.prev_reward = 0.9 * self.prev_reward + max(y, 0.9) #0.9 * self.prev_reward - x + y
+        y = self.ground_pelvis.getCoordinate(2).getValue(self.state)
+        self.prev_reward = 1 * self.prev_reward + min(y, 0.70) - min(abs(x), 0.1) #0.9 * self.prev_reward - x + y
         return self.prev_reward
 
     def is_head_too_low(self):
+        x = self.ground_pelvis.getCoordinate(1).getValue(self.state)
         y = self.ground_pelvis.getCoordinate(2).getValue(self.state)
-        return y < 0.7
+        return (y < 0.7) or (abs(x) > 0.2)
     
     def is_done(self):
         return (self.istep >= nepisodesteps) or self.is_head_too_low()
@@ -184,8 +185,8 @@ env = Environment()
 
 # Finally, we configure and compile our agent. You can use every built-in Keras optimizer and
 # even the metrics!
-memory = SequentialMemory(limit=100000, window_length=1)
-random_process = OrnsteinUhlenbeckProcess(theta=.15, mu=0., sigma=.5, size=nb_actions)
+memory = SequentialMemory(limit=10000000, window_length=1)
+random_process = OrnsteinUhlenbeckProcess(theta=.1, mu=0., sigma=.15, size=nb_actions)
 agent = ContinuousDQNAgent(nb_actions=nb_actions, V_model=V_model, L_model=L_model, mu_model=mu_model,
                            memory=memory, nb_steps_warmup=1000, random_process=random_process,
                            gamma=.99, target_model_update=0.1)
