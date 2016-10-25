@@ -15,12 +15,13 @@ import argparse
 import math
 
 # Some meta parameters
-stepsize = 0.05
-nallsteps = 100000
-ninput = 33
+stepsize = 0.01
+nallsteps = 10000000
+ninput = 24
 noutput = 18
 nb_actions = noutput
-nepisodesteps = 300
+nepisodesteps = 500
+integration_accuracy = 1e-3
 
 # Command line parameters
 parser = argparse.ArgumentParser(description='Train or test neural net motor controller')
@@ -32,15 +33,6 @@ args = parser.parse_args()
 
 training = args.train
 visualize = args.visualize
-
-def zeroifnan(v):
-    if math.isnan(v):
-        return 0
-    if abs(v) < 0.001:
-        return 0
-    elif abs(v) > 1000:
-        return 1000 * (v / abs(v))
-    return v
 
 class Environment:
     # Initialize simulation
@@ -54,15 +46,24 @@ class Environment:
     def compute_reward(self):
         y = self.ground_pelvis.getCoordinate(2).getValue(self.state)
         x = self.ground_pelvis.getCoordinate(1).getValue(self.state)
-        self.prev_reward = 1 * self.prev_reward + max(y, 0.9) #0.9 * self.prev_reward - x + y
+
+        pos = self.model.calcMassCenterPosition(self.state)
+        vel = self.model.calcMassCenterVelocity(self.state)
+        acc = self.model.calcMassCenterAcceleration(self.state)
+
+        rew = 2 - abs(acc[0])**2 - abs(acc[1])**2 - abs(acc[2])**2
+        # - abs(vel[0])**2 - abs(vel[1])**2 - abs(vel[2])**2
+        # print("\n%f" % rew)
+        return rew
+#        self.prev_reward = 1 * self.prev_reward + max(y, 0.9) #0.9 * self.prev_reward - x + y
         return self.prev_reward
 
     def is_head_too_low(self):
         y = self.ground_pelvis.getCoordinate(2).getValue(self.state)
-        return (y < 0.7) #or (abs(x) > 0.2)
+        return (y < 0.8) #or (abs(x) > 0.2)
     
     def is_done(self):
-        return (self.istep >= nepisodesteps) or self.is_head_too_low()
+        return self.is_head_too_low()
 
     def __init__(self):
         # Get the model
@@ -114,6 +115,10 @@ class Environment:
         self.model.equilibrateMuscles(self.state)
         self.manager = osim.Manager(self.model)
         self.prev_reward = 0
+
+        nullacttion = np.array([0] * noutput, dtype='f')
+        for i in range(0, int(math.floor(0.2 / stepsize) + 1)):
+            self.step(nullacttion)
         return self.get_observation()
 
     def get_observation(self):
@@ -147,30 +152,30 @@ class Environment:
         invars[17] = self.knee_l.getCoordinate(0).getSpeedValue(self.state)
 
         
-        invars[18] = zeroifnan(self.ground_pelvis.getCoordinate(0).getAccelerationValue(self.state))
-        invars[19] = zeroifnan(self.ground_pelvis.getCoordinate(1).getAccelerationValue(self.state))
-        invars[20] = zeroifnan(self.ground_pelvis.getCoordinate(2).getAccelerationValue(self.state))
+        # invars[18] = zeroifnan(self.ground_pelvis.getCoordinate(0).getAccelerationValue(self.state))
+        # invars[19] = zeroifnan(self.ground_pelvis.getCoordinate(1).getAccelerationValue(self.state))
+        # invars[20] = zeroifnan(self.ground_pelvis.getCoordinate(2).getAccelerationValue(self.state))
 
-        invars[21] = zeroifnan(self.hip_r.getCoordinate(0).getAccelerationValue(self.state))
-        invars[22] = zeroifnan(self.hip_l.getCoordinate(0).getAccelerationValue(self.state))
+        # invars[21] = zeroifnan(self.hip_r.getCoordinate(0).getAccelerationValue(self.state))
+        # invars[22] = zeroifnan(self.hip_l.getCoordinate(0).getAccelerationValue(self.state))
 
-        invars[23] = zeroifnan(self.ankle_r.getCoordinate(0).getAccelerationValue(self.state))
-        invars[24] = zeroifnan(self.ankle_l.getCoordinate(0).getAccelerationValue(self.state))
+        # invars[23] = zeroifnan(self.ankle_r.getCoordinate(0).getAccelerationValue(self.state))
+        # invars[24] = zeroifnan(self.ankle_l.getCoordinate(0).getAccelerationValue(self.state))
         
-        invars[25] = zeroifnan(self.knee_r.getCoordinate(0).getAccelerationValue(self.state))
-        invars[26] = zeroifnan(self.knee_l.getCoordinate(0).getAccelerationValue(self.state))
+        # invars[25] = zeroifnan(self.knee_r.getCoordinate(0).getAccelerationValue(self.state))
+        # invars[26] = zeroifnan(self.knee_l.getCoordinate(0).getAccelerationValue(self.state))
 
         pos = self.model.calcMassCenterPosition(self.state)
         vel = self.model.calcMassCenterVelocity(self.state)
 #        acc = self.model.calcMassCenterAccelerlation(self.state)
         
-        invars[27] = pos[0]
-        invars[28] = pos[1]
-        invars[29] = pos[2]
+        invars[18] = pos[0]
+        invars[19] = pos[1]
+        invars[20] = pos[2]
 
-        invars[30] = vel[0]
-        invars[31] = vel[1]
-        invars[32] = vel[2]
+        invars[21] = vel[0]
+        invars[22] = vel[1]
+        invars[23] = vel[2]
 
         return invars
 
@@ -182,7 +187,7 @@ class Environment:
         # Integrate one step
         self.manager.setInitialTime(stepsize * self.istep)
         self.manager.setFinalTime(stepsize * (self.istep + 1))
-        self.manager.integrate(self.state)
+        self.manager.integrate(self.state, integration_accuracy)
 
         self.istep = self.istep + 1
 
@@ -196,10 +201,10 @@ V_model = Sequential()
 V_model.add(Flatten(input_shape=(1,) + (ninput, )))
 V_model.add(Dense(16))
 V_model.add(Activation('relu'))
-# V_model.add(Dense(16))
-# V_model.add(Activation('relu'))
-# V_model.add(Dense(16))
-# V_model.add(Activation('relu'))
+V_model.add(Dense(16))
+V_model.add(Activation('relu'))
+V_model.add(Dense(16))
+V_model.add(Activation('relu'))
 V_model.add(Dense(1))
 V_model.add(Activation('linear'))
 print(V_model.summary())
@@ -208,22 +213,23 @@ mu_model = Sequential()
 mu_model.add(Flatten(input_shape=(1,) + (ninput, )))
 mu_model.add(Dense(16))
 mu_model.add(Activation('relu'))
-# mu_model.add(Dense(16))
-# mu_model.add(Activation('relu'))
-# mu_model.add(Dense(16))
-# mu_model.add(Activation('relu'))
+mu_model.add(Dense(16))
+mu_model.add(Activation('relu'))
+mu_model.add(Dense(16))
+mu_model.add(Activation('relu'))
 mu_model.add(Dense(nb_actions))
 mu_model.add(Activation('linear'))
+#mu_model.add(Activation('sigmoid'))
 print(mu_model.summary())
 
 action_input = Input(shape=(nb_actions,), name='action_input')
 observation_input = Input(shape=(1,) + (ninput, ), name='observation_input')
 x = merge([action_input, Flatten()(observation_input)], mode='concat')
 x = Dense(32)(x)
-# x = Activation('relu')(x)
-# x = Dense(32)(x)
-# x = Activation('relu')(x)
-# x = Dense(32)(x)
+x = Activation('relu')(x)
+x = Dense(32)(x)
+x = Activation('relu')(x)
+x = Dense(32)(x)
 x = Activation('relu')(x)
 x = Dense(((nb_actions * nb_actions + nb_actions) / 2))(x)
 x = Activation('linear')(x)
@@ -235,7 +241,7 @@ env = Environment()
 # Finally, we configure and compile our agent. You can use every built-in Keras optimizer and
 # even the metrics!
 memory = SequentialMemory(limit=100000, window_length=1)
-random_process = OrnsteinUhlenbeckProcess(theta=1.5, mu=0., sigma=.001, size=nb_actions)
+random_process = OrnsteinUhlenbeckProcess(theta=1, mu=0., sigma=.05, size=nb_actions)
 agent = ContinuousDQNAgent(nb_actions=nb_actions, V_model=V_model, L_model=L_model, mu_model=mu_model,
                            memory=memory, nb_steps_warmup=1000, random_process=random_process,
                            gamma=.99, target_model_update=0.1)
