@@ -27,6 +27,7 @@ parser = argparse.ArgumentParser(description='Train or test neural net motor con
 parser.add_argument('--train', dest='train', action='store_true', default=True)
 parser.add_argument('--test', dest='train', action='store_false', default=True)
 parser.add_argument('--visualize', dest='visualize', action='store_true', default=False)
+parser.add_argument('--output', dest='output', action='store', default="model.h5f")
 args = parser.parse_args()
 
 training = args.train
@@ -246,10 +247,10 @@ agent.compile(Adam(lr=.001, clipnorm=1.), metrics=['mae'])
 if training:
     agent.fit(env, nb_steps=nallsteps, visualize=True, verbose=1, nb_max_episode_steps=nepisodesteps)
     # After training is done, we save the final weights.
-    agent.save_weights('cdqn_weights.h5f', overwrite=True)
+    agent.save_weights(args.output, overwrite=True)
 
 if not training:
-    agent.load_weights('cdqn_weights.h5f')
+    agent.load_weights(args.output)
     # Finally, evaluate our algorithm for 5 episodes.
     agent.test(env, nb_episodes=10, visualize=True, nb_max_episode_steps=200)
 
