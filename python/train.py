@@ -15,9 +15,9 @@ import argparse
 import math
 
 # Some meta parameters
-stepsize = 0.01
+stepsize = 0.05
 nallsteps = 100000
-ninput = 10
+ninput = 33
 noutput = 18
 nb_actions = noutput
 nepisodesteps = 300
@@ -32,6 +32,15 @@ args = parser.parse_args()
 training = args.train
 visualize = args.visualize
 
+def zeroifnan(v):
+    if math.isnan(v):
+        return 0
+    if abs(v) < 0.001:
+        return 0
+    elif abs(v) > 1000:
+        return 1000 * (v / abs(v))
+    return v
+
 class Environment:
     # Initialize simulation
     model = None
@@ -44,7 +53,7 @@ class Environment:
     def compute_reward(self):
         y = self.ground_pelvis.getCoordinate(2).getValue(self.state)
         x = self.ground_pelvis.getCoordinate(1).getValue(self.state)
-        self.prev_reward = 0.9 * self.prev_reward + max(y, 0.9) #0.9 * self.prev_reward - x + y
+        self.prev_reward = 1 * self.prev_reward + max(y, 0.9) #0.9 * self.prev_reward - x + y
         return self.prev_reward
 
     def is_head_too_low(self):
@@ -91,6 +100,8 @@ class Environment:
         self.back = osim.PinJoint.safeDownCast(self.jointSet.get(11))
         self.back1 = osim.WeldJoint.safeDownCast(self.jointSet.get(12))
 
+        self.head = self.bodySet.get(12)
+
         self.reset()
 
     def reset(self):
@@ -105,7 +116,7 @@ class Environment:
         return self.get_observation()
 
     def get_observation(self):
-        invars = np.array([0] * ninput)
+        invars = np.array([0] * ninput, dtype='f')
 
         invars[0] = self.ground_pelvis.getCoordinate(0).getValue(self.state)
         invars[1] = self.ground_pelvis.getCoordinate(1).getValue(self.state)
@@ -119,8 +130,46 @@ class Environment:
 
         invars[7] = self.knee_r.getCoordinate(0).getValue(self.state)
         invars[8] = self.knee_l.getCoordinate(0).getValue(self.state)
+        
 
-        invars[9] = self.back.getCoordinate(0).getValue(self.state)
+        invars[9] = self.ground_pelvis.getCoordinate(0).getSpeedValue(self.state)
+        invars[10] = self.ground_pelvis.getCoordinate(1).getSpeedValue(self.state)
+        invars[11] = self.ground_pelvis.getCoordinate(2).getSpeedValue(self.state)
+
+        invars[12] = self.hip_r.getCoordinate(0).getSpeedValue(self.state)
+        invars[13] = self.hip_l.getCoordinate(0).getSpeedValue(self.state)
+
+        invars[14] = self.ankle_r.getCoordinate(0).getSpeedValue(self.state)
+        invars[15] = self.ankle_l.getCoordinate(0).getSpeedValue(self.state)
+
+        invars[16] = self.knee_r.getCoordinate(0).getSpeedValue(self.state)
+        invars[17] = self.knee_l.getCoordinate(0).getSpeedValue(self.state)
+
+        
+        invars[18] = zeroifnan(self.ground_pelvis.getCoordinate(0).getAccelerationValue(self.state))
+        invars[19] = zeroifnan(self.ground_pelvis.getCoordinate(1).getAccelerationValue(self.state))
+        invars[20] = zeroifnan(self.ground_pelvis.getCoordinate(2).getAccelerationValue(self.state))
+
+        invars[21] = zeroifnan(self.hip_r.getCoordinate(0).getAccelerationValue(self.state))
+        invars[22] = zeroifnan(self.hip_l.getCoordinate(0).getAccelerationValue(self.state))
+
+        invars[23] = zeroifnan(self.ankle_r.getCoordinate(0).getAccelerationValue(self.state))
+        invars[24] = zeroifnan(self.ankle_l.getCoordinate(0).getAccelerationValue(self.state))
+        
+        invars[25] = zeroifnan(self.knee_r.getCoordinate(0).getAccelerationValue(self.state))
+        invars[26] = zeroifnan(self.knee_l.getCoordinate(0).getAccelerationValue(self.state))
+
+        pos = self.model.calcMassCenterPosition(self.state)
+        vel = self.model.calcMassCenterVelocity(self.state)
+#        acc = self.model.calcMassCenterAccelerlation(self.state)
+        
+        invars[27] = pos[0]
+        invars[28] = pos[1]
+        invars[29] = pos[2]
+
+        invars[30] = vel[0]
+        invars[31] = vel[1]
+        invars[32] = vel[2]
 
         return invars
 
@@ -146,10 +195,10 @@ V_model = Sequential()
 V_model.add(Flatten(input_shape=(1,) + (ninput, )))
 V_model.add(Dense(16))
 V_model.add(Activation('relu'))
-V_model.add(Dense(16))
-V_model.add(Activation('relu'))
-V_model.add(Dense(16))
-V_model.add(Activation('relu'))
+# V_model.add(Dense(16))
+# V_model.add(Activation('relu'))
+# V_model.add(Dense(16))
+# V_model.add(Activation('relu'))
 V_model.add(Dense(1))
 V_model.add(Activation('linear'))
 print(V_model.summary())
@@ -158,10 +207,10 @@ mu_model = Sequential()
 mu_model.add(Flatten(input_shape=(1,) + (ninput, )))
 mu_model.add(Dense(16))
 mu_model.add(Activation('relu'))
-mu_model.add(Dense(16))
-mu_model.add(Activation('relu'))
-mu_model.add(Dense(16))
-mu_model.add(Activation('relu'))
+# mu_model.add(Dense(16))
+# mu_model.add(Activation('relu'))
+# mu_model.add(Dense(16))
+# mu_model.add(Activation('relu'))
 mu_model.add(Dense(nb_actions))
 mu_model.add(Activation('linear'))
 print(mu_model.summary())
@@ -170,10 +219,10 @@ action_input = Input(shape=(nb_actions,), name='action_input')
 observation_input = Input(shape=(1,) + (ninput, ), name='observation_input')
 x = merge([action_input, Flatten()(observation_input)], mode='concat')
 x = Dense(32)(x)
-x = Activation('relu')(x)
-x = Dense(32)(x)
-x = Activation('relu')(x)
-x = Dense(32)(x)
+# x = Activation('relu')(x)
+# x = Dense(32)(x)
+# x = Activation('relu')(x)
+# x = Dense(32)(x)
 x = Activation('relu')(x)
 x = Dense(((nb_actions * nb_actions + nb_actions) / 2))(x)
 x = Activation('linear')(x)
@@ -185,7 +234,7 @@ env = Environment()
 # Finally, we configure and compile our agent. You can use every built-in Keras optimizer and
 # even the metrics!
 memory = SequentialMemory(limit=100000, window_length=1)
-random_process = OrnsteinUhlenbeckProcess(theta=.15, mu=0., sigma=.5, size=nb_actions)
+random_process = OrnsteinUhlenbeckProcess(theta=1.5, mu=0., sigma=.001, size=nb_actions)
 agent = ContinuousDQNAgent(nb_actions=nb_actions, V_model=V_model, L_model=L_model, mu_model=mu_model,
                            memory=memory, nb_steps_warmup=1000, random_process=random_process,
                            gamma=.99, target_model_update=0.1)
