@@ -59,7 +59,7 @@ class Environment:
 
     def is_head_too_low(self):
         y = self.ground_pelvis.getCoordinate(2).getValue(self.state)
-        return (y < 0.7) or (abs(x) > 0.2)
+        return (y < 0.7) #or (abs(x) > 0.2)
     
     def is_done(self):
         return (self.istep >= nepisodesteps) or self.is_head_too_low()
