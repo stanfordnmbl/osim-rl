@@ -3,3 +3,5 @@ numpy
 keras
 theano
 tensorflow
+tabulate
+git+https://github.com/openai/gym
