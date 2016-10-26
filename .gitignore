@@ -2,4 +2,5 @@ build/
 *~
 *.log
 *.h5f
-*#
+*
+#*.pyc
