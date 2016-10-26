@@ -9,7 +9,7 @@ Make sure you have python bindings installed
 ## Running the python example
 
     cd python
-    python deepcontroller.py
+    python train.py
 
 ## Running the C++ example
 
