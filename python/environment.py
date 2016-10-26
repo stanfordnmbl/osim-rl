@@ -1,6 +1,7 @@
 import opensim as osim
 import math
 import numpy as np
+from gym import spaces
 
 class Environment:
     # Initialize simulation
@@ -16,6 +17,12 @@ class Environment:
 
     istep = 0
     prev_reward = 0
+
+    spec = None
+
+    # OpenAI Gym compatibility
+    action_space = spaces.Box(0.0, 1.0, shape=(noutput,) )
+    observation_space = spaces.Box(-100000.0, 100000.0, shape=(ninput,) )
 
     def compute_reward(self):
         y = self.ground_pelvis.getCoordinate(2).getValue(self.state)
@@ -165,7 +172,7 @@ class Environment:
 
         self.istep = self.istep + 1
 
-        return self.get_observation(), self.compute_reward(), self.is_done(), False
+        return self.get_observation(), self.compute_reward(), self.is_done(), {}
 
     def render(self, *args, **kwargs):
         return

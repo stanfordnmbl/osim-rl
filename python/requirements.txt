@@ -1,3 +1,5 @@
 git+https://github.com/matthiasplappert/keras-rl.git
 numpy
 keras
+tabulate
+git+https://github.com/openai/gym
