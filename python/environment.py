@@ -24,6 +24,8 @@ class Environment:
     action_space = spaces.Box(0.0, 1.0, shape=(noutput,) )
     observation_space = spaces.Box(-100000.0, 100000.0, shape=(ninput,) )
 
+    target_pos = [0] * 3
+
     def compute_reward(self):
         y = self.ground_pelvis.getCoordinate(2).getValue(self.state)
         x = self.ground_pelvis.getCoordinate(1).getValue(self.state)
@@ -32,7 +34,9 @@ class Environment:
         vel = self.model.calcMassCenterVelocity(self.state)
         acc = self.model.calcMassCenterAcceleration(self.state)
 
-        rew = 2 - abs(acc[0])**2 - abs(acc[1])**2 - abs(acc[2])**2
+        from_target = abs(pos[0] - self.target_pos[0])**2 + abs(pos[1] - self.target_pos[1])**2 + abs(pos[2] - self.target_pos[2])**2
+        from_target = from_target if from_target > 0.5 else 0 
+        rew = 2 - abs(acc[0])**2 - abs(acc[1])**2 - abs(acc[2])**2 - abs(vel[0])**2 - abs(vel[1])**2 - abs(vel[2])**2 - from_target
         # - abs(vel[0])**2 - abs(vel[1])**2 - abs(vel[2])**2
         # print("\n%f" % rew)
         return rew
@@ -100,10 +104,15 @@ class Environment:
         nullacttion = np.array([0] * self.noutput, dtype='f')
         for i in range(0, int(math.floor(0.2 / self.stepsize) + 1)):
             self.step(nullacttion)
+
+        self.target_pos = self.model.calcMassCenterPosition(self.state)
+
         return self.get_observation()
 
     def get_observation(self):
         invars = np.array([0] * self.ninput, dtype='f')
+
+#        self.model.realizeAcceleration(self.state)
 
         invars[0] = self.ground_pelvis.getCoordinate(0).getValue(self.state)
         invars[1] = self.ground_pelvis.getCoordinate(1).getValue(self.state)
@@ -157,6 +166,10 @@ class Environment:
         invars[21] = vel[0]
         invars[22] = vel[1]
         invars[23] = vel[2]
+
+        # for i in xrange(0,18):
+        #     invars[23 + 2*i + 1] = self.muscleSet.get(i).getActiveFiberForce(self.state)
+        #     invars[23 + 2*i + 2] = self.muscleSet.get(i).getPassiveFiberForce(self.state)
 
         return invars
 
