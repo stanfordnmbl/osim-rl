@@ -43,6 +43,8 @@ class Environment:
     istep = 0
     prev_reward = 0
 
+    target_pos = [0] * 3
+
     def compute_reward(self):
         y = self.ground_pelvis.getCoordinate(2).getValue(self.state)
         x = self.ground_pelvis.getCoordinate(1).getValue(self.state)
@@ -51,7 +53,9 @@ class Environment:
         vel = self.model.calcMassCenterVelocity(self.state)
         acc = self.model.calcMassCenterAcceleration(self.state)
 
-        rew = 2 - abs(acc[0])**2 - abs(acc[1])**2 - abs(acc[2])**2
+        from_target = abs(pos[0] - self.target_pos[0])**2 + abs(pos[1] - self.target_pos[1])**2 + abs(pos[2] - self.target_pos[2])**2
+        from_target = from_target if from_target > 0.5 else 0 
+        rew = 2 - abs(acc[0])**2 - abs(acc[1])**2 - abs(acc[2])**2 - abs(vel[0])**2 - abs(vel[1])**2 - abs(vel[2])**2 - from_target
         # - abs(vel[0])**2 - abs(vel[1])**2 - abs(vel[2])**2
         # print("\n%f" % rew)
         return rew
@@ -117,12 +121,17 @@ class Environment:
         self.prev_reward = 0
 
         nullacttion = np.array([0] * noutput, dtype='f')
-        for i in range(0, int(math.floor(0.2 / stepsize) + 1)):
+        for i in range(0, int(math.floor(0.25 / stepsize) + 1)):
             self.step(nullacttion)
+
+        self.target_pos = self.model.calcMassCenterPosition(self.state)
+
         return self.get_observation()
 
     def get_observation(self):
         invars = np.array([0] * ninput, dtype='f')
+
+#        self.model.realizeAcceleration(self.state)
 
         invars[0] = self.ground_pelvis.getCoordinate(0).getValue(self.state)
         invars[1] = self.ground_pelvis.getCoordinate(1).getValue(self.state)
@@ -151,20 +160,6 @@ class Environment:
         invars[16] = self.knee_r.getCoordinate(0).getSpeedValue(self.state)
         invars[17] = self.knee_l.getCoordinate(0).getSpeedValue(self.state)
 
-        
-        # invars[18] = zeroifnan(self.ground_pelvis.getCoordinate(0).getAccelerationValue(self.state))
-        # invars[19] = zeroifnan(self.ground_pelvis.getCoordinate(1).getAccelerationValue(self.state))
-        # invars[20] = zeroifnan(self.ground_pelvis.getCoordinate(2).getAccelerationValue(self.state))
-
-        # invars[21] = zeroifnan(self.hip_r.getCoordinate(0).getAccelerationValue(self.state))
-        # invars[22] = zeroifnan(self.hip_l.getCoordinate(0).getAccelerationValue(self.state))
-
-        # invars[23] = zeroifnan(self.ankle_r.getCoordinate(0).getAccelerationValue(self.state))
-        # invars[24] = zeroifnan(self.ankle_l.getCoordinate(0).getAccelerationValue(self.state))
-        
-        # invars[25] = zeroifnan(self.knee_r.getCoordinate(0).getAccelerationValue(self.state))
-        # invars[26] = zeroifnan(self.knee_l.getCoordinate(0).getAccelerationValue(self.state))
-
         pos = self.model.calcMassCenterPosition(self.state)
         vel = self.model.calcMassCenterVelocity(self.state)
 #        acc = self.model.calcMassCenterAccelerlation(self.state)
@@ -177,12 +172,18 @@ class Environment:
         invars[22] = vel[1]
         invars[23] = vel[2]
 
+        # for i in xrange(0,18):
+        #     invars[23 + 2*i + 1] = self.muscleSet.get(i).getActiveFiberForce(self.state)
+        #     invars[23 + 2*i + 2] = self.muscleSet.get(i).getPassiveFiberForce(self.state)
+
+        
         return invars
 
     def step(self, action):
         for j in range(noutput):
             muscle = self.muscleSet.get(j)
             muscle.setActivation(self.state, action[j] * 1.0)
+#            muscle.setExcitation(self.state, action[j] * 1.0)
 
         # Integrate one step
         self.manager.setInitialTime(stepsize * self.istep)
