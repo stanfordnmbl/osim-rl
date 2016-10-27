@@ -16,13 +16,7 @@ import argparse
 import math
 
 # Some meta parameters
-stepsize = 0.01
 nallsteps = 10000000
-ninput = 24
-noutput = 18
-nb_actions = noutput
-nepisodesteps = 500
-integration_accuracy = 1e-3
 
 # Command line parameters
 parser = argparse.ArgumentParser(description='Train or test neural net motor controller')

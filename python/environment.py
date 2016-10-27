@@ -36,7 +36,7 @@ class Environment:
 
         from_target = abs(pos[0] - self.target_pos[0])**2 + abs(pos[1] - self.target_pos[1])**2 + abs(pos[2] - self.target_pos[2])**2
         from_target = from_target if from_target > 0.5 else 0 
-        rew = 2 - abs(acc[0])**2 - abs(acc[1])**2 - abs(acc[2])**2 - abs(vel[0])**2 - abs(vel[1])**2 - abs(vel[2])**2 - from_target
+        rew = 20 - abs(acc[0])**2 - abs(acc[1])**2 - abs(acc[2])**2 - abs(vel[0])**2 - abs(vel[1])**2 - abs(vel[2])**2 - from_target
         # - abs(vel[0])**2 - abs(vel[1])**2 - abs(vel[2])**2
         # print("\n%f" % rew)
         return rew
