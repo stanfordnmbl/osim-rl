@@ -189,7 +189,12 @@ class Environment:
         # Integrate one step
         self.manager.setInitialTime(self.stepsize * self.istep)
         self.manager.setFinalTime(self.stepsize * (self.istep + 1))
-        self.manager.integrate(self.state, self.integration_accuracy)
+
+        try:
+            self.manager.integrate(self.state, self.integration_accuracy)
+        except Exception(e):
+            return self.get_observation(), -10000, True, {}
+            
 
         self.istep = self.istep + 1
 
