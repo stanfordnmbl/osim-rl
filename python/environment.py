@@ -2,6 +2,10 @@ import opensim as osim
 import math
 import numpy as np
 from gym import spaces
+import os
+
+class Specification:
+    timestep_limit = 200
 
 class Environment:
     # Initialize simulation
@@ -18,7 +22,7 @@ class Environment:
     istep = 0
     prev_reward = 0
 
-    spec = None
+    spec = Specification()
 
     # OpenAI Gym compatibility
     action_space = spaces.Box(0.0, 1.0, shape=(noutput,) )
@@ -35,8 +39,8 @@ class Environment:
         acc = self.model.calcMassCenterAcceleration(self.state)
 
         from_target = abs(pos[0] - self.target_pos[0])**2 + abs(pos[1] - self.target_pos[1])**2 + abs(pos[2] - self.target_pos[2])**2
-        from_target = from_target if from_target > 0.5 else 0 
-        rew = 20 - abs(acc[0])**2 - abs(acc[1])**2 - abs(acc[2])**2 - abs(vel[0])**2 - abs(vel[1])**2 - abs(vel[2])**2 - from_target
+        from_target = 0 #from_target if from_target > 0.5 else 0 
+        rew = 100 - abs(acc[0])**2 - abs(acc[1])**2 - abs(acc[2])**2 - abs(vel[0])**2 - abs(vel[1])**2 - abs(vel[2])**2 - from_target
         # - abs(vel[0])**2 - abs(vel[1])**2 - abs(vel[2])**2
         # print("\n%f" % rew)
         return rew
@@ -51,8 +55,12 @@ class Environment:
         return self.is_head_too_low()
 
     def __init__(self, visualize = True):
+        setattr(self, 'timestep_limit', 200)
         # Get the model
-        self.model = osim.Model("../models/gait9dof18musc_Thelen_BigSpheres_20161017.osim")
+
+        dir = os.path.dirname(__file__)
+        filename = os.path.join(dir, '../models/gait9dof18musc_Thelen_BigSpheres_20161017.osim')
+        self.model = osim.Model(filename)
 
         # Enable the visualizer
         self.model.setUseVisualizer(visualize)
