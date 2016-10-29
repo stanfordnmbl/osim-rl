@@ -192,7 +192,7 @@ class Environment:
 
         try:
             self.manager.integrate(self.state, self.integration_accuracy)
-        except Exception(e):
+        except Exception:
             return self.get_observation(), -10000, True, {}
             
 
