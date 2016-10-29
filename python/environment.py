@@ -56,7 +56,7 @@ class Environment:
             rew = -100
         # - abs(vel[0])**2 - abs(vel[1])**2 - abs(vel[2])**2
         # print("\n%f" % rew)
-        return rew
+        return rew / 100.0
 #        self.prev_reward = 1 * self.prev_reward + max(y, 0.9) #0.9 * self.prev_reward - x + y
         return self.prev_reward
 
