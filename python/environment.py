@@ -5,11 +5,12 @@ from gym import spaces
 import os
 
 class Specification:
-    timestep_limit = 200
+    timestep_limit = 500
 
 class Environment:
     # Initialize simulation
     model = None
+    manager = None
     state = None
     state0 = None
 
@@ -30,6 +31,16 @@ class Environment:
 
     target_pos = [0] * 3
 
+    def sanitify(self, x):
+        if math.isnan(x):
+            return 0.0
+        BOUND = 100000.0
+        if x > BOUND:
+            x = BOUND
+        if x < -BOUND:
+            x = -BOUND
+        return x
+
     def compute_reward(self):
         y = self.ground_pelvis.getCoordinate(2).getValue(self.state)
         x = self.ground_pelvis.getCoordinate(1).getValue(self.state)
@@ -41,6 +52,8 @@ class Environment:
         from_target = abs(pos[0] - self.target_pos[0])**2 + abs(pos[1] - self.target_pos[1])**2 + abs(pos[2] - self.target_pos[2])**2
         from_target = 0 #from_target if from_target > 0.5 else 0 
         rew = 100 - abs(acc[0])**2 - abs(acc[1])**2 - abs(acc[2])**2 - abs(vel[0])**2 - abs(vel[1])**2 - abs(vel[2])**2 - from_target
+        if rew < -100:
+            rew = -100
         # - abs(vel[0])**2 - abs(vel[1])**2 - abs(vel[2])**2
         # print("\n%f" % rew)
         return rew
@@ -102,11 +115,12 @@ class Environment:
     def reset(self):
         self.istep = 0
         if not self.state0:
-            self.state0 = self.model.initSystem()
-        self.state = osim.State(self.state0)
-
+            self.state = self.model.initSystem()
+            self.manager = osim.Manager(self.model)
+#            self.state = osim.State(self.state0)
+        else:
+            self.state.clear()
         self.model.equilibrateMuscles(self.state)
-        self.manager = osim.Manager(self.model)
         self.prev_reward = 0
 
         nullacttion = np.array([0] * self.noutput, dtype='f')
@@ -115,7 +129,7 @@ class Environment:
 
         self.target_pos = self.model.calcMassCenterPosition(self.state)
 
-        return self.get_observation()
+        return [0.0] * self.ninput # self.get_observation()
 
     def get_observation(self):
         invars = np.array([0] * self.ninput, dtype='f')
@@ -175,6 +189,9 @@ class Environment:
         invars[22] = vel[1]
         invars[23] = vel[2]
 
+        for i in range(0,self.ninput):
+            invars[i] = self.sanitify(invars[i])
+
         # for i in xrange(0,18):
         #     invars[23 + 2*i + 1] = self.muscleSet.get(i).getActiveFiberForce(self.state)
         #     invars[23 + 2*i + 2] = self.muscleSet.get(i).getPassiveFiberForce(self.state)
@@ -193,6 +210,8 @@ class Environment:
         try:
             self.manager.integrate(self.state, self.integration_accuracy)
         except Exception:
+            print (self.get_observation())
+            print (action)
             return self.get_observation(), -10000, True, {}
             
 

@@ -3,7 +3,7 @@ import opensim as osim
 import sys
 
 # Some meta parameters
-stepsize = 0.05
+stepsize = 0.02
 nsteps = 100
 
 # Get the model
@@ -24,8 +24,9 @@ manager = osim.Manager(model)
 for i in range(0,nsteps):
     # activate the muscles corresponding to the current step
     # yes, this makes no sense, it's just a test
-    muscle = muscleSet.get(i % 18)
-    muscle.setActivation(state, 20)
+    for j in range(0,18):
+        muscle = muscleSet.get(j)
+        muscle.setActivation(state, 1.0 *(-1) ** j)
 
     # Integrate one step
     manager.setInitialTime(stepsize * i)
