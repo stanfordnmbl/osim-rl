@@ -34,7 +34,7 @@ class Environment:
     def sanitify(self, x):
         if math.isnan(x):
             return 0.0
-        BOUND = 100000.0
+        BOUND = 1000.0
         if x > BOUND:
             x = BOUND
         if x < -BOUND:
@@ -115,11 +115,12 @@ class Environment:
     def reset(self):
         self.istep = 0
         if not self.state0:
-            self.state = self.model.initSystem()
+            self.state0 = self.model.initSystem()
             self.manager = osim.Manager(self.model)
-#            self.state = osim.State(self.state0)
+            self.state = osim.State(self.state0)
         else:
-            self.state.clear()
+            self.state = osim.State(self.state0)
+#            self.state.clear()
         self.model.equilibrateMuscles(self.state)
         self.prev_reward = 0
 
@@ -212,7 +213,7 @@ class Environment:
         except Exception:
             print (self.get_observation())
             print (action)
-            return self.get_observation(), -10000, True, {}
+            return self.get_observation(), -500, True, {}
             
 
         self.istep = self.istep + 1
