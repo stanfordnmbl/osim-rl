@@ -3,6 +3,7 @@ import math
 import numpy as np
 from gym import spaces
 import os
+import random
 
 class Specification:
     timestep_limit = 500
@@ -19,7 +20,7 @@ class ArmEnv:
     state0 = None
 
     stepsize = 0.01
-    ninput = 12
+    ninput = 14
     noutput = 6
     integration_accuracy = 1e-3
     timestep_limit = 500
@@ -36,11 +37,11 @@ class ArmEnv:
 
     def compute_reward(self):
         obs = self.get_observation()
-#        print (obs[0], obs[1])
-        up = (2*(math.pi**2) - angular_dist(obs[0],math.pi)**2 - angular_dist(obs[1],0.0)**2)/(2*math.pi**2)
-        still = (obs[2]**2 + obs[3]**2) / 400
+#        up = (2*(math.pi**2) - angular_dist(obs[2],self.shoulder)**2 - angular_dist(obs[3],self.elbow)**2)/(2*math.pi**2)
+        pos = angular_dist(obs[2],self.shoulder)**2 + angular_dist(obs[3],self.elbow)**2
+        still = (obs[4]**2 + obs[5]**2) / 200
 #        print still
-        return up - still
+        return (20 - pos - still)/20.0
 
     def is_done(self):
         return False
@@ -79,6 +80,10 @@ class ArmEnv:
         self.reset()
 
     def reset(self):
+        self.shoulder = -random.uniform(-0.3,1.2)
+        self.elbow = -random.uniform(0,1.0)
+        print("\nTarget: shoulder = %f, elbow = %f" % (self.shoulder, self.elbow))
+
         self.istep = 0
         if not self.state0:
             self.state0 = self.model.initSystem()
@@ -108,25 +113,28 @@ class ArmEnv:
     def get_observation(self):
         invars = np.array([0] * self.ninput, dtype='f')
 
-        invars[0] = self.joints[0].getCoordinate(0).getValue(self.state)
-        invars[1] = self.joints[1].getCoordinate(0).getValue(self.state)
+        invars[0] = self.shoulder
+        invars[1] = self.elbow
 
-        invars[2] = self.joints[0].getCoordinate(0).getSpeedValue(self.state)
-        invars[3] = self.joints[1].getCoordinate(0).getSpeedValue(self.state)
+        invars[2] = self.joints[0].getCoordinate(0).getValue(self.state)
+        invars[3] = self.joints[1].getCoordinate(0).getValue(self.state)
 
-        invars[4] = self.sanitify(self.joints[0].getCoordinate(0).getAccelerationValue(self.state))
-        invars[5] = self.sanitify(self.joints[1].getCoordinate(0).getAccelerationValue(self.state))
+        invars[4] = self.joints[0].getCoordinate(0).getSpeedValue(self.state)
+        invars[5] = self.joints[1].getCoordinate(0).getSpeedValue(self.state)
+
+        invars[6] = self.sanitify(self.joints[0].getCoordinate(0).getAccelerationValue(self.state))
+        invars[7] = self.sanitify(self.joints[1].getCoordinate(0).getAccelerationValue(self.state))
 
         pos = self.model.calcMassCenterPosition(self.state)
         vel = self.model.calcMassCenterVelocity(self.state)
         
-        invars[6] = pos[0]
-        invars[7] = pos[1]
-        invars[8] = pos[2]
+        invars[8] = pos[0]
+        invars[9] = pos[1]
+        invars[10] = pos[2]
 
-        invars[9] = vel[0]
-        invars[10] = vel[1]
-        invars[11] = vel[2]
+        invars[11] = vel[0]
+        invars[12] = vel[1]
+        invars[13] = vel[2]
 
         return invars
 
