@@ -8,11 +8,8 @@ class Specification:
     timestep_limit = 500
 
 def angular_dist(t,s):
-    t = t % math.pi
-    s0 = -2*math.pi + (s % (2*math.pi))
-    s1 = s % (2*math.pi)
-    s2 = 2*math.pi + s % (2*math.pi)
-    return min(abs(t - s0),abs(t - s1),abs(t-s2))
+    x = (t-s) % (2*math.pi)
+    return min(x, 2*math.pi-x)
 
 class ArmEnv:
     # Initialize simulation
@@ -22,7 +19,7 @@ class ArmEnv:
     state0 = None
 
     stepsize = 0.01
-    ninput = 8
+    ninput = 12
     noutput = 6
     integration_accuracy = 1e-3
     timestep_limit = 500
@@ -40,7 +37,10 @@ class ArmEnv:
     def compute_reward(self):
         obs = self.get_observation()
 #        print (obs[0], obs[1])
-        return (2*(math.pi**2) - angular_dist(obs[0],math.pi)**2 - angular_dist(obs[1],0.0)**2)/(2*math.pi**2)
+        up = (2*(math.pi**2) - angular_dist(obs[0],math.pi)**2 - angular_dist(obs[1],0.0)**2)/(2*math.pi**2)
+        still = (obs[2]**2 + obs[3]**2) / 400
+#        print still
+        return up - still
 
     def is_done(self):
         return False
@@ -95,22 +95,38 @@ class ArmEnv:
 
         return [0.0] * self.ninput # self.get_observation()
 
+    def sanitify(self, x):
+        if math.isnan(x):
+            return 0.0
+        BOUND = 1000.0
+        if x > BOUND:
+            x = BOUND
+        if x < -BOUND:
+            x = -BOUND
+        return x
+
     def get_observation(self):
         invars = np.array([0] * self.ninput, dtype='f')
 
         invars[0] = self.joints[0].getCoordinate(0).getValue(self.state)
         invars[1] = self.joints[1].getCoordinate(0).getValue(self.state)
 
+        invars[2] = self.joints[0].getCoordinate(0).getSpeedValue(self.state)
+        invars[3] = self.joints[1].getCoordinate(0).getSpeedValue(self.state)
+
+        invars[4] = self.sanitify(self.joints[0].getCoordinate(0).getAccelerationValue(self.state))
+        invars[5] = self.sanitify(self.joints[1].getCoordinate(0).getAccelerationValue(self.state))
+
         pos = self.model.calcMassCenterPosition(self.state)
         vel = self.model.calcMassCenterVelocity(self.state)
         
-        invars[2] = pos[0]
-        invars[3] = pos[1]
-        invars[4] = pos[2]
+        invars[6] = pos[0]
+        invars[7] = pos[1]
+        invars[8] = pos[2]
 
-        invars[5] = vel[0]
-        invars[6] = vel[1]
-        invars[7] = vel[2]
+        invars[9] = vel[0]
+        invars[10] = vel[1]
+        invars[11] = vel[2]
 
         return invars
 
