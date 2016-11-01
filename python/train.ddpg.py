@@ -85,7 +85,7 @@ agent.compile([RMSprop(lr=.001), RMSprop(lr=.001)], metrics=['mae'])
 # slows down training quite a lot. You can always safely abort the training prematurely using
 # Ctrl + C.
 if args.train:
-    agent.fit(env, nb_steps=nallsteps, visualize=True, verbose=1, nb_max_episode_steps=env.timestep_limit)
+    agent.fit(env, nb_steps=nallsteps, visualize=True, verbose=1, nb_max_episode_steps=env.timestep_limit, log_interval=10000)
     # After training is done, we save the final weights.
     agent.save_weights(args.output, overwrite=True)
 
