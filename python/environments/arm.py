@@ -16,7 +16,7 @@ class ArmEnv(OsimEnv):
         self.joints.append(osim.CustomJoint.safeDownCast(self.jointSet.get(1)))
 
     def reset(self):
-        self.shoulder = random.uniform(-1.2,0.3)
+        self.shoulder = random.uniform(-1.0,0)
         self.elbow = random.uniform(-1.0,0)
 
         self.istep = 0
@@ -37,9 +37,9 @@ class ArmEnv(OsimEnv):
 
     def compute_reward(self):
         obs = self.get_observation()
-        pos = (self.angular_dist(obs[2],self.shoulder)**2 + self.angular_dist(obs[3],self.elbow)**2) / 10.0 #
+        pos = (self.angular_dist(obs[2],self.shoulder) + self.angular_dist(obs[3],self.elbow))
         speed = 0 #(obs[4]**2 + obs[5]**2) / 200.0
-        return 4 - pos - speed
+        return - pos - speed
 
 
     def get_observation(self):
