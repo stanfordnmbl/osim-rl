@@ -15,9 +15,12 @@ class ArmEnv(OsimEnv):
         self.joints.append(osim.CustomJoint.safeDownCast(self.jointSet.get(0)))
         self.joints.append(osim.CustomJoint.safeDownCast(self.jointSet.get(1)))
 
-    def reset(self):
+    def new_target(self):
         self.shoulder = random.uniform(-1.2,0.3)
         self.elbow = random.uniform(-1.0,0)
+
+    def reset(self):
+        self.new_target()
 
         self.istep = 0
         if not self.state0:
