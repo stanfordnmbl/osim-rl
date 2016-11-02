@@ -9,12 +9,19 @@ Make sure you have python bindings installed, i.e. after building OpenSim do
     make install
     cd [opensim_install]/lib/python2.7/site-packages/
     python setup.py install
+    
+Install requirements for the python package
+
+    cd python
+    sudo pip install -r requirements.txt
+    
+Note that now it's compatible only with my fork of keras-rl
+
+https://github.com/kidzik/keras-rl
 
 ## Running the python example
 
-    cd python
-
-Now, for training the Arm example (move the arm to certain randomly chosen angles and keep it there):
+For training the Arm example (move the arm to certain randomly chosen angles and keep it there):
 
     python train.ddpg.py --visualize --train --env Arm
     
