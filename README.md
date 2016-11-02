@@ -4,7 +4,11 @@
 
 OpenSim 4.0 - https://github.com/opensim-org/opensim-core
 
-Make sure you have python bindings installed
+Make sure you have python bindings installed, i.e. after building OpenSim do
+
+    make install
+    cd [opensim_install]/lib/python2.7/site-packages/
+    python setup.py install
 
 ## Running the python example
 
