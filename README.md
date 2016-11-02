@@ -24,7 +24,7 @@ and for the gait example (walk as far as possible):
     
 After every 10000 iterations the model is dumped to model_[NUM_ITERATIONS].h5f In ordere to test it run
 
-    python train.ddpg.py --visualize --test --env Gait --output model_[NUM_ITERATIONS].h5f
+    python train.ddpg.py --visualize --test --env Gait --output model_[NUM_ITERATIONS]
 
 ## Running the C++ example (not useful)
 
