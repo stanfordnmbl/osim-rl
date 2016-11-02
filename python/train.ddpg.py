@@ -27,7 +27,7 @@ parser = argparse.ArgumentParser(description='Train or test neural net motor con
 parser.add_argument('--train', dest='train', action='store_true', default=True)
 parser.add_argument('--test', dest='train', action='store_false', default=True)
 parser.add_argument('--visualize', dest='visualize', action='store_true', default=False)
-parser.add_argument('--output', dest='output', action='store', default="model.h5f")
+parser.add_argument('--output', dest='output', action='store', default="model")
 parser.add_argument('--env', dest='env', action='store', default="Arm")
 parser.add_argument('--sigma', dest='sigma', action='store', default=0.3)
 parser.add_argument('--theta', dest='theta', action='store', default=0.15)
@@ -87,12 +87,12 @@ agent.compile([RMSprop(lr=.001), RMSprop(lr=.001)], metrics=['mae'])
 # slows down training quite a lot. You can always safely abort the training prematurely using
 # Ctrl + C.
 if args.train:
-    agent.fit(env, nb_steps=nallsteps, visualize=True, verbose=1, nb_max_episode_steps=env.timestep_limit, log_interval=10000)
+    agent.fit(env, nb_steps=nallsteps, visualize=True, verbose=1, nb_max_episode_steps=env.timestep_limit, log_interval=10000, prefix=args.output)
     # After training is done, we save the final weights.
-    agent.save_weights(args.output, overwrite=True)
+    agent.save_weights(args.output + ".h5f", overwrite=True)
 
 if not args.train:
-    agent.load_weights(args.output)
+    agent.load_weights(args.output + ".h5f")
     # Finally, evaluate our algorithm for 5 episodes.
     agent.test(env, nb_episodes=5, visualize=True, nb_max_episode_steps=500)
 

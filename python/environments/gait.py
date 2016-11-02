@@ -44,13 +44,13 @@ class GaitEnv(OsimEnv):
         self.joints.append(osim.PlanarJoint.safeDownCast(self.jointSet.get(0))) # PELVIS
 
         self.joints.append(osim.PinJoint.safeDownCast(self.jointSet.get(1)))
-        self.joints.append(osim.CustomJoint.safeDownCast(self.jointSet.get(4)))
-        self.joints.append(osim.PinJoint.safeDownCast(self.jointSet.get(7)))
+        self.joints.append(osim.CustomJoint.safeDownCast(self.jointSet.get(2)))
+        self.joints.append(osim.PinJoint.safeDownCast(self.jointSet.get(3)))
         # self.joints.append(osim.WeldJoint.safeDownCast(self.jointSet.get(4)))
         # self.joints.append(osim.WeldJoint.safeDownCast(self.jointSet.get(5)))
 
-        self.joints.append(osim.PinJoint.safeDownCast(self.jointSet.get(2)))
-        self.joints.append(osim.CustomJoint.safeDownCast(self.jointSet.get(5)))
+        self.joints.append(osim.PinJoint.safeDownCast(self.jointSet.get(6)))
+        self.joints.append(osim.CustomJoint.safeDownCast(self.jointSet.get(7)))
         self.joints.append(osim.PinJoint.safeDownCast(self.jointSet.get(8)))
         # self.joints.append(osim.WeldJoint.safeDownCast(self.jointSet.get(9)))
         # self.joints.append(osim.WeldJoint.safeDownCast(self.jointSet.get(10)))
