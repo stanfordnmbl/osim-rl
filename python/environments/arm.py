@@ -4,6 +4,7 @@ import numpy as np
 from gym import spaces
 import os
 import random
+from environments.osim import OsimEnv
 
 class ArmEnv(OsimEnv):
     ninput = 12
@@ -17,7 +18,6 @@ class ArmEnv(OsimEnv):
     def reset(self):
         self.shoulder = -random.uniform(-0.3,1.2)
         self.elbow = -random.uniform(0,1.0)
-        print("\nTarget: shoulder = %f, elbow = %f" % (self.shoulder, self.elbow))
 
         self.istep = 0
         if not self.state0:
@@ -37,10 +37,8 @@ class ArmEnv(OsimEnv):
 
     def compute_reward(self):
         obs = self.get_observation()
-#        up = (2*(math.pi**2) - angular_dist(obs[2],self.shoulder)**2 - angular_dist(obs[3],self.elbow)**2)/(2*math.pi**2)
-        pos = angular_dist(obs[2],self.shoulder)**2 + angular_dist(obs[3],self.elbow)**2
+        pos = self.angular_dist(obs[2],self.shoulder)**2 + self.angular_dist(obs[3],self.elbow)**2
         still = (obs[4]**2 + obs[5]**2) / 200
-#        print still
         return (20 - pos - still)/20.0
 
 
