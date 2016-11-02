@@ -9,9 +9,20 @@ Make sure you have python bindings installed
 ## Running the python example
 
     cd python
-    python train.py
 
-## Running the C++ example
+Now, for training the Arm example (move the arm to certain randomly chosen angles and keep it there):
+
+    python train.ddpg.py --visualize --train --env Arm
+    
+and for the gait example (walk as far as possible):
+
+    python train.ddpg.py --visualize --train --env Gait
+    
+After every 10000 iterations the model is dumped to model_[NUM_ITERATIONS].h5f In ordere to test it run
+
+    python train.ddpg.py --visualize --test --env Gait --output model_[NUM_ITERATIONS].h5f
+
+## Running the C++ example (not useful)
 
 Compile
 
