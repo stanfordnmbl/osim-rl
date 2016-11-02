@@ -94,6 +94,14 @@ if args.train:
 if not args.train:
     agent.load_weights(args.output + ".h5f")
     # Finally, evaluate our algorithm for 5 episodes.
-    agent.test(env, nb_episodes=5, visualize=True, nb_max_episode_steps=500)
+    if args.env != "Arm":
+        agent.test(env, nb_episodes=5, visualize=True, nb_max_episode_steps=500)
+    else:
+        for i in range(10000):
+            if i % 1000 == 0:
+                env.new_target()
+                print("Target shoulder = %f, elbow = %f" % (env.shoulder,env.elbow)) 
+            
+            env.step(agent.forward(env.get_observation()))
 
 
