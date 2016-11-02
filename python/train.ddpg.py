@@ -13,7 +13,6 @@ from rl.random import OrnsteinUhlenbeckProcess
 
 from environments.arm import ArmEnv
 from environments.gait import GaitEnv
-from environments.soccer import SoccerEnv
 
 from keras.optimizers import RMSprop
 
@@ -30,6 +29,8 @@ parser.add_argument('--test', dest='train', action='store_false', default=True)
 parser.add_argument('--visualize', dest='visualize', action='store_true', default=False)
 parser.add_argument('--output', dest='output', action='store', default="model.h5f")
 parser.add_argument('--env', dest='env', action='store', default="Arm")
+parser.add_argument('--sigma', dest='sigma', action='store', default=0.3)
+parser.add_argument('--theta', dest='theta', action='store', default=0.15)
 args = parser.parse_args()
 
 if args.env == "Gait":
@@ -71,7 +72,7 @@ print(critic.summary())
 # Finally, we configure and compile our agent. You can use every built-in Keras optimizer and
 # even the metrics!
 memory = SequentialMemory(limit=100000, window_length=1)
-random_process = OrnsteinUhlenbeckProcess(theta=.2, mu=0., sigma=.03, size=env.noutput)
+random_process = OrnsteinUhlenbeckProcess(theta=args.theta, mu=0., sigma=args.sigma, size=env.noutput)
 agent = DDPGAgent(nb_actions=nb_actions, actor=actor, critic=critic, critic_action_input=action_input,
                   memory=memory, nb_steps_warmup_critic=100, nb_steps_warmup_actor=100,
                   random_process=random_process, gamma=.99, target_model_update=1e-3,
