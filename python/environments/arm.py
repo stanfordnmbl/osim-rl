@@ -38,7 +38,7 @@ class ArmEnv(OsimEnv):
     def compute_reward(self):
         obs = self.get_observation()
         pos = (self.angular_dist(obs[2],self.shoulder)**2 + self.angular_dist(obs[3],self.elbow)**2) / 10.0 #
-        speed = (obs[4]**2 + obs[5]**2) / 200.0 # ~ 1-2
+        speed = 0 #(obs[4]**2 + obs[5]**2) / 200.0
         return 4 - pos - speed
 
 
