@@ -13,6 +13,7 @@ from rl.random import OrnsteinUhlenbeckProcess
 
 from environments.arm import ArmEnv
 from environments.gait import GaitEnv
+from environments.soccer import SoccerEnv
 
 from keras.optimizers import RMSprop
 
