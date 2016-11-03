@@ -27,7 +27,7 @@ parser = argparse.ArgumentParser(description='Train or test neural net motor con
 parser.add_argument('--train', dest='train', action='store_true', default=True)
 parser.add_argument('--test', dest='train', action='store_false', default=True)
 parser.add_argument('--visualize', dest='visualize', action='store_true', default=False)
-parser.add_argument('--output', dest='output', action='store', default="model")
+parser.add_argument('--output', dest='output', action='store', default=None)
 parser.add_argument('--env', dest='env', action='store', default="Arm")
 parser.add_argument('--sigma', dest='sigma', action='store', default=0.3)
 parser.add_argument('--theta', dest='theta', action='store', default=0.15)
@@ -83,11 +83,13 @@ agent = DDPGAgent(nb_actions=nb_actions, actor=actor, critic=critic, critic_acti
 #agent.compile(Adam(lr=.001, clipnorm=1.), metrics=['mae'])
 agent.compile([RMSprop(lr=.001), RMSprop(lr=.001)], metrics=['mae'])
 
+prefix = args.output if args.output else "%s_s%f_t%f" % (args.env ,float(args.sigma), float(args.theta))
+
 # Okay, now it's time to learn something! We visualize the training here for show, but this
 # slows down training quite a lot. You can always safely abort the training prematurely using
 # Ctrl + C.
 if args.train:
-    agent.fit(env, nb_steps=nallsteps, visualize=True, verbose=1, nb_max_episode_steps=env.timestep_limit, log_interval=10000, prefix=args.output)
+    agent.fit(env, nb_steps=nallsteps, visualize=True, verbose=1, nb_max_episode_steps=env.timestep_limit, log_interval=10000, prefix=prefix)
     # After training is done, we save the final weights.
     agent.save_weights(args.output + ".h5f", overwrite=True)
 
@@ -98,7 +100,7 @@ if not args.train:
         agent.test(env, nb_episodes=5, visualize=True, nb_max_episode_steps=500)
     else:
         for i in range(10000):
-            if i % 1000 == 0:
+            if i % 300 == 0:
                 env.new_target()
                 print("Target shoulder = %f, elbow = %f" % (env.shoulder,env.elbow)) 
             
