@@ -19,7 +19,21 @@ Note that now it's compatible only with my fork of keras-rl
 
 https://github.com/kidzik/keras-rl
 
-## Running the python example
+## Running python examples
+
+For training the Arm example (move the arm to certain randomly chosen angles and keep it there):
+
+    python train.ddpg.py --visualize --test --env Arm --output models/Arm
+    
+For the 'gait' example (walk as far as possible):
+
+    python train.ddpg.py --visualize --test --env Gait --output models/Gait
+    
+For the 'stand still' example:
+
+    python train.ddpg.py --visualize --test --env Gait --output models/Stand
+
+## Training models
 
 For training the Arm example (move the arm to certain randomly chosen angles and keep it there):
 
