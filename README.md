@@ -31,7 +31,7 @@ For the 'gait' example (walk as far as possible):
     
 For the 'stand still' example:
 
-    python train.ddpg.py --visualize --test --env Gait --output models/Stand
+    python train.ddpg.py --visualize --test --env Stand --output models/Stand
 
 ## Training models
 

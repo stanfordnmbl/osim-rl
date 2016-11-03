@@ -12,7 +12,7 @@ from rl.memory import SequentialMemory
 from rl.random import OrnsteinUhlenbeckProcess
 
 from environments.arm import ArmEnv
-from environments.gait import GaitEnv
+from environments.human import GaitEnv, StandEnv
 
 from keras.optimizers import RMSprop
 
@@ -35,6 +35,8 @@ args = parser.parse_args()
 
 if args.env == "Gait":
     env = GaitEnv(args.visualize)
+if args.env == "Stand":
+    env = StandEnv(args.visualize)
 else:
     env = ArmEnv(args.visualize)
 
