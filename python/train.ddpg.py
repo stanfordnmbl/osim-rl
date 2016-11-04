@@ -104,8 +104,10 @@ if not args.train:
         for i in range(10000):
             if i % 300 == 0:
                 env.new_target()
-                print("Target shoulder = %f, elbow = %f" % (env.shoulder,env.elbow)) 
-            
-            env.step(agent.forward(env.get_observation()))
+                print("\n\nTarget shoulder = %f, elbow = %f" % (env.shoulder,env.elbow)) 
+
+            obs = env.get_observation()
+            print "Actual shoulder = %f, elbow = %f\r" % (obs[2],obs[3]),
+            env.step(agent.forward(obs))
 
 
