@@ -130,3 +130,12 @@ class StandEnv(GaitEnv):
         if rew < -100:
             rew = -100
         return rew / 100.0
+
+class HopEnv(GaitEnv):
+    def compute_reward(self):
+        y = self.joints[0].getCoordinate(2).getValue(self.state)
+        return (y) ** 3
+
+    def is_head_too_low(self):
+        y = self.joints[0].getCoordinate(2).getValue(self.state)
+        return (y < 0.4)

@@ -12,7 +12,8 @@ from rl.memory import SequentialMemory
 from rl.random import OrnsteinUhlenbeckProcess
 
 from environments.arm import ArmEnv
-from environments.human import GaitEnv, StandEnv
+from environments.human import *
+#from environments.leg import LegEnv
 
 from keras.optimizers import RMSprop
 
@@ -35,8 +36,12 @@ args = parser.parse_args()
 
 if args.env == "Gait":
     env = GaitEnv(args.visualize)
-if args.env == "Stand":
+elif args.env == "Stand":
     env = StandEnv(args.visualize)
+elif args.env == "Hop":
+    env = HopEnv(args.visualize)
+elif args.env == "Leg":
+    env = LegEnv(args.visualize)
 else:
     env = ArmEnv(args.visualize)
 
@@ -93,10 +98,10 @@ prefix = args.output if args.output else "%s_s%f_t%f" % (args.env ,float(args.si
 if args.train:
     agent.fit(env, nb_steps=nallsteps, visualize=True, verbose=1, nb_max_episode_steps=env.timestep_limit, log_interval=10000, prefix=prefix)
     # After training is done, we save the final weights.
-    agent.save_weights(args.output + ".h5f", overwrite=True)
+    agent.save_weights("%s.h5f" % args.output, overwrite=True)
 
 if not args.train:
-    agent.load_weights(args.output + ".h5f")
+    agent.load_weights("%s.h5f" % args.output)
     # Finally, evaluate our algorithm for 5 episodes.
     if args.env != "Arm":
         agent.test(env, nb_episodes=5, visualize=True, nb_max_episode_steps=500)
