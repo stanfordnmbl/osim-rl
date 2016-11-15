@@ -44,13 +44,13 @@ class GaitEnv(OsimEnv):
         self.joints.append(osim.PlanarJoint.safeDownCast(self.jointSet.get(0))) # PELVIS
 
         self.joints.append(osim.PinJoint.safeDownCast(self.jointSet.get(1)))
-        self.joints.append(osim.CustomJoint.safeDownCast(self.jointSet.get(2))) # 4
-        self.joints.append(osim.PinJoint.safeDownCast(self.jointSet.get(3)))    # 7
+        self.joints.append(osim.CustomJoint.safeDownCast(self.jointSet.get(4))) # 4
+        self.joints.append(osim.PinJoint.safeDownCast(self.jointSet.get(7)))    # 7
         # self.joints.append(osim.WeldJoint.safeDownCast(self.jointSet.get(4)))
         # self.joints.append(osim.WeldJoint.safeDownCast(self.jointSet.get(5)))
 
-        self.joints.append(osim.PinJoint.safeDownCast(self.jointSet.get(6)))    # 2
-        self.joints.append(osim.CustomJoint.safeDownCast(self.jointSet.get(7))) # 5
+        self.joints.append(osim.PinJoint.safeDownCast(self.jointSet.get(2)))    # 2
+        self.joints.append(osim.CustomJoint.safeDownCast(self.jointSet.get(5))) # 5
         self.joints.append(osim.PinJoint.safeDownCast(self.jointSet.get(8)))
         # self.joints.append(osim.WeldJoint.safeDownCast(self.jointSet.get(9)))
         # self.joints.append(osim.WeldJoint.safeDownCast(self.jointSet.get(10)))
@@ -121,15 +121,11 @@ class StandEnv(GaitEnv):
         vel = self.model.calcMassCenterVelocity(self.state)
         acc = self.model.calcMassCenterAcceleration(self.state)
 
-        rew = 100 - abs(acc[0])**2 - abs(acc[1])**2 - abs(acc[2])**2 - abs(vel[0])**2 - abs(vel[1])**2 - abs(vel[2])**2
+        a = abs(acc[0])**2 + abs(acc[1])**2 + abs(acc[2])**2
+        v = abs(vel[0])**2 + abs(vel[1])**2 + abs(vel[2])**2
+        rew = 50.0 - min(a,10.0) - min(v,40.0)
 
-        obs = self.get_observation()
-        ext = 100 * sum([x**2 for x in obs]) / self.noutput
-        rew = rew - ext
-        
-        if rew < -100:
-            rew = -100
-        return rew / 100.0
+        return rew / 50.0
 
 class HopEnv(GaitEnv):
     def compute_reward(self):

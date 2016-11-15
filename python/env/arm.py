@@ -11,6 +11,9 @@ class ArmEnv(OsimEnv):
     model_path = os.path.join(os.path.dirname(__file__), '../../models/Arm26_Optimize.osim')
 
     def __init__(self, visualize = True):
+        self.iepisode = 0
+        self.shoulder = 0.0
+        self.elbow = 0.0
         super(ArmEnv, self).__init__(visualize = visualize)
         self.joints.append(osim.CustomJoint.safeDownCast(self.jointSet.get(0)))
         self.joints.append(osim.CustomJoint.safeDownCast(self.jointSet.get(1)))
@@ -21,8 +24,8 @@ class ArmEnv(OsimEnv):
 
     def reset(self):
         self.new_target()
+        self.iepisode += 1
 
-        self.istep = 0
         if not self.state0:
             self.state0 = self.model.initSystem()
             self.manager = osim.Manager(self.model)
@@ -44,6 +47,10 @@ class ArmEnv(OsimEnv):
         speed = 0 #(obs[4]**2 + obs[5]**2) / 200.0
         return - pos - speed
 
+    def render(self, *args, **kwargs):
+        print "prev target: %f %f, prev values: %f %f\r" % (self.shoulder, self.elbow,
+                                                            self.joints[0].getCoordinate(0).getValue(self.state),
+                                                            self.joints[1].getCoordinate(0).getValue(self.state)),
 
     def get_observation(self):
         invars = np.array([0] * self.ninput, dtype='f')

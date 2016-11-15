@@ -5,7 +5,7 @@ from gym import spaces
 import os
 
 class Specification:
-    timestep_limit = 500
+    timestep_limit = 200
 
 class OsimEnv(object):
     # Initialize simulation
@@ -17,7 +17,7 @@ class OsimEnv(object):
     stepsize = 0.01
     noutput = 6
     integration_accuracy = 1e-3
-    timestep_limit = 500
+    timestep_limit = 200
 
     istep = 0
 
@@ -56,7 +56,7 @@ class OsimEnv(object):
 
         # OpenAI Gym compatibility
         self.action_space = spaces.Box(0.0, 1.0, shape=(self.noutput,) )
-        self.observation_space = spaces.Box(-100000.0, 100000.0, shape=(self.ninput,) )
+        self.observation_space = spaces.Box(-math.pi, math.pi, shape=(self.ninput,) )
 
         self.reset()
 
@@ -88,9 +88,10 @@ class OsimEnv(object):
         return x
 
     def step(self, action):
+        # action = action[0]
         for j in range(self.noutput):
             muscle = self.muscleSet.get(j)
-            muscle.setActivation(self.state, action[j] * 1.0)
+            muscle.setActivation(self.state, action[j] )
 
         # Integrate one step
         self.manager.setInitialTime(self.stepsize * self.istep)
