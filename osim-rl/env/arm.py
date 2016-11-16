@@ -4,7 +4,7 @@ import numpy as np
 from gym import spaces
 import os
 import random
-from environments.osim import OsimEnv
+from env.osim import OsimEnv
 
 class ArmEnv(OsimEnv):
     ninput = 14
@@ -22,35 +22,11 @@ class ArmEnv(OsimEnv):
         self.shoulder = random.uniform(-1.2,0.3)
         self.elbow = random.uniform(-1.0,0)
 
-    def reset(self):
-        self.new_target()
-        self.iepisode += 1
-
-        if not self.state0:
-            self.state0 = self.model.initSystem()
-            self.manager = osim.Manager(self.model)
-            self.state = osim.State(self.state0)
-        else:
-            self.state = osim.State(self.state0)
-
-        self.model.equilibrateMuscles(self.state)
-
-        # nullacttion = np.array([0] * self.noutput, dtype='f')
-        # for i in range(0, int(math.floor(0.2 / self.stepsize) + 1)):
-        #     self.step(nullacttion)
-
-        return [0.0] * self.ninput # self.get_observation()
-
     def compute_reward(self):
         obs = self.get_observation()
         pos = (self.angular_dist(obs[2],self.shoulder) + self.angular_dist(obs[3],self.elbow))
         speed = 0 #(obs[4]**2 + obs[5]**2) / 200.0
         return - pos - speed
-
-    def render(self, *args, **kwargs):
-        print "prev target: %f %f, prev values: %f %f\r" % (self.shoulder, self.elbow,
-                                                            self.joints[0].getCoordinate(0).getValue(self.state),
-                                                            self.joints[1].getCoordinate(0).getValue(self.state)),
 
     def get_observation(self):
         invars = np.array([0] * self.ninput, dtype='f')

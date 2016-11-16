@@ -3,29 +3,28 @@ import math
 import numpy as np
 from gym import spaces
 import os
-from environments.osim import OsimEnv
+from env.osim import OsimEnv
 
 class GaitEnv(OsimEnv):
     ninput = 24
     model_path = os.path.join(os.path.dirname(__file__), '../../models/gait9dof18musc_Thelen_BigSpheres_20161017.osim')
 
-    def compute_reward_standing(self):
-        y = self.ground_pelvis.getCoordinate(2).getValue(self.state)
-        x = self.ground_pelvis.getCoordinate(1).getValue(self.state)
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        del state['forceSet']
+        del state['bodySet']
+        del state['head']
+        del state['jointSet']
+        del state['manager']
+        del state['state']
+        del state['state0']
+        del state['muscleSet']
+        del state['model']
+        return state
 
-        pos = self.model.calcMassCenterPosition(self.state)
-        vel = self.model.calcMassCenterVelocity(self.state)
-        acc = self.model.calcMassCenterAcceleration(self.state)
-
-        rew = 100 - abs(acc[0])**2 - abs(acc[1])**2 - abs(acc[2])**2 - abs(vel[0])**2 - abs(vel[1])**2 - abs(vel[2])*2*t
-
-        obs = self.get_observation()
-        ext = 100 * sum([x**2 for x in obs]) / self.noutput
-        rew = rew - ext
-        
-        if rew < -100:
-            rew = -100
-        return rew / 100.0
+    def __setstate__(self, newstate):
+        self.__dict__.update(newstate)
+        pass
 
     def compute_reward(self):
         obs = self.get_observation()
@@ -44,13 +43,13 @@ class GaitEnv(OsimEnv):
         self.joints.append(osim.PlanarJoint.safeDownCast(self.jointSet.get(0))) # PELVIS
 
         self.joints.append(osim.PinJoint.safeDownCast(self.jointSet.get(1)))
-        self.joints.append(osim.CustomJoint.safeDownCast(self.jointSet.get(4))) # 4
-        self.joints.append(osim.PinJoint.safeDownCast(self.jointSet.get(7)))    # 7
+        self.joints.append(osim.CustomJoint.safeDownCast(self.jointSet.get(2))) # 4
+        self.joints.append(osim.PinJoint.safeDownCast(self.jointSet.get(3)))    # 7
         # self.joints.append(osim.WeldJoint.safeDownCast(self.jointSet.get(4)))
         # self.joints.append(osim.WeldJoint.safeDownCast(self.jointSet.get(5)))
 
-        self.joints.append(osim.PinJoint.safeDownCast(self.jointSet.get(2)))    # 2
-        self.joints.append(osim.CustomJoint.safeDownCast(self.jointSet.get(5))) # 5
+        self.joints.append(osim.PinJoint.safeDownCast(self.jointSet.get(6)))    # 2
+        self.joints.append(osim.CustomJoint.safeDownCast(self.jointSet.get(7))) # 5
         self.joints.append(osim.PinJoint.safeDownCast(self.jointSet.get(8)))
         # self.joints.append(osim.WeldJoint.safeDownCast(self.jointSet.get(9)))
         # self.joints.append(osim.WeldJoint.safeDownCast(self.jointSet.get(10)))
@@ -61,24 +60,6 @@ class GaitEnv(OsimEnv):
         self.head = self.bodySet.get(12)
 
         self.reset()
-
-    def reset(self):
-        self.istep = 0
-        if not self.state0:
-            self.state0 = self.model.initSystem()
-            self.manager = osim.Manager(self.model)
-            self.state = osim.State(self.state0)
-        else:
-            self.state = osim.State(self.state0)
-
-        self.model.equilibrateMuscles(self.state)
-        self.prev_reward = 0
-
-        # nullacttion = np.array([0] * self.noutput, dtype='f')
-        # for i in range(0, int(math.floor(0.2 / self.stepsize) + 1)):
-        #     self.step(nullacttion)
- 
-        return [0.0] * self.ninput # self.get_observation()
 
     def get_observation(self):
         invars = np.array([0] * self.ninput, dtype='f')
@@ -107,8 +88,8 @@ class GaitEnv(OsimEnv):
         invars[22] = vel[1]
         invars[23] = vel[2]
 
-        for i in range(0,self.ninput):
-            invars[i] = self.sanitify(invars[i])
+        # for i in range(0,self.ninput):
+        #     invars[i] = self.sanitify(invars[i])
 
         return invars
 

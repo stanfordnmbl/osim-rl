@@ -3,9 +3,12 @@ import math
 import numpy as np
 from gym import spaces
 import os
+from rllab.envs.gym_env import convert_gym_space
+from rllab.envs.base import Env
+
 
 class Specification:
-    timestep_limit = 200
+    timestep_limit = 500
 
 class OsimEnv(object):
     # Initialize simulation
@@ -15,30 +18,25 @@ class OsimEnv(object):
     state0 = None
 
     stepsize = 0.01
-    noutput = 6
     integration_accuracy = 1e-3
-    timestep_limit = 200
+    timestep_limit = 500
 
     istep = 0
 
     joints = []
-
-    spec = Specification()
 
     def angular_dist(self, t,s):
         x = (t-s) % (2*math.pi)
         return min(x, 2*math.pi-x)
 
     def compute_reward(self):
-        obs = self.get_observation()
-#        print (obs[0], obs[1])
-        up = (2*(math.pi**2) - angular_dist(obs[0],math.pi)**2 - angular_dist(obs[1],0.0)**2)/(2*math.pi**2)
-        still = (obs[2]**2 + obs[3]**2) / 400
-#        print still
-        return up - still
+        return 0.0
 
     def is_done(self):
         return False
+
+    def terminate(self):
+        pass
 
     def __init__(self, visualize = True):
         # Get the model
@@ -55,9 +53,14 @@ class OsimEnv(object):
         self.noutput = self.muscleSet.getSize()
 
         # OpenAI Gym compatibility
-        self.action_space = spaces.Box(0.0, 1.0, shape=(self.noutput,) )
-        self.observation_space = spaces.Box(-math.pi, math.pi, shape=(self.ninput,) )
+        self.action_space = convert_gym_space(spaces.Box(0.0, 1.0, shape=(self.noutput,) ))
+        self.observation_space = convert_gym_space(spaces.Box(-3*math.pi, 3*math.pi, shape=(self.ninput,) ))
 
+        self.spec = Specification()
+        self.spec.action_space = self.action_space
+        self.spec.observation_space = self.observation_space
+        self.horizon = self.spec.timestep_limit
+        
         self.reset()
 
     def reset(self):
@@ -97,11 +100,12 @@ class OsimEnv(object):
         self.manager.setInitialTime(self.stepsize * self.istep)
         self.manager.setFinalTime(self.stepsize * (self.istep + 1))
 
+        # print (self.get_observation())
+        # print (action)
         try:
-            self.manager.integrate(self.state, self.integration_accuracy)
-        except Exception:
-            print (self.get_observation())
-            print (action)
+            self.manager.integrate(self.state)
+        except Exception as e:
+            print (e)
             return self.get_observation(), -500, True, {}
 
         self.istep = self.istep + 1
@@ -111,3 +115,8 @@ class OsimEnv(object):
     def render(self, *args, **kwargs):
         return
 
+    def log_diagnostics(self, paths):
+        """
+        Log extra information per iteration based on the collected paths
+        """
+        pass
