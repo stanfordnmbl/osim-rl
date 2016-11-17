@@ -1,3 +1,13 @@
 Geometry/notused
 python2_1*
 rl
+*.so
+actuators.py
+analyses.py
+common.py
+opensim.py
+simbody.py
+simulation.py
+tools.py
+version.py
+opensim/
