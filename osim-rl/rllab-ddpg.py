@@ -37,7 +37,7 @@ qf = ContinuousMLPQFunction(
 policy = GaussianMLPPolicy(
     env_spec=env.spec,
     # The neural network policy should have two hidden layers, each with 32 hidden units.
-    hidden_sizes=(8, 8)
+    hidden_sizes=(128, 128)
 )
 
 baseline = LinearFeatureBaseline(env_spec=env.spec)
@@ -64,6 +64,7 @@ run_experiment_lite(
     # Specifies the seed for the experiment. If this is not provided, a random seed
     # will be used
     seed=1,
+    use_gpu=True,
     # plot=True,
 )
 
