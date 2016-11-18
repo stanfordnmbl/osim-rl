@@ -38,7 +38,7 @@ class OsimEnv(object):
     def terminate(self):
         pass
 
-    def __init__(self, visualize = True):
+    def __init__(self, visualize = True, noutput = None):
         # Get the model
         self.model = osim.Model(self.model_path)
 
@@ -50,7 +50,10 @@ class OsimEnv(object):
         self.forceSet = self.model.getForceSet()
         self.bodySet = self.model.getBodySet()
         self.jointSet = self.model.getJointSet()
-        self.noutput = self.muscleSet.getSize()
+
+        self.noutput = noutput
+        if not noutput:
+            self.noutput = self.muscleSet.getSize()
 
         # OpenAI Gym compatibility
         self.action_space = convert_gym_space(spaces.Box(0.0, 1.0, shape=(self.noutput,) ))
@@ -90,11 +93,14 @@ class OsimEnv(object):
             x = -BOUND
         return x
 
-    def step(self, action):
-        # action = action[0]
+    def activate_muscles(self, action):
         for j in range(self.noutput):
             muscle = self.muscleSet.get(j)
-            muscle.setActivation(self.state, action[j] )
+            muscle.setActivation(self.state, action[j])
+
+    def step(self, action):
+        # action = action[0]
+        self.activate_muscles(action)
 
         # Integrate one step
         self.manager.setInitialTime(self.stepsize * self.istep)

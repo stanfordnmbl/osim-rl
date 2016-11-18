@@ -1,7 +1,7 @@
 from env.arm import ArmEnv
-from env.human import GaitEnv
+from env.human import HopEnv # GaitEnv
 
-env = GaitEnv(visualize=True)
+env = HopEnv(visualize=True)
 env.reset()
 
 from rllab.envs.box2d.cartpole_env import CartpoleEnv

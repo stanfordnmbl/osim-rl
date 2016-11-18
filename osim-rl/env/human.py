@@ -37,8 +37,10 @@ class GaitEnv(OsimEnv):
     def is_done(self):
         return self.is_head_too_low()
 
-    def __init__(self, visualize = True):
-        super(GaitEnv, self).__init__(visualize = visualize)
+    def __init__(self, visualize = True, noutput = None):
+        super(GaitEnv, self).__init__(visualize = visualize, noutput = noutput)
+
+        self.head = self.bodySet.get(12)
 
         self.joints.append(osim.PlanarJoint.safeDownCast(self.jointSet.get(0))) # PELVIS
 
@@ -57,7 +59,10 @@ class GaitEnv(OsimEnv):
         # self.joints.append(osim.PinJoint.safeDownCast(self.jointSet.get(11)))
         # self.joints.append(osim.WeldJoint.safeDownCast(self.jointSet.get(12)))
 
-        self.head = self.bodySet.get(12)
+        
+        # for i in range(18):
+        #     print(self.muscleSet.get(i).getName())
+        
 
         self.reset()
 
@@ -109,6 +114,9 @@ class StandEnv(GaitEnv):
         return rew / 50.0
 
 class HopEnv(GaitEnv):
+    def __init__(self, visualize = True):
+        super(HopEnv, self).__init__(visualize = visualize, noutput = 9)
+
     def compute_reward(self):
         y = self.joints[0].getCoordinate(2).getValue(self.state)
         return (y) ** 3
@@ -116,3 +124,11 @@ class HopEnv(GaitEnv):
     def is_head_too_low(self):
         y = self.joints[0].getCoordinate(2).getValue(self.state)
         return (y < 0.4)
+
+    def activate_muscles(self, action):
+        for j in range(9):
+            muscle = self.muscleSet.get(j)
+            muscle.setActivation(self.state, action[j])
+            muscle = self.muscleSet.get(j + 9)
+            muscle.setActivation(self.state, action[j + 9])
+
