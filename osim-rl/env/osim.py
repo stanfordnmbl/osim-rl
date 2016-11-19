@@ -8,7 +8,7 @@ from rllab.envs.base import Env
 
 
 class Specification:
-    timestep_limit = 500
+    timestep_limit = 200
 
 class OsimEnv(object):
     # Initialize simulation
@@ -19,11 +19,30 @@ class OsimEnv(object):
 
     stepsize = 0.01
     integration_accuracy = 1e-3
-    timestep_limit = 500
+    timestep_limit = 200
+    test = False
 
     istep = 0
 
     joints = []
+
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        del state['forceSet']
+        del state['bodySet']
+        if 'head' in state:
+            del state['head']
+        del state['jointSet']
+        del state['manager']
+        del state['state']
+        del state['state0']
+        del state['muscleSet']
+        del state['model']
+        return state
+
+    def __setstate__(self, newstate):
+        self.__dict__.update(newstate)
+        self.__init__(visualize = True)
 
     def angular_dist(self, t,s):
         x = (t-s) % (2*math.pi)
@@ -106,8 +125,6 @@ class OsimEnv(object):
         self.manager.setInitialTime(self.stepsize * self.istep)
         self.manager.setFinalTime(self.stepsize * (self.istep + 1))
 
-        # print (self.get_observation())
-        # print (action)
         try:
             self.manager.integrate(self.state)
         except Exception as e:
@@ -116,7 +133,9 @@ class OsimEnv(object):
 
         self.istep = self.istep + 1
 
-        return self.get_observation(), self.compute_reward(), self.is_done(), {}
+        res = [ self.get_observation(), self.compute_reward(), self.is_done(), {} ]
+        return res
+
 
     def render(self, *args, **kwargs):
         return

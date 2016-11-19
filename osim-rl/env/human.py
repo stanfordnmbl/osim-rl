@@ -6,25 +6,8 @@ import os
 from env.osim import OsimEnv
 
 class GaitEnv(OsimEnv):
-    ninput = 24
+    ninput = 25
     model_path = os.path.join(os.path.dirname(__file__), '../../models/gait9dof18musc.osim')
-
-    def __getstate__(self):
-        state = self.__dict__.copy()
-        del state['forceSet']
-        del state['bodySet']
-        del state['head']
-        del state['jointSet']
-        del state['manager']
-        del state['state']
-        del state['state0']
-        del state['muscleSet']
-        del state['model']
-        return state
-
-    def __setstate__(self, newstate):
-        self.__dict__.update(newstate)
-        pass
 
     def compute_reward(self):
         obs = self.get_observation()
@@ -69,29 +52,31 @@ class GaitEnv(OsimEnv):
     def get_observation(self):
         invars = np.array([0] * self.ninput, dtype='f')
 
-        invars[0] = self.joints[0].getCoordinate(0).getValue(self.state)
-        invars[1] = self.joints[0].getCoordinate(1).getValue(self.state)
-        invars[2] = self.joints[0].getCoordinate(2).getValue(self.state)
+        invars[0] = 0.0
 
-        invars[3] = self.joints[0].getCoordinate(0).getSpeedValue(self.state)
-        invars[4] = self.joints[0].getCoordinate(1).getSpeedValue(self.state)
-        invars[5] = self.joints[0].getCoordinate(2).getSpeedValue(self.state)
+        invars[1] = self.joints[0].getCoordinate(0).getValue(self.state)
+        invars[2] = self.joints[0].getCoordinate(1).getValue(self.state)
+        invars[3] = self.joints[0].getCoordinate(2).getValue(self.state)
+
+        invars[4] = self.joints[0].getCoordinate(0).getSpeedValue(self.state)
+        invars[5] = self.joints[0].getCoordinate(1).getSpeedValue(self.state)
+        invars[6] = self.joints[0].getCoordinate(2).getSpeedValue(self.state)
 
         for i in range(6):
-            invars[6+i] = self.joints[1+i].getCoordinate(0).getValue(self.state)
+            invars[7+i] = self.joints[1+i].getCoordinate(0).getValue(self.state)
         for i in range(6):
-            invars[12+i] = self.joints[1+i].getCoordinate(0).getSpeedValue(self.state)
+            invars[13+i] = self.joints[1+i].getCoordinate(0).getSpeedValue(self.state)
 
         pos = self.model.calcMassCenterPosition(self.state)
         vel = self.model.calcMassCenterVelocity(self.state)
         
-        invars[18] = pos[0]
-        invars[19] = pos[1]
-        invars[20] = pos[2]
+        invars[19] = pos[0]
+        invars[20] = pos[1]
+        invars[21] = pos[2]
 
-        invars[21] = vel[0]
-        invars[22] = vel[1]
-        invars[23] = vel[2]
+        invars[22] = vel[0]
+        invars[23] = vel[1]
+        invars[24] = vel[2]
 
         # for i in range(0,self.ninput):
         #     invars[i] = self.sanitify(invars[i])
@@ -133,3 +118,11 @@ class HopEnv(GaitEnv):
             muscle = self.muscleSet.get(j + 9)
             muscle.setActivation(self.state, action[j])
 
+class CrouchEnv(HopEnv):
+    def compute_reward(self):
+        y = self.joints[0].getCoordinate(2).getValue(self.state)
+        return 1.0 - (y-0.5) ** 3
+
+    def is_head_too_low(self):
+        y = self.joints[0].getCoordinate(2).getValue(self.state)
+        return (y < 0.25)
