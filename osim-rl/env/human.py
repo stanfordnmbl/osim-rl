@@ -7,7 +7,7 @@ from env.osim import OsimEnv
 
 class GaitEnv(OsimEnv):
     ninput = 24
-    model_path = os.path.join(os.path.dirname(__file__), '../../models/gait9dof18musc_Thelen_BigSpheres_20161017.osim')
+    model_path = os.path.join(os.path.dirname(__file__), '../../models/gait9dof18musc.osim')
 
     def __getstate__(self):
         state = self.__dict__.copy()
@@ -60,8 +60,8 @@ class GaitEnv(OsimEnv):
         # self.joints.append(osim.WeldJoint.safeDownCast(self.jointSet.get(12)))
 
         
-        # for i in range(18):
-        #     print(self.muscleSet.get(i).getName())
+        for i in range(18):
+            print(self.muscleSet.get(i).getName())
         
 
         self.reset()
@@ -115,6 +115,7 @@ class StandEnv(GaitEnv):
 
 class HopEnv(GaitEnv):
     def __init__(self, visualize = True):
+        self.model_path = os.path.join(os.path.dirname(__file__), '../../models/hop8dof9musc.osim')
         super(HopEnv, self).__init__(visualize = visualize, noutput = 9)
 
     def compute_reward(self):
@@ -130,5 +131,5 @@ class HopEnv(GaitEnv):
             muscle = self.muscleSet.get(j)
             muscle.setActivation(self.state, action[j])
             muscle = self.muscleSet.get(j + 9)
-            muscle.setActivation(self.state, action[j + 9])
+            muscle.setActivation(self.state, action[j])
 

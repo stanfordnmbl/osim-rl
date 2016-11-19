@@ -1,5 +1,5 @@
 from env.arm import ArmEnv
-from env.human import StandEnv, GaitEnv
+from env.human import StandEnv, GaitEnv, HopEnv
 
 from rllab.algos.ddpg import DDPG
 from rllab.algos.trpo import TRPO
@@ -16,7 +16,7 @@ from rllab.baselines.linear_feature_baseline import LinearFeatureBaseline
 print (globals())
 stub(globals())
 
-env = normalize(StandEnv(visualize=False))
+env = normalize(HopEnv(visualize=False))
 
 # env = normalize(CartpoleEnv())
 # env = normalize(GymEnv("Pendulum-v0", record_video=False, record_log=False))
