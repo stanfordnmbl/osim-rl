@@ -52,17 +52,16 @@ class OsimEnv(object):
     ninput = 0
     noutput = 0
 
-    # def __getstate__(self):
-    #     state = self.__dict__.copy()
-    #     del state['osim_model']
-    #     print ("HERE1")
-    #     return state
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        del state['osim_model']
+        print ("HERE1")
+        return state
 
-    # def __setstate__(self, newstate):
-    #     self.__dict__.update(newstate)
-    #     self.osim_model = Osim(self.model_path, self.visualize)
-    #     print ("HERE2")
-    #     self.configure()
+    def __setstate__(self, newstate):
+        self.__dict__.update(newstate)
+        self.osim_model = Osim(self.model_path, True)
+        self.configure()
 
     def angular_dist(self, t,s):
         x = (t-s) % (2*math.pi)

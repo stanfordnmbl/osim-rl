@@ -36,7 +36,6 @@ else:
     env = ArmEnv(args.visualize)
 
 nb_actions = env.action_space.shape[0]
-print (env.observation_space.shape)
 
 # Next, we build a very simple model.
 actor = Sequential()
