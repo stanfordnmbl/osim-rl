@@ -1,5 +1,4 @@
-from env.arm import ArmEnv
-from env.human import StandEnv, GaitEnv, HopEnv, CrouchEnv
+from osim.env import ArmEnv, GaitEnv, StandEnv, CrouchEnv, HopEnv
 import argparse
 
 from rllab.algos.ddpg import DDPG
@@ -19,7 +18,6 @@ parser.add_argument('-a', action="store", dest="alg")
 parser.add_argument('-e', action="store", dest="env")
 parsed = parser.parse_args()
 
-print (globals())
 stub(globals())
 
 alg = "DDPG"

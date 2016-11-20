@@ -11,9 +11,7 @@ from rl.agents import DDPGAgent
 from rl.memory import SequentialMemory
 from rl.random import OrnsteinUhlenbeckProcess
 
-from environments.arm import ArmEnv
-from environments.gait import GaitEnv
-from environments.soccer import SoccerEnv
+from osim.env import ArmEnv
 
 from keras.optimizers import RMSprop
 

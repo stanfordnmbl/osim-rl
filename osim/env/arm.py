@@ -3,7 +3,7 @@ import math
 import numpy as np
 import os
 import random
-from env.osim import OsimEnv
+from .osim import OsimEnv
 
 class ArmEnv(OsimEnv):
     ninput = 14
@@ -14,8 +14,11 @@ class ArmEnv(OsimEnv):
         self.shoulder = 0.0
         self.elbow = 0.0
         super(ArmEnv, self).__init__(visualize = visualize)
-        self.joints.append(osim.CustomJoint.safeDownCast(self.jointSet.get(0)))
-        self.joints.append(osim.CustomJoint.safeDownCast(self.jointSet.get(1)))
+
+    def configure(self):
+        super(ArmEnv, self).configure()
+        self.osim_model.joints.append(osim.CustomJoint.safeDownCast(self.osim_model.jointSet.get(0)))
+        self.osim_model.joints.append(osim.CustomJoint.safeDownCast(self.osim_model.jointSet.get(1)))
 
     def new_target(self):
         self.shoulder = random.uniform(-1.2,0.3)
@@ -33,17 +36,17 @@ class ArmEnv(OsimEnv):
         invars[0] = self.shoulder
         invars[1] = self.elbow
         
-        invars[2] = self.joints[0].getCoordinate(0).getValue(self.state)
-        invars[3] = self.joints[1].getCoordinate(0).getValue(self.state)
+        invars[2] = self.osim_model.joints[0].getCoordinate(0).getValue(self.osim_model.state)
+        invars[3] = self.osim_model.joints[1].getCoordinate(0).getValue(self.osim_model.state)
 
-        invars[4] = self.joints[0].getCoordinate(0).getSpeedValue(self.state)
-        invars[5] = self.joints[1].getCoordinate(0).getSpeedValue(self.state)
+        invars[4] = self.osim_model.joints[0].getCoordinate(0).getSpeedValue(self.osim_model.state)
+        invars[5] = self.osim_model.joints[1].getCoordinate(0).getSpeedValue(self.osim_model.state)
 
-        invars[6] = self.sanitify(self.joints[0].getCoordinate(0).getAccelerationValue(self.state))
-        invars[7] = self.sanitify(self.joints[1].getCoordinate(0).getAccelerationValue(self.state))
+        invars[6] = self.sanitify(self.osim_model.joints[0].getCoordinate(0).getAccelerationValue(self.osim_model.state))
+        invars[7] = self.sanitify(self.osim_model.joints[1].getCoordinate(0).getAccelerationValue(self.osim_model.state))
 
-        pos = self.model.calcMassCenterPosition(self.state)
-        vel = self.model.calcMassCenterVelocity(self.state)
+        pos = self.osim_model.model.calcMassCenterPosition(self.osim_model.state)
+        vel = self.osim_model.model.calcMassCenterVelocity(self.osim_model.state)
         
         invars[8] = pos[0]
         invars[9] = pos[1]
