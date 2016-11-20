@@ -24,6 +24,10 @@ class ArmEnv(OsimEnv):
         self.shoulder = random.uniform(-1.2,0.3)
         self.elbow = random.uniform(-1.0,0)
 
+    def reset(self):
+        self.new_target()
+        return super(ArmEnv, self).reset()
+
     def compute_reward(self):
         obs = self.get_observation()
         pos = (self.angular_dist(obs[2],self.shoulder) + self.angular_dist(obs[3],self.elbow))
