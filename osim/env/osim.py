@@ -1,11 +1,7 @@
 import opensim as osim
 import math
 import numpy as np
-from gym import spaces
 import os
-from rllab.envs.gym_env import convert_gym_space
-from rllab.envs.base import Env
-
 
 class Specification:
     timestep_limit = 200
@@ -75,8 +71,9 @@ class OsimEnv(object):
             self.noutput = self.muscleSet.getSize()
 
         # OpenAI Gym compatibility
-        self.action_space = convert_gym_space(spaces.Box(0.0, 1.0, shape=(self.noutput,) ))
-        self.observation_space = convert_gym_space(spaces.Box(-3*math.pi, 3*math.pi, shape=(self.ninput,) ))
+        self.action_space = ( [0.0] * self.noutput, [1.0] * self.noutput )
+        #convert_gym_space(spaces.Box(0.0, 1.0, shape=(self.noutput,) ))
+        self.observation_space = ( [-math.pi] * self.noutput, [math.pi] * self.noutput )
 
         self.spec = Specification()
         self.spec.action_space = self.action_space

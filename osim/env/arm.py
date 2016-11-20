@@ -1,7 +1,6 @@
 import opensim as osim
 import math
 import numpy as np
-from gym import spaces
 import os
 import random
 from env.osim import OsimEnv

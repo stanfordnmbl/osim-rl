@@ -1,7 +1,6 @@
 import opensim as osim
 import math
 import numpy as np
-from gym import spaces
 import os
 from env.osim import OsimEnv
 
@@ -41,7 +40,6 @@ class GaitEnv(OsimEnv):
 
         # self.joints.append(osim.PinJoint.safeDownCast(self.jointSet.get(11)))
         # self.joints.append(osim.WeldJoint.safeDownCast(self.jointSet.get(12)))
-
         
         for i in range(18):
             print(self.muscleSet.get(i).getName())
