@@ -1,4 +1,4 @@
-# deep-control
+# osim-rl
 
 ## Requirements
 
@@ -14,12 +14,41 @@ Install requirements for the python package
 
     cd python
     sudo pip install -r requirements.txt
-    
-Note that now it's compatible only with my fork of keras-rl
+
+## Recommended
 
 https://github.com/kidzik/keras-rl
+https://github.com/openai/rllab
 
-## Running python examples
+## Training in rllab
+
+Go to
+    
+    scripts/rllab/
+    
+### Training
+
+For training the Arm example with DDPG:
+
+    python experiment.py -e Arm -a DDPG
+    
+For training the Arm example with TRPO:
+
+    python experiment.py -e Arm -a TRPO
+
+### Test
+
+Show the result
+
+    python visualize.py -p /path/to/params.pkl
+
+## Training in heras-rl
+
+Go to
+    
+    scripts/keras-rl/
+
+### Training
 
 For training the Arm example (move the arm to certain randomly chosen angles and keep it there):
 
@@ -33,7 +62,7 @@ For the 'stand still' example:
 
     python train.ddpg.py --visualize --test --env Stand --output models/Stand
 
-## Training models
+### Test
 
 For training the Arm example (move the arm to certain randomly chosen angles and keep it there):
 
@@ -46,17 +75,3 @@ and for the gait example (walk as far as possible):
 After every 10000 iterations the model is dumped to model_[NUM_ITERATIONS].h5f In ordere to test it run
 
     python train.ddpg.py --visualize --test --env Gait --output model_[NUM_ITERATIONS]
-
-## Running the C++ example (not useful)
-
-Compile
-
-    mkdir build
-    cd build
-    cmake ../src/ -DCMAKE_PREFIX_PATH=/path/to/OpenSim/lib/cmake/OpenSim/
-    make
-    cd ..
-
-Run
-
-    ./build/deepControl
