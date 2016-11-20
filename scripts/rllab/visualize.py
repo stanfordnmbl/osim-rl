@@ -16,10 +16,14 @@ env = params['env']
 env.test = True
 
 obs = env.reset()
-for i in range(500):
+total_rew = 0.0
+for i in range(200):
     action = params['policy'].get_action(obs)
-    step = env.step(action[0])
+    obs,reward,_,_ = env.step(action[0])
+    total_rew += reward
 
-    if env._wrapped_env.__class__.__name__ == "ArmEnv" and i % 100 == 0:
+    if env._wrapped_env.__class__.__name__ == "ArmEnv" and i % 200 == 0:
         env._wrapped_env.new_target()
         print(env._wrapped_env.shoulder, env._wrapped_env.elbow)
+
+print(total_rew)

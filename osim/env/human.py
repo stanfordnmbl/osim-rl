@@ -10,10 +10,10 @@ class GaitEnv(OsimEnv):
 
     def compute_reward(self):
         obs = self.get_observation()
-        return self.joints[0].getCoordinate(1).getValue(self.state)
+        return self.osim_model.joints[0].getCoordinate(1).getValue(self.osim_model.state)
 
     def is_head_too_low(self):
-        y = self.joints[0].getCoordinate(2).getValue(self.state)
+        y = self.osim_model.joints[0].getCoordinate(2).getValue(self.osim_model.state)
         return (y < 0.5)
     
     def is_done(self):
@@ -25,7 +25,6 @@ class GaitEnv(OsimEnv):
     def configure(self):
         super(GaitEnv, self).configure()
 
-        self.head = self.osim_model.bodySet.get(12)
         self.osim_model.joints.append(osim.PlanarJoint.safeDownCast(self.osim_model.jointSet.get(0))) # PELVIS
 
         self.osim_model.joints.append(osim.PinJoint.safeDownCast(self.osim_model.jointSet.get(1)))

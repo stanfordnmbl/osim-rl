@@ -36,7 +36,7 @@ env = normalize(envs[parsed.env](visualize=False))
 if alg == "DDPG":
     qf = ContinuousMLPQFunction(
         env_spec=env.spec,
-        hidden_sizes=(128, 128)
+        hidden_sizes=(64, 64, 64)
     )
 
     es = OUStrategy(env_spec=env.spec, theta = 0.5)
@@ -44,7 +44,7 @@ if alg == "DDPG":
     policy = DeterministicMLPPolicy(
         env_spec=env.spec,
         # The neural network policy should have two hidden layers, each with 32 hidden units.
-        hidden_sizes=(128, 128)
+        hidden_sizes=(32, 32, 32)
     )
 
     algo = DDPG(
