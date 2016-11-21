@@ -1,5 +1,16 @@
 # osim-rl
 
+## What?
+
+OpenSim is a biomechanical physics environment for musculoskeletal simulations. Biomechanical community designed a range of musculoskeletal models compatible with this environment. These models can be, for example, fit to clinical data to understand underlying causes of injuries using inverse kinematics and inverse dynamics.
+
+For many of these models there are controllers designed for forward simulations of movement, however they are often finely tuned for the model and data. Advancements in reinforcement learning may allow building more robust controllers which can in turn provide another tool for validating the models. Moreover they could help visualize, for example, kinematics of patients after surgeries.
+
+We include two models: ARM with 6 muscles and 2 degrees of freedom and HUMAN with 18 muscles and 9 degrees of freedom. For the ARM model we designed an environment where the arm is supposed to reach certain points. For HUMAN we have four environmnets: standing still, crouch, jump and gait. Environments are compatible with rllab and OpenAI gym.
+
+![alt tag](https://github.com/kidzik/osim-rl/blob/master/demo/arm.gif)
+![alt tag](https://github.com/kidzik/osim-rl/blob/master/demo/stand.gif)
+
 ## Requirements
 
 OpenSim 4.0 - https://github.com/opensim-org/opensim-core
@@ -18,6 +29,7 @@ Install requirements for the python package
 ## Recommended
 
 https://github.com/kidzik/keras-rl
+
 https://github.com/openai/rllab
 
 ## Training in rllab
@@ -42,7 +54,7 @@ Show the result
 
     python visualize.py -p /path/to/params.pkl
 
-## Training in heras-rl
+## Training in keras-rl
 
 Go to
     
