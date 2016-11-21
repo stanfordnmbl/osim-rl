@@ -30,7 +30,7 @@ Install requirements for the python package
 
 ## Recommended
 
-https://github.com/kidzik/keras-rl
+https://github.com/matthiasplappert/keras-rl
 
 https://github.com/openai/rllab
 
