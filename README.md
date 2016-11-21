@@ -11,6 +11,8 @@ We include two models: ARM with 6 muscles and 2 degrees of freedom and HUMAN wit
 ![alt tag](https://github.com/kidzik/osim-rl/blob/master/demo/arm.gif)
 ![alt tag](https://github.com/kidzik/osim-rl/blob/master/demo/stand.gif)
 
+Note that from reinforcement learning perspective, due to high dimensionality of muscles space, problem is significantly harder than 'textbook' reinforcement learning problems.
+
 ## Requirements
 
 OpenSim 4.0 - https://github.com/opensim-org/opensim-core
