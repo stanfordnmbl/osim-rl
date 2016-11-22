@@ -6,7 +6,7 @@ from .osim import OsimEnv
 
 class GaitEnv(OsimEnv):
     ninput = 25
-    model_path = os.path.join(os.path.dirname(__file__), '../../models/gait9dof18musc.osim')
+    model_path = os.path.join(os.path.dirname(__file__), '../models/gait9dof18musc.osim')
 
     def compute_reward(self):
         obs = self.get_observation()
@@ -96,7 +96,7 @@ class StandEnv(GaitEnv):
 
 class HopEnv(GaitEnv):
     def __init__(self, visualize = True):
-        self.model_path = os.path.join(os.path.dirname(__file__), '../../models/hop8dof9musc.osim')
+        self.model_path = os.path.join(os.path.dirname(__file__), '../models/hop8dof9musc.osim')
         super(HopEnv, self).__init__(visualize = visualize, noutput = 9)
 
     def compute_reward(self):
