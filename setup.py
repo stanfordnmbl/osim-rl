@@ -2,7 +2,8 @@
 
 import os
 
-from setuptools import setup
+
+from setuptools import setup, find_packages
 
 # This provides the variable `__version__`.
 # execfile('opensim/version.py')
@@ -15,7 +16,7 @@ setup(name='osim-rl',
       author_email='lukasz.kidzinski@stanford.edu',
       url='http://opensim.stanford.edu/',
       license='Apache 2.0',
-      packages=['osim'],
+      packages=find_packages(),
       package_data={'osim': ['models/*']},
       include_package_data=True,
       classifiers=[
