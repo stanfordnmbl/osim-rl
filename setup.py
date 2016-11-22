@@ -17,7 +17,7 @@ setup(name='osim-rl',
       url='http://opensim.stanford.edu/',
       license='Apache 2.0',
       packages=find_packages(),
-      package_data={'models': ['models/*']},
+      package_data={'osim': ['models/Geometry/*.osim', 'models/*.vtp']},
       include_package_data=True,
       classifiers=[
           'Intended Audience :: Science/Research',
