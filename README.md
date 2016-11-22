@@ -34,6 +34,20 @@ https://github.com/matthiasplappert/keras-rl
 
 https://github.com/openai/rllab
 
+## Usage
+
+To run 200 steps of environment:
+
+    from osim.env import ArmEnv
+
+    env = ArmEnv(visualize=True)
+    for i in range(200):
+        env.step(env.action_space.sample())
+
+To reset environment type
+
+    env.reset()
+
 ## Training in rllab
 
 Go to
