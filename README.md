@@ -37,7 +37,7 @@ To run 200 steps of environment enter `python3` interpreter and run:
 
 ## Objective
 
-The goal is to construct a controler, i.e. a function from the state space to 
+The goal is to construct a controler, i.e. a function from the state space to action space, to maximize the total reward.
 
     from osim.env import ArmEnv
 
@@ -57,8 +57,6 @@ The goal is to construct a controler, i.e. a function from the state space to
     # Your reward is
     print("Total reward %f" % total_reward)
     
-The goal is to maximize total reward.
-
 ## Training in rllab
 
 Go to
