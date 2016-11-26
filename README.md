@@ -27,7 +27,7 @@ For Debian/Ubuntu 64bit architecture run:
 
 ## Basic usage
 
-To run 200 steps of environment:
+To run 200 steps of environment enter `python3` interpreter and run:
 
     from osim.env import ArmEnv
 
