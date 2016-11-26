@@ -1,4 +1,3 @@
-import opensim as osim
 import math
 import numpy as np
 import os

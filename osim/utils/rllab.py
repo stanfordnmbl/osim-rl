@@ -1,6 +1,6 @@
 from gym import spaces
-from rllab.envs.gym_env import convert_gym_space
 import numpy as np
+from rllab.envs.gym_env import convert_gym_space
 
 def convert_to_gym(space):
     return spaces.Box(np.array(space[0]), np.array(space[1]) )

@@ -3,7 +3,7 @@ import math
 import numpy as np
 import os
 from .helpers import convert_to_gym
-from rllab.envs.gym_env import convert_gym_space
+#from rllab.envs.gym_env import convert_gym_space
 
 
 class Osim(object):
@@ -88,8 +88,8 @@ class OsimEnv(object):
         if not self.observation_space:
             self.observation_space = ( [-math.pi] * self.ninput, [math.pi] * self.ninput )
 
-        self.action_space = convert_gym_space(convert_to_gym(self.action_space))
-        self.observation_space = convert_gym_space(convert_to_gym(self.observation_space))
+        self.action_space = convert_to_gym(self.action_space)
+        self.observation_space = convert_to_gym(self.observation_space)
         self.horizon = self.timestep_limit
 
         self.configure()

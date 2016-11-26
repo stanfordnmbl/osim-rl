@@ -1,7 +1,2 @@
-git+https://github.com/kidzik/keras-rl.git
 numpy
-keras
-theano
-tensorflow
-tabulate
 git+https://github.com/openai/gym
