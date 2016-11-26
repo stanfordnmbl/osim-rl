@@ -13,28 +13,19 @@ We include two musculoskeletal models: ARM with 6 muscles and 2 degrees of freed
 
 Note that from reinforcement learning perspective, due to high dimensionality of muscles space, the problem is significantly harder than 'textbook' reinforcement learning problems.
 
-## Requirements
+## Installation
 
-OpenSim 4.0 - https://github.com/opensim-org/opensim-core
+Requires OpenSim 4.0 - https://github.com/opensim-org/opensim-core . You can either install it from source or use my builds https://github.com/kidzik/opensim-core/releases/tag/v4.0-1kidzik
 
-Make sure you have python bindings installed, i.e. after building OpenSim do
+For Debian/Ubuntu 64bit architecture run:
 
-    make install
-    cd [opensim_install]/lib/python2.7/site-packages/
-    python setup.py install
-    
-Install requirements for the python package
+    wget https://github.com/kidzik/opensim-core/releases/download/v4.0-1kidzik/python3-opensim-4.0-1kidzik-amd64.deb
+    sudo dpkg -i python3-opensim-4.0-1kidzik-amd64.deb
+    sudo apt-get install -f
+    sudo apt-get install python3-pip git
+    pip3 install git+https://github.com/kidzik/osim-rl.git
 
-    cd python
-    sudo pip install -r requirements.txt
-
-## Recommended
-
-https://github.com/matthiasplappert/keras-rl
-
-https://github.com/openai/rllab
-
-## Usage
+## Basic usage
 
 To run 200 steps of environment:
 
@@ -44,9 +35,29 @@ To run 200 steps of environment:
     for i in range(200):
         env.step(env.action_space.sample())
 
-To reset environment type
+## Objective
 
-    env.reset()
+The goal is to construct a controler, i.e. a function from the state space to 
+
+    from osim.env import ArmEnv
+
+    env = ArmEnv(visualize=True)
+    observation = env.reset() # restart the environment and get the current state
+    
+    def my_controler(observation):
+        # your controler
+        return env.action_space.sample() # for now just random action
+    
+    total_reward = 0
+    for i in range(200):
+        # make a step given by the controler and record the state and the reward
+        observation, reward, _, _ = env.step(my_controler(observation)) 
+        total_reward += reward
+    
+    # Your reward is
+    print("Total reward %f" % total_reward)
+    
+The goal is to maximize total reward.
 
 ## Training in rllab
 
