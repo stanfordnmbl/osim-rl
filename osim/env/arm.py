@@ -6,7 +6,7 @@ from .osim import OsimEnv
 
 class ArmEnv(OsimEnv):
     ninput = 14
-    model_path = os.path.join(os.path.dirname(__file__), '../../models/arm2dof6musc.osim')
+    model_path = os.path.join(os.path.dirname(__file__), '../models/arm2dof6musc.osim')
 
     def __init__(self, visualize = True):
         self.iepisode = 0

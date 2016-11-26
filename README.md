@@ -1,5 +1,18 @@
 # osim-rl
 
+## What?
+
+[OpenSim](https://github.com/opensim-org/opensim-core) is a biomechanical physics environment for musculoskeletal simulations. Biomechanical community designed a range of musculoskeletal models compatible with this environment. These models can be, for example, fit to clinical data to understand underlying causes of injuries using inverse kinematics and inverse dynamics.
+
+For many of these models there are controllers designed for forward simulations of movement, however they are often finely tuned for the model and data. Advancements in reinforcement learning may allow building more robust controllers which can in turn provide another tool for validating the models. Moreover they could help visualize, for example, kinematics of patients after surgeries.
+
+We include two musculoskeletal models: ARM with 6 muscles and 2 degrees of freedom and HUMAN with 18 muscles and 9 degrees of freedom. For the ARM model we designed an environment where the arm is supposed to reach certain points. For HUMAN we have four environmnets: standing still, crouch, jump and gait. Environments are compatible with [rllab](https://github.com/openai/rllab), [keras-rl](https://github.com/matthiasplappert/keras-rl) and [OpenAI gym](https://gym.openai.com/).
+
+![ARM environment](https://github.com/kidzik/osim-rl/blob/master/demo/arm.gif)
+![HUMAN environment](https://github.com/kidzik/osim-rl/blob/master/demo/stand.gif)
+
+Note that from reinforcement learning perspective, due to high dimensionality of muscles space, the problem is significantly harder than 'textbook' reinforcement learning problems.
+
 ## Requirements
 
 OpenSim 4.0 - https://github.com/opensim-org/opensim-core
@@ -17,8 +30,23 @@ Install requirements for the python package
 
 ## Recommended
 
-https://github.com/kidzik/keras-rl
+https://github.com/matthiasplappert/keras-rl
+
 https://github.com/openai/rllab
+
+## Usage
+
+To run 200 steps of environment:
+
+    from osim.env import ArmEnv
+
+    env = ArmEnv(visualize=True)
+    for i in range(200):
+        env.step(env.action_space.sample())
+
+To reset environment type
+
+    env.reset()
 
 ## Training in rllab
 
@@ -42,7 +70,7 @@ Show the result
 
     python visualize.py -p /path/to/params.pkl
 
-## Training in heras-rl
+## Training in keras-rl
 
 Go to
     
@@ -75,3 +103,7 @@ and for the gait example (walk as far as possible):
 After every 10000 iterations the model is dumped to model_[NUM_ITERATIONS].h5f In ordere to test it run
 
     python train.ddpg.py --visualize --test --env Gait --output model_[NUM_ITERATIONS]
+
+## Credits
+
+Thanks to @carmichaelong for simplified human model and to OpenSim team for making OpenSim!
