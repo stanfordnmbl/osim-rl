@@ -2,8 +2,7 @@ import opensim
 import math
 import numpy as np
 import os
-from .utils import convert_to_gym
-#from rllab.envs.gym_env import convert_gym_space
+from .utils.gym import convert_to_gym
 
 
 class Osim(object):
