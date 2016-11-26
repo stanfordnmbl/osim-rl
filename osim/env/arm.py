@@ -1,3 +1,4 @@
+import opensim
 import math
 import numpy as np
 import os
@@ -16,8 +17,8 @@ class ArmEnv(OsimEnv):
 
     def configure(self):
         super(ArmEnv, self).configure()
-        self.osim_model.joints.append(osim.CustomJoint.safeDownCast(self.osim_model.jointSet.get(0)))
-        self.osim_model.joints.append(osim.CustomJoint.safeDownCast(self.osim_model.jointSet.get(1)))
+        self.osim_model.joints.append(opensim.CustomJoint.safeDownCast(self.osim_model.jointSet.get(0)))
+        self.osim_model.joints.append(opensim.CustomJoint.safeDownCast(self.osim_model.jointSet.get(1)))
 
     def new_target(self):
         self.shoulder = random.uniform(-1.2,0.3)

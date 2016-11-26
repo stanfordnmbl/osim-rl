@@ -1,3 +1,4 @@
+import opensim
 import math
 import numpy as np
 import os
@@ -24,22 +25,22 @@ class GaitEnv(OsimEnv):
     def configure(self):
         super(GaitEnv, self).configure()
 
-        self.osim_model.joints.append(osim.PlanarJoint.safeDownCast(self.osim_model.jointSet.get(0))) # PELVIS
+        self.osim_model.joints.append(opensim.PlanarJoint.safeDownCast(self.osim_model.jointSet.get(0))) # PELVIS
 
-        self.osim_model.joints.append(osim.PinJoint.safeDownCast(self.osim_model.jointSet.get(1)))
-        self.osim_model.joints.append(osim.CustomJoint.safeDownCast(self.osim_model.jointSet.get(2))) # 4
-        self.osim_model.joints.append(osim.PinJoint.safeDownCast(self.osim_model.jointSet.get(3)))    # 7
-        # self.osim_model.joints.append(osim.WeldJoint.safeDownCast(self.osim_model.jointSet.get(4)))
-        # self.osim_model.joints.append(osim.WeldJoint.safeDownCast(self.osim_model.jointSet.get(5)))
+        self.osim_model.joints.append(opensim.PinJoint.safeDownCast(self.osim_model.jointSet.get(1)))
+        self.osim_model.joints.append(opensim.CustomJoint.safeDownCast(self.osim_model.jointSet.get(2))) # 4
+        self.osim_model.joints.append(opensim.PinJoint.safeDownCast(self.osim_model.jointSet.get(3)))    # 7
+        # self.osim_model.joints.append(opensim.WeldJoint.safeDownCast(self.osim_model.jointSet.get(4)))
+        # self.osim_model.joints.append(opensim.WeldJoint.safeDownCast(self.osim_model.jointSet.get(5)))
 
-        self.osim_model.joints.append(osim.PinJoint.safeDownCast(self.osim_model.jointSet.get(6)))    # 2
-        self.osim_model.joints.append(osim.CustomJoint.safeDownCast(self.osim_model.jointSet.get(7))) # 5
-        self.osim_model.joints.append(osim.PinJoint.safeDownCast(self.osim_model.jointSet.get(8)))
-        # self.osim_model.joints.append(osim.WeldJoint.safeDownCast(self.osim_model.jointSet.get(9)))
-        # self.osim_model.joints.append(osim.WeldJoint.safeDownCast(self.osim_model.jointSet.get(10)))
+        self.osim_model.joints.append(opensim.PinJoint.safeDownCast(self.osim_model.jointSet.get(6)))    # 2
+        self.osim_model.joints.append(opensim.CustomJoint.safeDownCast(self.osim_model.jointSet.get(7))) # 5
+        self.osim_model.joints.append(opensim.PinJoint.safeDownCast(self.osim_model.jointSet.get(8)))
+        # self.osim_model.joints.append(opensim.WeldJoint.safeDownCast(self.osim_model.jointSet.get(9)))
+        # self.osim_model.joints.append(opensim.WeldJoint.safeDownCast(self.osim_model.jointSet.get(10)))
 
-        # self.osim_model.joints.append(osim.PinJoint.safeDownCast(self.osim_model.jointSet.get(11)))
-        # self.osim_model.joints.append(osim.WeldJoint.safeDownCast(self.osim_model.jointSet.get(12)))
+        # self.osim_model.joints.append(opensim.PinJoint.safeDownCast(self.osim_model.jointSet.get(11)))
+        # self.osim_model.joints.append(opensim.WeldJoint.safeDownCast(self.osim_model.jointSet.get(12)))
         
         for i in range(18):
             print(self.osim_model.muscleSet.get(i).getName())
