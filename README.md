@@ -15,7 +15,7 @@ Note that from reinforcement learning perspective, due to high dimensionality of
 
 ## Installation
 
-Requires OpenSim 4.0 - https://github.com/opensim-org/opensim-core . You can either install it from source or use my builds https://github.com/kidzik/opensim-core/releases/tag/v4.0-1kidzik
+Requires OpenSim 4.0 - https://github.com/opensim-org/opensim-core . You can either install it from source or use my builds https://github.com/kidzik/opensim-core/releases/tag/v4.0-1kidzik (since there are no official builds available.
 
 For Debian/Ubuntu 64bit architecture run:
 
