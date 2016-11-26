@@ -2,7 +2,7 @@ import opensim
 import math
 import numpy as np
 import os
-from .helpers import convert_to_gym
+from .utils import convert_to_gym
 #from rllab.envs.gym_env import convert_gym_space
 
 
