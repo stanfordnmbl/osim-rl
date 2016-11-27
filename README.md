@@ -27,6 +27,8 @@ For Debian/Ubuntu 64bit architecture run:
     sudo apt-get install python3-pip git
     pip3 install git+https://github.com/kidzik/osim-rl.git
     
+RedHat packages are available here https://github.com/kidzik/opensim-core/releases/tag/v4.0-1kidzik
+    
 Linux 32bit, Windows, OS X coming soon!
 
 ## Basic usage
