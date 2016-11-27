@@ -19,6 +19,8 @@ Requires OpenSim 4.0 - https://github.com/opensim-org/opensim-core . You can eit
 
 For Debian/Ubuntu 64bit architecture run:
 
+    apt-get update
+    apt-get -f install
     wget https://github.com/kidzik/opensim-core/releases/download/v4.0-1kidzik/python3-opensim-4.0-1kidzik-amd64.deb
     sudo dpkg -i python3-opensim-4.0-1kidzik-amd64.deb
     sudo apt-get install -f
