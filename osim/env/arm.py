@@ -9,7 +9,7 @@ class ArmEnv(OsimEnv):
     ninput = 14
     model_path = os.path.join(os.path.dirname(__file__), '../models/arm2dof6musc.osim')
 
-    def __init__(self, visualize = True):
+    def __init__(self, visualize = False):
         self.iepisode = 0
         self.shoulder = 0.0
         self.elbow = 0.0
@@ -24,9 +24,9 @@ class ArmEnv(OsimEnv):
         self.shoulder = random.uniform(-1.2,0.3)
         self.elbow = random.uniform(-1.0,0)
 
-    def reset(self):
+    def _reset(self):
         self.new_target()
-        return super(ArmEnv, self).reset()
+        return super(ArmEnv, self)._reset()
 
     def compute_reward(self):
         obs = self.get_observation()

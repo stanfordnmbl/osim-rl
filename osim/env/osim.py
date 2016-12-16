@@ -3,7 +3,7 @@ import math
 import numpy as np
 import os
 from .utils.gym import convert_to_gym
-
+import gym
 
 class Osim(object):
     # Initialize simulation
@@ -33,9 +33,12 @@ class Osim(object):
         else:
             self.state = opensim.State(self.state0)
 
-    
+class Spec(object):
+    def __init__(self, *args, **kwargs):
+        self.id = 0
+        self.timestep_limit = 200
 
-class OsimEnv(object):
+class OsimEnv(gym.Env):
     stepsize = 0.01
     integration_accuracy = 1e-3
     timestep_limit = 200
@@ -50,6 +53,11 @@ class OsimEnv(object):
     visualize = False
     ninput = 0
     noutput = 0
+
+    metadata = {
+        'render.modes': ['human'],
+        'video.frames_per_second' : 50
+    }
 
     def __getstate__(self):
         state = self.__dict__.copy()
@@ -94,10 +102,12 @@ class OsimEnv(object):
         self.configure()
         self.reset()
 
+        self.spec = Spec()
+
     def configure(self):
         pass
 
-    def reset(self):
+    def _reset(self):
         self.osim_model.reset()
         return [0.0] * self.ninput
 
@@ -116,7 +126,7 @@ class OsimEnv(object):
             muscle = self.osim_model.muscleSet.get(j)
             muscle.setActivation(self.osim_model.state, action[j])
 
-    def step(self, action):
+    def _step(self, action):
         # action = action[0]
         self.activate_muscles(action)
 
@@ -136,7 +146,7 @@ class OsimEnv(object):
         return res
 
 
-    def render(self, *args, **kwargs):
+    def _render(self, mode='human', close=False):
         return
 
     def log_diagnostics(self, paths):

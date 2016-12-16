@@ -1,6 +1,7 @@
 import opensim as osim
 import numpy as np
 import sys
+
 from keras.models import Sequential, Model
 from keras.layers import Dense, Activation, Flatten, Input, merge
 from keras.optimizers import Adam
