@@ -28,7 +28,7 @@ For the moment we only support 64-bit architecture (32-bit coming soon) on eithe
 on Linux/OSX run:
 
     conda create -n opensim-rl -c kidzik opensim
-    activate opensim-rl
+    source activate opensim-rl
 
 Then on any system you can install the RL environment with
 
