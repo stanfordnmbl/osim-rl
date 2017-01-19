@@ -20,11 +20,18 @@ Requires OpenSim 4.0 - https://github.com/opensim-org/opensim-core . You can eit
 **Requires Anaconda2**, you can get it from here https://www.continuum.io/downloads choosing version 2.7.
 Below we assume that Anaconda is installed.
 
-For the moment we only support 64-bit architecture (32-bit coming soon). Open a terminal/command prompt and type:
+For the moment we only support 64-bit architecture (32-bit coming soon) on either Windows, Linux or Mac OSX. On Windows open a command prompt and type:
     
-    conda create opensim-rl
-    source opensim-rl
-    conda install -c kidzik opensim
+    conda create -n opensim-rl -c kidzik opensim
+    activate opensim-rl
+
+on Linux/OSX run:
+
+    conda create -n opensim-rl -c kidzik opensim
+    activate opensim-rl
+
+Then on any system you can install the RL environment with
+
     pip install git+https://github.com/kidzik/osim-rl.git
 
 ## Basic usage
