@@ -15,25 +15,21 @@ Note that from reinforcement learning perspective, due to high dimensionality of
 
 ## Installation
 
-Requires OpenSim 4.0 - https://github.com/opensim-org/opensim-core . You can either install it from source or use my builds as presented below (since there are no official builds available).
+Requires OpenSim 4.0 - https://github.com/opensim-org/opensim-core . You can either install it from source (https://github.com/opensim-org/opensim-core/releases/tag/v4.0.0_alpha) or use conda builds as presented below.
 
-For Debian/Ubuntu 64bit architecture run:
+**Requires Anaconda2**, you can get it from here https://www.continuum.io/downloads choosing version 2.7.
+Below we assume that Anaconda is installed.
 
-    apt-get update
-    apt-get -f install
-    wget https://github.com/kidzik/opensim-core/releases/download/v4.0-1kidzik/python3-opensim-4.0-1kidzik-amd64.deb
-    sudo dpkg -i python3-opensim-4.0-1kidzik-amd64.deb
-    sudo apt-get install -f
-    sudo apt-get install python3-pip git
-    pip3 install git+https://github.com/kidzik/osim-rl.git
+For the moment we only support 64-bit architecture (32-bit coming soon). Open a terminal/command prompt and type:
     
-RedHat packages are available here https://github.com/kidzik/opensim-core/releases/tag/v4.0-1kidzik
-    
-Linux 32bit, Windows, OS X coming soon!
+    conda create opensim-rl
+    source opensim-rl
+    conda install -c kidzik opensim
+    pip install git+https://github.com/kidzik/osim-rl.git
 
 ## Basic usage
 
-To run 200 steps of environment enter `python3` interpreter and run:
+To run 200 steps of environment enter `python` interpreter and run:
 
     from osim.env import ArmEnv
 
