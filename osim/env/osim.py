@@ -2,7 +2,7 @@ import opensim
 import math
 import numpy as np
 import os
-from .utils.gym import convert_to_gym
+from .utils.mygym import convert_to_gym
 import gym
 
 class Osim(object):
@@ -124,7 +124,7 @@ class OsimEnv(gym.Env):
     def activate_muscles(self, action):
         for j in range(self.noutput):
             muscle = self.osim_model.muscleSet.get(j)
-            muscle.setActivation(self.osim_model.state, action[j])
+            muscle.setActivation(self.osim_model.state, float(action[j]))
 
     def _step(self, action):
         # action = action[0]
