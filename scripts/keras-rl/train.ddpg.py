@@ -12,7 +12,7 @@ from rl.agents import DDPGAgent
 from rl.memory import SequentialMemory
 from rl.random import OrnsteinUhlenbeckProcess
 
-from osim.env import ArmEnv
+from osim.env import *
 
 from keras.optimizers import RMSprop
 
@@ -31,10 +31,17 @@ parser.add_argument('--output', dest='output', action='store', default="model.h5
 parser.add_argument('--env', dest='env', action='store', default="Arm")
 args = parser.parse_args()
 
-if args.env == "Gait":
-    env = GaitEnv(args.visualize)
-else:
-    env = ArmEnv(args.visualize)
+
+ENVS = {"Gait": GaitEnv,
+        "Stand": StandEnv,
+        "Hop": HopEnv,
+        "Crouch": CrouchEnv,
+        "Arm": ArmEnv}
+
+if not args.env in ENVS.keys():
+    print("Environment %s does not exist" % args.env)
+
+env = ENVS[args.env](args.visualize)
 
 nb_actions = env.action_space.shape[0]
 
