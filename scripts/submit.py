@@ -2,7 +2,7 @@ from osim.http.client import Client
 
 if __name__ == '__main__':
     CROWDAI_TOKEN = "TOKEN_TEST"
-    remote_base = 'http://54.154.84.135:80'
+    remote_base = 'http://127.0.0.1:80'
     client = Client(remote_base)
 
     # Create environment
