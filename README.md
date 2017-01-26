@@ -32,6 +32,7 @@ on Linux/OSX run:
 
 Then on any system you can install the RL environment with
 
+    conda install -c conda-forge lapack git
     pip install git+https://github.com/kidzik/osim-rl.git
 
 ## Basic usage
