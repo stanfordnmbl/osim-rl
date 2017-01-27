@@ -6,12 +6,12 @@
 
 For many of these models there are controllers designed for forward simulations of movement, however they are often finely tuned for the model and data. Advancements in reinforcement learning may allow building more robust controllers which can in turn provide another tool for validating the models. Moreover they could help visualize, for example, kinematics of patients after surgeries.
 
-We include two musculoskeletal models: ARM with 6 muscles and 2 degrees of freedom and HUMAN with 18 muscles and 9 degrees of freedom. For the ARM model we designed an environment where the arm is supposed to reach certain points. For HUMAN we have four environmnets: standing still, crouch, jump and gait. Environments are compatible with [rllab](https://github.com/openai/rllab), [keras-rl](https://github.com/matthiasplappert/keras-rl) and [OpenAI gym](https://gym.openai.com/).
-
 ![ARM environment](https://github.com/kidzik/osim-rl/blob/master/demo/arm.gif)
 ![HUMAN environment](https://github.com/kidzik/osim-rl/blob/master/demo/stand.gif)
 
-Note that from reinforcement learning perspective, due to high dimensionality of muscles space, the problem is significantly harder than 'textbook' reinforcement learning problems.
+## Objective
+
+The objective of this challenge is to model the motor control unit in human brain. Your task to control 16 muscles in a muscloskeletal model so that the model can move forward as fast as possible.
 
 ## Installation
 
@@ -39,55 +39,25 @@ Then on any system you can install the RL environment with
 
 To run 200 steps of environment enter `python` interpreter and run:
 
-    from osim.env import ArmEnv
+    from osim.env import GaitEnv
 
     env = ArmEnv(visualize=True)
-    for i in range(200):
-        env.step(env.action_space.sample())
+    observation = env.reset()
+    for i in range(500):
+        observation, reward, done, info = env.step(env.action_space.sample())
 
-## Objective
+The goal is to construct a controler, i.e. a function from the state space to action space, to maximize the total reward. Suppose you trained a neural network mapping observations (the current state of the model) to actions (muscles activations), i.e. you have a function `action = my_controler(observation)`, then 
 
-The goal is to construct a controler, i.e. a function from the state space to action space, to maximize the total reward.
-
-    from osim.env import ArmEnv
-
-    env = ArmEnv(visualize=True)
-    observation = env.reset() # restart the environment and get the current state
-    
-    def my_controler(observation):
-        # your controler
-        return env.action_space.sample() # for now just random action
-    
-    total_reward = 0
-    for i in range(200):
+    # ...
+    for i in range(500):
         # make a step given by the controler and record the state and the reward
-        observation, reward, _, _ = env.step(my_controler(observation)) 
+        observation, reward, done, info = env.step(my_controler(observation)) 
         total_reward += reward
     
     # Your reward is
     print("Total reward %f" % total_reward)
     
-## Training in rllab
-
-Go to
-    
-    scripts/rllab/
-    
-### Training
-
-For training the Arm example with DDPG:
-
-    python experiment.py -e Arm -a DDPG
-    
-For training the Arm example with TRPO:
-
-    python experiment.py -e Arm -a TRPO
-
-### Test
-
-Show the result
-
-    python visualize.py -p /path/to/params.pkl
+Below we present how to train a basic controller using keras-rl
 
 ## Training in keras-rl
 
@@ -97,32 +67,14 @@ Go to
 
 ### Training
 
-For training the Arm example (move the arm to certain randomly chosen angles and keep it there):
-
-    python train.ddpg.py --visualize --test --env Arm --output models/Arm
-    
-For the 'gait' example (walk as far as possible):
-
     python train.ddpg.py --visualize --test --env Gait --output models/Gait
     
-For the 'stand still' example:
-
-    python train.ddpg.py --visualize --test --env Stand --output models/Stand
-
 ### Test
 
-For training the Arm example (move the arm to certain randomly chosen angles and keep it there):
-
-    python train.ddpg.py --visualize --train --env Arm
-    
 and for the gait example (walk as far as possible):
 
-    python train.ddpg.py --visualize --train --env Gait
+    python train.ddpg.py --visualize --test --env Gait
     
-After every 10000 iterations the model is dumped to model_[NUM_ITERATIONS].h5f In ordere to test it run
-
-    python train.ddpg.py --visualize --test --env Gait --output model_[NUM_ITERATIONS]
-
 ## Credits
 
-Thanks to @carmichaelong for simplified human model and to OpenSim team for making OpenSim!
+Stanford NMBL group & Stanford Mobilize Center. For details please contact @kidzik
