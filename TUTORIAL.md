@@ -67,7 +67,7 @@ Go to
 
 ### Training
 
-    python train.ddpg.py --visualize --test --env Gait --output models/Gait
+    python train.ddpg.py --visualize --train --env Gait --output models/Gait
     
 ### Test
 
