@@ -67,13 +67,13 @@ Go to
 
 ### Training
 
-    python train.ddpg.py --visualize --train --env Gait --output models/Gait
+    python train.ddpg.py --visualize --train --env Gait --output sample
     
 ### Test
 
 and for the gait example (walk as far as possible):
 
-    python train.ddpg.py --visualize --test --env Gait
+    python train.ddpg.py --visualize --test --env Gait --output sample
     
 ## Credits
 
