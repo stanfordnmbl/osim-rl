@@ -49,6 +49,7 @@ To run 200 steps of environment enter `python` interpreter and run:
 The goal is to construct a controler, i.e. a function from the state space to action space, to maximize the total reward. Suppose you trained a neural network mapping observations (the current state of the model) to actions (muscles activations), i.e. you have a function `action = my_controler(observation)`, then 
 
     # ...
+    total_reward = 0.0
     for i in range(500):
         # make a step given by the controler and record the state and the reward
         observation, reward, done, info = env.step(my_controler(observation)) 
@@ -63,17 +64,17 @@ Below we present how to train a basic controller using keras-rl
 
 Go to
     
-    scripts/keras-rl/
+    scripts/
 
 ### Training
 
-    python train.ddpg.py --visualize --train --env Gait --output sample
+    python example.py --visualize --train --model sample
     
 ### Test
 
 and for the gait example (walk as far as possible):
 
-    python train.ddpg.py --visualize --test --env Gait --output sample
+    python example.py --visualize --test --model sample
     
 ## Credits
 
