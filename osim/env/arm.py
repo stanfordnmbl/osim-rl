@@ -24,9 +24,9 @@ class ArmEnv(OsimEnv):
         self.shoulder = random.uniform(-1.2,0.3)
         self.elbow = random.uniform(-1.0,0)
 
-    def _reset(self):
+    def reset(self):
         self.new_target()
-        return super(ArmEnv, self)._reset()
+        return super(ArmEnv, self).reset()
 
     def compute_reward(self):
         obs = self.get_observation()

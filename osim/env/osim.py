@@ -25,13 +25,11 @@ class Osim(object):
         self.jointSet = self.model.getJointSet()
 
     def reset(self):
-        self.istep = 0
         if not self.state0:
             self.state0 = self.model.initSystem()
             self.manager = opensim.Manager(self.model)
-            self.state = opensim.State(self.state0)
-        else:
-            self.state = opensim.State(self.state0)
+
+        self.state = opensim.State(self.state0)
 
 class Spec(object):
     def __init__(self, *args, **kwargs):
@@ -108,6 +106,7 @@ class OsimEnv(gym.Env):
         pass
 
     def _reset(self):
+        self.istep = 0
         self.osim_model.reset()
         return [0.0] * self.ninput
 
@@ -122,17 +121,18 @@ class OsimEnv(gym.Env):
         return x
 
     def activate_muscles(self, action):
+        muscleSet = self.osim_model.model.getMuscles()
         for j in range(self.noutput):
-            muscle = self.osim_model.muscleSet.get(j)
+            muscle = muscleSet.get(j)
             muscle.setActivation(self.osim_model.state, float(action[j]))
 
     def _step(self, action):
-        # action = action[0]
-        self.activate_muscles(action)
-
         # Integrate one step
         self.osim_model.manager.setInitialTime(self.stepsize * self.istep)
         self.osim_model.manager.setFinalTime(self.stepsize * (self.istep + 1))
+
+        # action = action[0]
+        self.activate_muscles(action)
 
         try:
             self.osim_model.manager.integrate(self.osim_model.state)

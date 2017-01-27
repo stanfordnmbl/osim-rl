@@ -12,12 +12,12 @@ class GaitEnv(OsimEnv):
         obs = self.get_observation()
         return self.osim_model.joints[0].getCoordinate(1).getValue(self.osim_model.state)
 
-    def is_head_too_low(self):
+    def is_pelvis_too_low(self):
         y = self.osim_model.joints[0].getCoordinate(2).getValue(self.osim_model.state)
-        return (y < 0.5)
+        return (y < 0.8)
     
     def is_done(self):
-        return self.is_head_too_low()
+        return self.is_pelvis_too_low()
 
     def __init__(self, visualize = True, noutput = None):
         super(GaitEnv, self).__init__(visualize = visualize, noutput = noutput)
