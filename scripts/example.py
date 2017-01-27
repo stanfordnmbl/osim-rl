@@ -1,3 +1,4 @@
+# Derived from keras-rl
 import opensim as osim
 import numpy as np
 import sys
@@ -20,7 +21,7 @@ import argparse
 import math
 
 # Total number of steps in training
-nallsteps = 10000
+nallsteps = 1000
 
 # Command line parameters
 parser = argparse.ArgumentParser(description='Train or test neural net motor controller')
@@ -30,10 +31,12 @@ parser.add_argument('--visualize', dest='visualize', action='store_true', defaul
 parser.add_argument('--model', dest='model', action='store', default="example.h5f")
 args = parser.parse_args()
 
+# Load walking environment
 env = GaitEnv(args.visualize)
 
 nb_actions = env.action_space.shape[0]
 
+# Create networks for DDPG
 # Next, we build a very simple model.
 actor = Sequential()
 actor.add(Flatten(input_shape=(1,) + env.observation_space.shape))
@@ -62,7 +65,7 @@ x = Activation('linear')(x)
 critic = Model(input=[action_input, observation_input], output=x)
 print(critic.summary())
 
-# Finally, we configure and compile our agent. 
+# Set up the agent for training
 memory = SequentialMemory(limit=100000, window_length=1)
 random_process = OrnsteinUhlenbeckProcess(theta=.15, mu=0., sigma=.2, size=env.noutput)
 agent = DDPGAgent(nb_actions=nb_actions, actor=actor, critic=critic, critic_action_input=action_input,
@@ -72,8 +75,7 @@ agent = DDPGAgent(nb_actions=nb_actions, actor=actor, critic=critic, critic_acti
 # agent = ContinuousDQNAgent(nb_actions=env.noutput, V_model=V_model, L_model=L_model, mu_model=mu_model,
 #                            memory=memory, nb_steps_warmup=1000, random_process=random_process,
 #                            gamma=.99, target_model_update=0.1)
-#agent.compile(Adam(lr=.001, clipnorm=1.), metrics=['mae'])
-agent.compile([RMSprop(lr=.001), RMSprop(lr=.001)], metrics=['mae'])
+agent.compile(Adam(lr=.001, clipnorm=1.), metrics=['mae'])
 
 # Okay, now it's time to learn something! We visualize the training here for show, but this
 # slows down training quite a lot. You can always safely abort the training prematurely using

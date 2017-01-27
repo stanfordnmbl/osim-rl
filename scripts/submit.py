@@ -1,21 +1,52 @@
+import opensim as osim
 from osim.http.client import Client
+from osim.env import *
+from keras.models import Sequential, Model
+from keras.layers import Dense, Activation, Flatten, Input, merge
+import numpy as np
+import argparse
 
-if __name__ == '__main__':
-    CROWDAI_TOKEN = "TOKEN_TEST"
-    remote_base = 'http://127.0.0.1:80'
-    client = Client(remote_base)
+# Settings
+CROWDAI_TOKEN = "TOKEN_TEST"
+remote_base = 'http://54.154.84.135:80'
 
-    # Create environment
-    env_id = "Gait" #'CartPole-v0'
-    instance_id = client.env_create(env_id, CROWDAI_TOKEN)
+# Command line parameters
+parser = argparse.ArgumentParser(description='Submit the result to crowdAI')
+parser.add_argument('--model', dest='model', action='store', default="example_actor.h5f")
+args = parser.parse_args()
 
-    # Run a single step
-    client.env_monitor_start(instance_id, directory='tmp', force=True)
-    init_obs = client.env_reset(instance_id)
-    for i in range(500):
-        [observation, reward, done, info] = client.env_step(instance_id, [0.0]*18, True)
-        if done:
-            break
-    client.env_monitor_close(instance_id)
-    client.env_close(instance_id)
+env = GaitEnv(visualize=False)
+
+nb_actions = env.action_space.shape[0]
+
+# Load the acton
+actor = Sequential()
+actor.add(Flatten(input_shape=(1,) + env.observation_space.shape))
+actor.add(Dense(32))
+actor.add(Activation('relu'))
+actor.add(Dense(32))
+actor.add(Activation('relu'))
+actor.add(Dense(32))
+actor.add(Activation('relu'))
+actor.add(Dense(nb_actions))
+actor.add(Activation('sigmoid'))
+actor.load_weights(args.model)
+
+client = Client(remote_base)
+
+# Create environment
+env_id = "Gait"
+instance_id = client.env_create(env_id, CROWDAI_TOKEN)
+
+# Run a single step
+client.env_monitor_start(instance_id, directory='tmp', force=True)
+observation = client.env_reset(instance_id)
+for i in range(500):
+    v = np.array(observation).reshape((-1,1,env.observation_space.shape[0]))
+    [observation, reward, done, info] = client.env_step(instance_id, actor.predict(v)[0].tolist(), True)
+    if done:
+        break
+
+client.env_monitor_close(instance_id)
+client.env_close(instance_id)
 
