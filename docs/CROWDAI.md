@@ -9,6 +9,16 @@ For modelling physics we use [OpenSim](https://github.com/opensim-org/opensim-co
 ![HUMAN environment](https://github.com/kidzik/osim-rl/blob/master/demo/stand.gif)
 ![ARM environment](https://github.com/kidzik/osim-rl/blob/master/demo/arm.gif)
 
+## Evaluation
+
+Your task is to build a function `f` which takes current state `observation` (25 dimensional vector) and returns mouscle activations `action` (16 dimensional vector) in a way that maximizes the reward.
+
+The trial ends either if the pelvis of the model goes below `0.7` meter or if you reach `500` iterations (corresponding to `5` seconds in the virtual environment). Let `N` be the length of the trial. Your total reward is simply position of the pelvis on the `x` axis after `N` steps. The value is given in centimeters.
+
+After each iteration you get a reward equal to the change of the `x` axis of pelvis during this iteration.
+
+You can test your model on your local machine. For submission, you will need to interact with the remote environment: crowdAI sends you the current `observation` and you need to send back the action you take in the given state.
+
 ## Installation
 
 Requires OpenSim 4.0 - https://github.com/opensim-org/opensim-core . You can either install it from source (https://github.com/opensim-org/opensim-core/releases/tag/v4.0.0_alpha) or use conda builds as presented below.
