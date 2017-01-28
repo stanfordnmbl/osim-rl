@@ -47,7 +47,7 @@ To run 200 steps of environment enter `python` interpreter and run:
 
     from osim.env import GaitEnv
 
-    env = ArmEnv(visualize=True)
+    env = GaitEnv(visualize=True)
     observation = env.reset()
     for i in range(500):
         observation, reward, done, info = env.step(env.action_space.sample())
