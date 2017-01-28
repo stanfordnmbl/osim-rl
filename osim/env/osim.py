@@ -34,12 +34,12 @@ class Osim(object):
 class Spec(object):
     def __init__(self, *args, **kwargs):
         self.id = 0
-        self.timestep_limit = 200
+        self.timestep_limit = 500
 
 class OsimEnv(gym.Env):
     stepsize = 0.01
     integration_accuracy = 1e-3
-    timestep_limit = 200
+    timestep_limit = 500
     test = False
 
     action_space = None

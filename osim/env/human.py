@@ -17,7 +17,7 @@ class GaitEnv(OsimEnv):
     def compute_reward(self):
         obs = self.get_observation()
         x = self.osim_model.joints[0].getCoordinate(1).getValue(self.osim_model.state)
-        delta = self.last_x - x
+        delta = x - self.last_x 
         self.last_x = 0
         return delta
 

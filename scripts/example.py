@@ -21,7 +21,7 @@ import argparse
 import math
 
 # Total number of steps in training
-nallsteps = 10000
+nallsteps = 1000000
 
 # Command line parameters
 parser = argparse.ArgumentParser(description='Train or test neural net motor controller')
@@ -81,11 +81,11 @@ agent.compile(Adam(lr=.001, clipnorm=1.), metrics=['mae'])
 # slows down training quite a lot. You can always safely abort the training prematurely using
 # Ctrl + C.
 if args.train:
-    agent.fit(env, nb_steps=nallsteps, visualize=True, verbose=1, nb_max_episode_steps=env.timestep_limit, log_interval=10000)
+    agent.fit(env, nb_steps=nallsteps, visualize=False, verbose=1, nb_max_episode_steps=env.timestep_limit, log_interval=10000)
     # After training is done, we save the final weights.
     agent.save_weights(args.model, overwrite=True)
 
 if not args.train:
     agent.load_weights(args.model)
     # Finally, evaluate our algorithm for 1 episode.
-    agent.test(env, nb_episodes=1, visualize=True, nb_max_episode_steps=500)
+    agent.test(env, nb_episodes=1, visualize=False, nb_max_episode_steps=500)
