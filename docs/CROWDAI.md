@@ -1,4 +1,4 @@
-# Reinforcement learning for gait analysis
+# Learning how to walk
 
 Our movement originates in brain. Many neurological disorders, such as Cerebral Palsy, Multiple Sclerosis or strokes can lead to problems with walking. Treatments are often symptomatic and its often hard to predict outcomes of surgeries. Understanding underlying mechanisms is key to improvement of treatments.
 
