@@ -114,6 +114,13 @@ After having trained your model you can submit it using the following script
 
 This script will interact with an environment on the crowdAI.org server.
 
+## Questions
+
+**Can I use different languages than python?**
+
+Yes, you just need to set up your own python grader and interact with it
+https://github.com/kidzik/osim-rl-grader. Find more details here [OpenAI http client](https://github.com/openai/gym-http-api)
+
 ## Credits
 
 This challenge wouldn't be possible without:
