@@ -66,7 +66,7 @@ The goal is to construct a controler, i.e. a function from the state space to ac
 
 ## Training in keras-rl
 
-Below we present how to train a basic controller using [keras-rl]{https://github.com/matthiasplappert/keras-rl}. First you need to install extra packages
+Below we present how to train a basic controller using [keras-rl](https://github.com/matthiasplappert/keras-rl). First you need to install extra packages
 
     conda install keras
     pip install git+https://github.com/matthiasplappert/keras-rl.git
@@ -114,11 +114,11 @@ Note, that the model trained in your modified environment must still be compatib
 ## Credits
 
 This challenge wouldn't be possible without:
-* [OpenSim]{https://github.com/opensim-org/opensim-core}
+* [OpenSim](https://github.com/opensim-org/opensim-core)
 * Stanford NMBL group & Stanford Mobilize Center
-* [OpenAI gym]{https://gym.openai.com/}
-* [OpenAI http client]{https://github.com/openai/gym-http-api}
-* [keras-rl]{https://github.com/matthiasplappert/keras-rl}
+* [OpenAI gym](https://gym.openai.com/)
+* [OpenAI http client](https://github.com/openai/gym-http-api)
+* [keras-rl](https://github.com/matthiasplappert/keras-rl)
 * and many other teams, individuals and projects
 
 For details please contact [Łukasz Kidziński](http://kidzinski.com/)
