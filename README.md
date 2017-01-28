@@ -67,9 +67,9 @@ Below we present how to train a basic controller using keras-rl. First you need 
     
 `keras-rl` is an excelent package compatible with OpenAi, which allows you to quickly build your first models!
 
-Go to
+Go to `scripts` subdirectory from this repository
     
-    scripts/
+    cd scripts
 
 There are two scripts:
 * `example.py` for training (and testing) an agent using DDPG algorithm. 
