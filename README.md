@@ -57,14 +57,23 @@ The goal is to construct a controler, i.e. a function from the state space to ac
     
     # Your reward is
     print("Total reward %f" % total_reward)
-    
-Below we present how to train a basic controller using keras-rl
 
 ## Training in keras-rl
 
-Go to
+Below we present how to train a basic controller using keras-rl. First you need to install extra packages
+
+    conda install keras
+    pip install git+https://github.com/matthiasplappert/keras-rl.git
     
-    scripts/
+`keras-rl` is an excelent package compatible with OpenAi, which allows you to quickly build your first models!
+
+Go to `scripts` subdirectory from this repository
+    
+    cd scripts
+
+There are two scripts:
+* `example.py` for training (and testing) an agent using DDPG algorithm. 
+* `submit.py` for submitting the result to crowdAI.org
 
 ### Training
 
@@ -75,7 +84,19 @@ Go to
 and for the gait example (walk as far as possible):
 
     python example.py --visualize --test --model sample
-    
+
+### Submitting
+
+After having trained your model you can submit it using the following script
+
+    python submit.py --model sample
+
+This script will interact with an environment on the crowdAI.org server.
+
+### Details
+
+These two scripts should be enough to get you started. Soon we will provide more details regarding the `example.py` script.
+
 ## Credits
 
 Stanford NMBL group & Stanford Mobilize Center. For details please contact @kidzik
