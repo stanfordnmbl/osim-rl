@@ -67,7 +67,11 @@ To run 200 steps of environment enter `python` interpreter and run:
     for i in range(500):
         observation, reward, done, info = env.step(env.action_space.sample())
 
-The goal is to construct a controler, i.e. a function from the state space to action space, to maximize the total reward. Suppose you trained a neural network mapping observations (the current state of the model) to actions (muscles activations), i.e. you have a function `action = my_controler(observation)`, then 
+![Random walk](https://github.com/stanfordnmbl/osim-rl/blob/master/demo/random.gif)
+
+In this example muscles are activated randomly (red color indicates an active muscle and blue an inactive muscle). Clearly with this technique we won't go to far.
+
+Your goal is to construct a controler, i.e. a function from the state space (current positions, velocities and accelerations of joints) to action space (muscles activations), to go as far as possible in limited time. Suppose you trained a neural network mapping observations (the current state of the model) to actions (muscles activations), i.e. you have a function `action = my_controler(observation)`, then 
 
     # ...
     total_reward = 0.0
@@ -79,18 +83,21 @@ The goal is to construct a controler, i.e. a function from the state space to ac
     # Your reward is
     print("Total reward %f" % total_reward)
 
+There are many ways to construct the function `my_controler(observation)`. We will show how to do it with a DDPG algorithm, using keras-rl.
+
 ## Training in keras-rl
 
 Below we present how to train a basic controller using [keras-rl](https://github.com/matthiasplappert/keras-rl). First you need to install extra packages
 
     conda install keras
     pip install git+https://github.com/matthiasplappert/keras-rl.git
+    git clone http://github.com/stanfordnmbl/osim-rl.git
     
 `keras-rl` is an excelent package compatible with OpenAi, which allows you to quickly build your first models!
 
 Go to `scripts` subdirectory from this repository
     
-    cd scripts
+    cd osim-rl/scripts
 
 There are two scripts:
 * `example.py` for training (and testing) an agent using DDPG algorithm. 
