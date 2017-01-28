@@ -17,9 +17,9 @@ class GaitEnv(OsimEnv):
     def compute_reward(self):
         obs = self.get_observation()
         x = self.osim_model.joints[0].getCoordinate(1).getValue(self.osim_model.state)
-        delta = x - self.last_x 
-        self.last_x = 0
-        return delta
+        delta = x - self.last_x
+        self.last_x = x
+        return delta * 100.
 
     def is_pelvis_too_low(self):
         y = self.osim_model.joints[0].getCoordinate(2).getValue(self.osim_model.state)
