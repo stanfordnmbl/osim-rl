@@ -21,7 +21,7 @@ import argparse
 import math
 
 # Total number of steps in training
-nallsteps = 1000
+nallsteps = 10000
 
 # Command line parameters
 parser = argparse.ArgumentParser(description='Train or test neural net motor controller')

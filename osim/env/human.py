@@ -7,10 +7,19 @@ from .osim import OsimEnv
 class GaitEnv(OsimEnv):
     ninput = 25
     model_path = os.path.join(os.path.dirname(__file__), '../models/gait9dof18musc.osim')
+    last_x = 0.0
+
+    def reset(self):
+        self.last_x = 0.0
+        return super(GaitEnv, self).reset()
+
 
     def compute_reward(self):
         obs = self.get_observation()
-        return self.osim_model.joints[0].getCoordinate(1).getValue(self.osim_model.state)
+        x = self.osim_model.joints[0].getCoordinate(1).getValue(self.osim_model.state)
+        delta = self.last_x - x
+        self.last_x = 0
+        return delta
 
     def is_pelvis_too_low(self):
         y = self.osim_model.joints[0].getCoordinate(2).getValue(self.osim_model.state)
