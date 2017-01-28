@@ -1,8 +1,8 @@
 # Learning how to walk
 
-Our movement originates in the brain. Many neurological disorders, such as Cerebral Palsy, Multiple Sclerosis or strokes can lead to problems with walking. Treatments are often symptomatic and its often hard to predict outcomes of surgeries. Understanding underlying mechanisms is key to improvement of treatments.
+Our movement originates in the brain. Many neurological disorders, such as Cerebral Palsy, Multiple Sclerosis or strokes can lead to problems with walking. Treatments are often symptomatic and its often hard to predict outcomes of surgeries. Understanding underlying mechanisms is key to improvement of treatments. This motivates our efforts to model the motor control unit of the brain.
 
-In this challenge your task is to model the motor control unit in human brain. You are given a musculoskeletal model with 16 muscles to control. At every 10ms you send signals to these muscles to activate or deactivate them. The objective is to walk as far as possible in 5 seconds.
+In this challenge your task is to model the motor control unit in a virtual environment. You are given a musculoskeletal model with 16 muscles to control. At every 10ms you send signals to these muscles to activate or deactivate them. The objective is to walk as far as possible in 5 seconds.
 
 For modelling physics we use [OpenSim](https://github.com/opensim-org/opensim-core) - a biomechanical physics environment for musculoskeletal simulations. 
 
