@@ -20,13 +20,11 @@ from keras.optimizers import RMSprop
 import argparse
 import math
 
-# Total number of steps in training
-nallsteps = 1000000
-
 # Command line parameters
 parser = argparse.ArgumentParser(description='Train or test neural net motor controller')
 parser.add_argument('--train', dest='train', action='store_true', default=True)
 parser.add_argument('--test', dest='train', action='store_false', default=True)
+parser.add_argument('--steps', dest='steps', action='store', default=10000)
 parser.add_argument('--visualize', dest='visualize', action='store_true', default=False)
 parser.add_argument('--model', dest='model', action='store', default="example.h5f")
 args = parser.parse_args()
@@ -35,6 +33,9 @@ args = parser.parse_args()
 env = GaitEnv(args.visualize)
 
 nb_actions = env.action_space.shape[0]
+
+# Total number of steps in training
+nallsteps = args.steps
 
 # Create networks for DDPG
 # Next, we build a very simple model.
