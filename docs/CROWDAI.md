@@ -7,7 +7,6 @@ In this challenge your task is to model the motor control unit in human brain. Y
 For modelling physics we use [OpenSim](https://github.com/opensim-org/opensim-core) - a biomechanical physics environment for musculoskeletal simulations. 
 
 ![HUMAN environment](https://github.com/kidzik/osim-rl/blob/master/demo/stand.gif)
-![ARM environment](https://github.com/kidzik/osim-rl/blob/master/demo/arm.gif)
 
 ## Evaluation
 
