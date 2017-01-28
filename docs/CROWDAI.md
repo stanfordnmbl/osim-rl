@@ -13,7 +13,7 @@ For modelling physics we use [OpenSim](https://github.com/opensim-org/opensim-co
 
 Your task is to build a function `f` which takes current state `observation` (25 dimensional vector) and returns mouscle activations `action` (16 dimensional vector) in a way that maximizes the reward.
 
-The trial ends either if the pelvis of the model goes below `0.7` meter or if you reach `500` iterations (corresponding to `5` seconds in the virtual environment). Let `N` be the length of the trial. Your total reward is simply position of the pelvis on the `x` axis after `N` steps. The value is given in centimeters.
+The trial ends either if the pelvis of the model goes below `0.7` meter or if you reach `500` iterations (corresponding to `5` seconds in the virtual environment). Let `N` be the length of the trial. Your total reward is simply the position of the pelvis on the `x` axis after `N` steps. The value is given in centimeters.
 
 After each iteration you get a reward equal to the change of the `x` axis of pelvis during this iteration.
 
