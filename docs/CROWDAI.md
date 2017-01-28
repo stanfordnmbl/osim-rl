@@ -1,17 +1,13 @@
-# osim-rl
+# Reinforcement learning for gait analysis
 
-## What?
+Our movement originates in brain. Many neurological disorders, such as Cerebral Palsy, Multiple Sclerosis or strokes can lead to problems with walking. Treatments are often symptomatic and its often hard to predict outcomes of surgeries. Understanding underlying mechanisms is key to improvement of treatments.
 
-[OpenSim](https://github.com/opensim-org/opensim-core) is a biomechanical physics environment for musculoskeletal simulations. Biomechanical community designed a range of musculoskeletal models compatible with this environment. These models can be, for example, fit to clinical data to understand underlying causes of injuries using inverse kinematics and inverse dynamics.
+In this challenge your task is to model the motor control unit in human brain. You are given a musculoskeletal model with 16 muscles to control. At every 10ms you send signals to these muscles to activate or deactivate them. The objective is to walk as far as possible in 5 seconds.
 
-For many of these models there are controllers designed for forward simulations of movement, however they are often finely tuned for the model and data. Advancements in reinforcement learning may allow building more robust controllers which can in turn provide another tool for validating the models. Moreover they could help visualize, for example, kinematics of patients after surgeries.
+For modelling physics we use [OpenSim](https://github.com/opensim-org/opensim-core) - a biomechanical physics environment for musculoskeletal simulations. 
 
-![ARM environment](https://github.com/kidzik/osim-rl/blob/master/demo/arm.gif)
 ![HUMAN environment](https://github.com/kidzik/osim-rl/blob/master/demo/stand.gif)
-
-## Objective
-
-The objective of this challenge is to model the motor control unit in human brain. Your task to control 16 muscles in a muscloskeletal model so that the model can move forward as fast as possible.
+![ARM environment](https://github.com/kidzik/osim-rl/blob/master/demo/arm.gif)
 
 ## Installation
 
@@ -85,7 +81,7 @@ and for the gait example (walk as far as possible):
 
     python example.py --visualize --test --model sample
 
-### Submitting
+### Submission
 
 After having trained your model you can submit it using the following script
 
@@ -93,10 +89,18 @@ After having trained your model you can submit it using the following script
 
 This script will interact with an environment on the crowdAI.org server.
 
-### Details
+### Other rules
 
-These two scripts should be enough to get you started. Soon we will provide more details regarding the `example.py` script.
+You are not allowed to:
+* Use external datasets (ex. kinematics of people walking)
+* Engineer the trajectories/muscle activations by hand
+
+You are allowed to:
+* Modify objective function for training (eg. extra penalty for falling or moving to fast, reward keeping head at the same level, etc.), by 
+* Modify the musculoskeletal model for training (eg. constrain the Y axis of pelvis)
+
+Note, that the model trained in your modified environment must still be compatible with the challenge environment. 
 
 ## Credits
 
-Stanford NMBL group & Stanford Mobilize Center. For details please contact @kidzik
+Stanford NMBL group & Stanford Mobilize Center. For details please contact [Łukasz Kidziński](http://kidzinski.com/)
