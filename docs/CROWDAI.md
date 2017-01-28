@@ -19,6 +19,22 @@ After each iteration you get a reward equal to the change of the `x` axis of pel
 
 You can test your model on your local machine. For submission, you will need to interact with the remote environment: crowdAI sends you the current `observation` and you need to send back the action you take in the given state.
 
+### Rules
+
+You are allowed to:
+* Modify objective function for training (eg. extra penalty for falling or moving to fast, reward keeping head at the same level, etc.), by 
+* Modify the musculoskeletal model for training (eg. constrain the Y axis of pelvis)
+* Submit a maximum of one submissions each 6 hours.
+
+Note, that the model trained in your modified environment must still be compatible with the challenge environment. 
+
+You are not allowed to:
+* Use external datasets (ex. kinematics of people walking)
+* Engineer the trajectories/muscle activations by hand
+
+Other:
+* crowdAI reserves the right to modify challenge rules as required.
+
 ## Installation
 
 Requires OpenSim 4.0 - https://github.com/opensim-org/opensim-core . You can either install it from source (https://github.com/opensim-org/opensim-core/releases/tag/v4.0.0_alpha) or use conda builds as presented below.
@@ -98,18 +114,6 @@ After having trained your model you can submit it using the following script
     python submit.py --model sample
 
 This script will interact with an environment on the crowdAI.org server.
-
-### Other rules
-
-You are not allowed to:
-* Use external datasets (ex. kinematics of people walking)
-* Engineer the trajectories/muscle activations by hand
-
-You are allowed to:
-* Modify objective function for training (eg. extra penalty for falling or moving to fast, reward keeping head at the same level, etc.), by 
-* Modify the musculoskeletal model for training (eg. constrain the Y axis of pelvis)
-
-Note, that the model trained in your modified environment must still be compatible with the challenge environment. 
 
 ## Credits
 
