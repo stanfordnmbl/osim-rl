@@ -56,6 +56,12 @@ Then on any system you can install the RL environment with
     conda install -c conda-forge lapack git
     pip install git+https://github.com/kidzik/osim-rl.git
 
+If the command `python -c "import opensim"` runs smoothly you are done! If you encounter this error
+
+    ImportError: /home/deepart/anaconda2/envs/opensim-rl/lib/python2.7/site-packages/opensim/../../../libSimTKcommon.so.3.6: symbol _ZTVNSt7__cxx1119basic_istringstreamIcSt11char_traitsIcESaIcEEE, version GLIBCXX_3.4.21 not defined in file libstdc++.so.6 with link time reference
+    
+Try `conda install libgcc`
+
 ## Basic usage
 
 To run 200 steps of environment enter `python` interpreter and run:
