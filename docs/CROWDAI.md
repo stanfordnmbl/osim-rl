@@ -1,17 +1,38 @@
-# osim-rl
+# Learning how to walk
 
-## What?
+Our movement originates in brain. Many neurological disorders, such as Cerebral Palsy, Multiple Sclerosis or strokes can lead to problems with walking. Treatments are often symptomatic and its often hard to predict outcomes of surgeries. Understanding underlying mechanisms is key to improvement of treatments.
 
-[OpenSim](https://github.com/opensim-org/opensim-core) is a biomechanical physics environment for musculoskeletal simulations. Biomechanical community designed a range of musculoskeletal models compatible with this environment. These models can be, for example, fit to clinical data to understand underlying causes of injuries using inverse kinematics and inverse dynamics.
+In this challenge your task is to model the motor control unit in human brain. You are given a musculoskeletal model with 16 muscles to control. At every 10ms you send signals to these muscles to activate or deactivate them. The objective is to walk as far as possible in 5 seconds.
 
-For many of these models there are controllers designed for forward simulations of movement, however they are often finely tuned for the model and data. Advancements in reinforcement learning may allow building more robust controllers which can in turn provide another tool for validating the models. Moreover they could help visualize, for example, kinematics of patients after surgeries.
+For modelling physics we use [OpenSim](https://github.com/opensim-org/opensim-core) - a biomechanical physics environment for musculoskeletal simulations. 
 
-![ARM environment](https://github.com/kidzik/osim-rl/blob/master/demo/arm.gif)
 ![HUMAN environment](https://github.com/kidzik/osim-rl/blob/master/demo/stand.gif)
 
-## Objective
+## Evaluation
 
-The objective of this challenge is to model the motor control unit in human brain. Your task to control 16 muscles in a muscloskeletal model so that the model can move forward as fast as possible.
+Your task is to build a function `f` which takes current state `observation` (25 dimensional vector) and returns mouscle activations `action` (16 dimensional vector) in a way that maximizes the reward.
+
+The trial ends either if the pelvis of the model goes below `0.7` meter or if you reach `500` iterations (corresponding to `5` seconds in the virtual environment). Let `N` be the length of the trial. Your total reward is simply the position of the pelvis on the `x` axis after `N` steps. The value is given in centimeters.
+
+After each iteration you get a reward equal to the change of the `x` axis of pelvis during this iteration.
+
+You can test your model on your local machine. For submission, you will need to interact with the remote environment: crowdAI sends you the current `observation` and you need to send back the action you take in the given state.
+
+### Rules
+
+You are allowed to:
+* Modify objective function for training (eg. extra penalty for falling or moving to fast, reward keeping head at the same level, etc.), by 
+* Modify the musculoskeletal model for training (eg. constrain the Y axis of pelvis)
+* Submit a maximum of one submissions each 6 hours.
+
+Note, that the model trained in your modified environment must still be compatible with the challenge environment. 
+
+You are not allowed to:
+* Use external datasets (ex. kinematics of people walking)
+* Engineer the trajectories/muscle activations by hand
+
+Other:
+* crowdAI reserves the right to modify challenge rules as required.
 
 ## Installation
 
@@ -41,7 +62,7 @@ To run 200 steps of environment enter `python` interpreter and run:
 
     from osim.env import GaitEnv
 
-    env = ArmEnv(visualize=True)
+    env = GaitEnv(visualize=True)
     observation = env.reset()
     for i in range(500):
         observation, reward, done, info = env.step(env.action_space.sample())
@@ -60,7 +81,7 @@ The goal is to construct a controler, i.e. a function from the state space to ac
 
 ## Training in keras-rl
 
-Below we present how to train a basic controller using keras-rl. First you need to install extra packages
+Below we present how to train a basic controller using [keras-rl](https://github.com/matthiasplappert/keras-rl). First you need to install extra packages
 
     conda install keras
     pip install git+https://github.com/matthiasplappert/keras-rl.git
@@ -85,7 +106,7 @@ and for the gait example (walk as far as possible):
 
     python example.py --visualize --test --model sample
 
-### Submitting
+### Submission
 
 After having trained your model you can submit it using the following script
 
@@ -93,10 +114,21 @@ After having trained your model you can submit it using the following script
 
 This script will interact with an environment on the crowdAI.org server.
 
-### Details
+## Questions
 
-These two scripts should be enough to get you started. Soon we will provide more details regarding the `example.py` script.
+**Can I use different languages than python?**
+
+Yes, you just need to set up your own python grader and interact with it
+https://github.com/kidzik/osim-rl-grader. Find more details here [OpenAI http client](https://github.com/openai/gym-http-api)
 
 ## Credits
 
-Stanford NMBL group & Stanford Mobilize Center. For details please contact @kidzik
+This challenge wouldn't be possible without:
+* [OpenSim](https://github.com/opensim-org/opensim-core)
+* Stanford NMBL group & Stanford Mobilize Center
+* [OpenAI gym](https://gym.openai.com/)
+* [OpenAI http client](https://github.com/openai/gym-http-api)
+* [keras-rl](https://github.com/matthiasplappert/keras-rl)
+* and many other teams, individuals and projects
+
+For details please contact [Łukasz Kidziński](http://kidzinski.com/)
