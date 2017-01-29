@@ -12,6 +12,7 @@ class Osim(object):
     state = None
     state0 = None
     joints = []
+    bodies = []
 
     def __init__(self, model_path, visualize):
         self.model = opensim.Model(model_path)
@@ -51,6 +52,7 @@ class OsimEnv(gym.Env):
     visualize = False
     ninput = 0
     noutput = 0
+    last_action = None
 
     metadata = {
         'render.modes': ['human'],
@@ -127,6 +129,8 @@ class OsimEnv(gym.Env):
             muscle.setActivation(self.osim_model.state, float(action[j]))
 
     def _step(self, action):
+        self.last_action = action
+        
         # Integrate one step
         self.osim_model.manager.setInitialTime(self.stepsize * self.istep)
         self.osim_model.manager.setFinalTime(self.stepsize * (self.istep + 1))

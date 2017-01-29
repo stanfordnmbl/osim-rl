@@ -8,21 +8,33 @@ class GaitEnv(OsimEnv):
     ninput = 25
     model_path = os.path.join(os.path.dirname(__file__), '../models/gait9dof18musc.osim')
     last_x = 0.0
+    nsteps = 0
 
     def reset(self):
         self.last_x = 0.0
+        self.nsteps = 0
         return super(GaitEnv, self).reset()
 
 
     def compute_reward(self):
-        obs = self.get_observation()
+        tilt = self.osim_model.joints[0].getCoordinate(0).getValue(self.osim_model.state)
+        tilt_vel = self.osim_model.joints[0].getCoordinate(0).getSpeedValue(self.osim_model.state)
         x = self.osim_model.joints[0].getCoordinate(1).getValue(self.osim_model.state)
         delta = x - self.last_x
         self.last_x = x
-        return delta * 100.
+        y_vel = self.osim_model.joints[0].getCoordinate(2).getSpeedValue(self.osim_model.state)
+#        print(self.last_action)
+        pen_musc = sum([x**2 for x in self.last_action]) / len(self.last_action)
+#        acc_y = self.osim_model.joints[0].getCoordinate(2).getValue(self.osim_model.state)
+#        return delta * 100. + vel_y/5.0 - pen_musc + 1.0 - (10*tilt)**2
+
+#        print(self.osim_model.model.getContactGeometrySet().get(0).getBodyName())
+#        print(self.osim_model.model.getContactGeometrySet().get(4).getLocation()[0])
+
+        return delta * 100. + min(y_vel,0.0)/5.0 - (tilt)**2 - pen_musc - (tilt_vel)**2
 
     def is_pelvis_too_low(self):
-        y = self.osim_model.joints[0].getCoordinate(2).getValue(self.osim_model.state)
+        y = self.osim_model.joints[0].getCoordinate(3).getValue(self.osim_model.state)
         return (y < 0.8)
     
     def is_done(self):
@@ -50,9 +62,7 @@ class GaitEnv(OsimEnv):
 
         # self.osim_model.joints.append(opensim.PinJoint.safeDownCast(self.osim_model.jointSet.get(11)))
         # self.osim_model.joints.append(opensim.WeldJoint.safeDownCast(self.osim_model.jointSet.get(12)))
-        
-        for i in range(18):
-            print(self.osim_model.muscleSet.get(i).getName())
+
 
     def get_observation(self):
         invars = np.array([0] * self.ninput, dtype='f')
@@ -82,6 +92,8 @@ class GaitEnv(OsimEnv):
         invars[22] = vel[0]
         invars[23] = vel[1]
         invars[24] = vel[2]
+
+        self.nsteps = self.nsteps + 1
 
         # for i in range(0,self.ninput):
         #     invars[i] = self.sanitify(invars[i])
