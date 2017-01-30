@@ -5,25 +5,54 @@ import os
 from .osim import OsimEnv
 
 class GaitEnv(OsimEnv):
-    ninput = 25
+    ninput = 31
     model_path = os.path.join(os.path.dirname(__file__), '../models/gait9dof18musc.osim')
-    last_x = 0.0
 
     def reset(self):
-        self.last_x = 0.0
+        self.last_state = [0] * self.ninput
+        self.current_state = [0] * self.ninput
         return super(GaitEnv, self).reset()
 
+    def getHead(self):
+        return self.osim_model.bodies[2].getTransformInGround(self.osim_model.state).p()
 
-    def compute_reward(self):
-        obs = self.get_observation()
-        x = self.osim_model.joints[0].getCoordinate(1).getValue(self.osim_model.state)
-        delta = x - self.last_x
-        self.last_x = x
-        return delta * 100.
+    def getFootL(self):
+        return self.osim_model.bodies[0].getTransformInGround(self.osim_model.state).p()
+
+    def getFootR(self):
+        return self.osim_model.bodies[1].getTransformInGround(self.osim_model.state).p()
+
+    def getPelvis(self):
+        return self.osim_model.bodies[3].getTransformInGround(self.osim_model.state).p()
+
+    def compute_reward(self):        
+        tilt = self.current_state[1] # self.osim_model.joints[0].getCoordinate(0).getValue(self.osim_model.state)
+        tilt_vel = self.current_state[4] # self.osim_model.joints[0].getCoordinate(0).getSpeedValue(self.osim_model.state)
+        delta = self.current_state[2] - self.last_state[2]
+        y_vel = self.current_state[3] # self.osim_model.joints[0].getCoordinate(2).getSpeedValue(self.osim_model.state)
+        pen_musc = sum([x**2 for x in self.last_action]) / len(self.last_action)
+
+        pos = self.current_state[19] # self.osim_model.model.calcMassCenterPosition(self.osim_model.state)[0]
+        
+#            min(y_vel,0.0)/5.0 -\
+        reward = delta * 0.0 +\
+            (tilt)**2 -\
+            pen_musc -\
+            (tilt_vel)**2 -\
+            self.current_state[27] + self.current_state[29] +\
+            100*(self.current_state[27] - self.last_state[27]) +\
+            100*(self.current_state[29] - self.last_state[29]) +\
+            (self.current_state[27] + self.current_state[29] - 2*self.current_state[25])**2 +\
+            10 * min(0.3, abs(self.current_state[27] - self.current_state[29])) *\
+            abs(min(self.current_state[28],0.1) - min(self.current_state[30],0.1))\
+
+        self.last_state = self.current_state
+
+        return reward
 
     def is_pelvis_too_low(self):
         y = self.osim_model.joints[0].getCoordinate(2).getValue(self.osim_model.state)
-        return (y < 0.8)
+        return (y < 0.7)
     
     def is_done(self):
         return self.is_pelvis_too_low()
@@ -50,9 +79,14 @@ class GaitEnv(OsimEnv):
 
         # self.osim_model.joints.append(opensim.PinJoint.safeDownCast(self.osim_model.jointSet.get(11)))
         # self.osim_model.joints.append(opensim.WeldJoint.safeDownCast(self.osim_model.jointSet.get(12)))
-        
-        for i in range(18):
-            print(self.osim_model.muscleSet.get(i).getName())
+
+        for i in range(13):
+            print(self.osim_model.bodySet.get(i).getName())
+
+        self.osim_model.bodies.append(self.osim_model.bodySet.get(5))
+        self.osim_model.bodies.append(self.osim_model.bodySet.get(10))
+        self.osim_model.bodies.append(self.osim_model.bodySet.get(12))
+        self.osim_model.bodies.append(self.osim_model.bodySet.get(0))
 
     def get_observation(self):
         invars = np.array([0] * self.ninput, dtype='f')
@@ -77,12 +111,30 @@ class GaitEnv(OsimEnv):
         
         invars[19] = pos[0]
         invars[20] = pos[1]
-        invars[21] = pos[2]
 
-        invars[22] = vel[0]
-        invars[23] = vel[1]
-        invars[24] = vel[2]
+        invars[21] = vel[0]
+        invars[22] = vel[1]
 
+        posH = self.getHead()
+        posP = self.getPelvis()
+        self.currentL = self.getFootL()
+        self.currentR = self.getFootR()
+
+        invars[23] = posH[0]
+        invars[24] = posH[1]
+
+        invars[25] = posP[0]
+        invars[26] = posP[1]
+
+        invars[27] = self.currentL[0]
+        invars[28] = self.currentL[1]
+
+        invars[29] = self.currentR[0]
+        invars[30] = self.currentR[1]
+
+
+        self.current_state = invars
+        
         # for i in range(0,self.ninput):
         #     invars[i] = self.sanitify(invars[i])
 
