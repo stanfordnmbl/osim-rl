@@ -7,7 +7,7 @@ import numpy as np
 import argparse
 
 # Settings
-CROWDAI_TOKEN = "TOKEN_TEST"
+CROWDAI_TOKEN = "518ec33d7af656bddfcb83ab614ba079"
 remote_base = 'http://54.154.84.135:80'
 
 # Command line parameters
