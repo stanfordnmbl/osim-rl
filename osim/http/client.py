@@ -50,7 +50,8 @@ class Client(object):
                 'token': token}
         resp = self._post_request(route, data)
         instance_id = resp['instance_id']
-        return instance_id
+        self.env_monitor_start(instance_id, "tmp", force=True)
+        return self.env_reset(instance_id)
 
     def env_reset(self, instance_id):
         route = '/v1/envs/{}/reset/'.format(instance_id)
@@ -77,10 +78,15 @@ class Client(object):
                 'video_callable': video_callable}
         self._post_request(route, data)
 
-    def env_monitor_close(self, instance_id):
+    def submit(self, instance_id):
         route = '/v1/envs/{}/monitor/close/'.format(instance_id)
         result = self._post_request(route, None)
-        print("Your total reward from this submission: %f" % result['reward'])
+        if result['reward']:
+            print("Your total reward from this submission: %f" % result['reward'])
+        else:
+            print("There was an error in your submission. Please contact administrators.")
+        route = '/v1/envs/{}/close/'.format(instance_id)
+        self.env_close(instance_id)
 
     def env_close(self, instance_id):
         route = '/v1/envs/{}/close/'.format(instance_id)

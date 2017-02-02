@@ -33,15 +33,15 @@ class GaitEnv(OsimEnv):
         pen_musc = sum([x**2 for x in self.last_action]) / len(self.last_action)
 
         pos = self.current_state[19] # self.osim_model.model.calcMassCenterPosition(self.osim_model.state)[0]
-        
+
 #            min(y_vel,0.0)/5.0 -\
-        reward = delta * 10.0\
-            -(tilt)**2\
+        reward = delta * 5.0\
+            -(tilt-0.1)**2\
             -pen_musc\
             -(tilt_vel)**2\
-            +100*(self.current_state[27] - self.last_state[27])\
-            +100*(self.current_state[29] - self.last_state[29])\
-            +(self.current_state[27] + self.current_state[29] - 2*self.current_state[25])**2 #+\
+            +30*(self.current_state[27] - self.last_state[27])\
+            +30*(self.current_state[29] - self.last_state[29])\
+            -(self.current_state[27] + self.current_state[29] - 2*self.current_state[25])**2 #+\
             # 10 * min(0.3, abs(self.current_state[27] - self.current_state[29])) *\
             # abs(min(self.current_state[28],0.1) - min(self.current_state[30],0.1))
 
