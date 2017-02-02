@@ -7,12 +7,13 @@ import numpy as np
 import argparse
 
 # Settings
-CROWDAI_TOKEN = "TOKEN_TEST"
+CROWDAI_TOKEN = "518ec33d7af656bddfcb83ab614ba079"
 remote_base = 'http://54.154.84.135:80'
 
 # Command line parameters
 parser = argparse.ArgumentParser(description='Submit the result to crowdAI')
 parser.add_argument('--model', dest='model', action='store', default="example_actor.h5f")
+parser.add_argument('--token', dest='token', action='store', default=CROWDAI_TOKEN)
 args = parser.parse_args()
 
 env = GaitEnv(visualize=False)
@@ -35,18 +36,14 @@ actor.load_weights(args.model)
 client = Client(remote_base)
 
 # Create environment
-env_id = "Gait"
-instance_id = client.env_create(env_id, CROWDAI_TOKEN)
+observation = client.env_create(args.token)
 
 # Run a single step
-client.env_monitor_start(instance_id, directory='tmp', force=True)
-observation = client.env_reset(instance_id)
-for i in range(500):
+for i in range(501):
     v = np.array(observation).reshape((-1,1,env.observation_space.shape[0]))
-    [observation, reward, done, info] = client.env_step(instance_id, actor.predict(v)[0].tolist(), True)
+    [observation, reward, done, info] = client.env_step(args.token, actor.predict(v)[0].tolist(), True)
     if done:
         break
 
-client.env_monitor_close(instance_id)
-client.env_close(instance_id)
+client.submit(args.token)
 
