@@ -22,17 +22,20 @@ Below we assume that Anaconda is installed.
 
 For the moment we only support 64-bit architecture (32-bit coming soon) on either Windows, Linux or Mac OSX. On Windows open a command prompt and type:
     
-    conda create -n opensim-rl -c kidzik opensim
+    conda create -n opensim-rl
     activate opensim-rl
+    conda install -c conda-forge lapack git
+    conda install -c kidzik opensim
 
 on Linux/OSX run:
 
-    conda create -n opensim-rl -c kidzik opensim
+    conda create -n opensim-rl
     source activate opensim-rl
+    conda install -c conda-forge lapack git
+    conda install -c kidzik opensim
 
 Then on any system you can install the RL environment with
 
-    conda install -c conda-forge lapack git
     pip install git+https://github.com/kidzik/osim-rl.git
     
 If the command `python -c "import opensim"` runs smoothly you are done! If you encounter this error
