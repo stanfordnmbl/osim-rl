@@ -86,7 +86,7 @@ class OsimEnv(gym.Env):
     def __init__(self, visualize = True, noutput = None):
         self.visualize = visualize
         self.osim_model = Osim(self.model_path, self.visualize)
-        
+
         self.noutput = noutput
         if not noutput:
             self.noutput = self.osim_model.muscleSet.getSize()
@@ -110,7 +110,7 @@ class OsimEnv(gym.Env):
     def _reset(self):
         self.istep = 0
         self.osim_model.reset()
-        return [0.0] * self.ninput
+        return np.array([0.0] * self.ninput)
 
     def sanitify(self, x):
         if math.isnan(x):
@@ -130,7 +130,7 @@ class OsimEnv(gym.Env):
 
     def _step(self, action):
         self.last_action = action
-        
+
         # Integrate one step
         self.osim_model.manager.setInitialTime(self.stepsize * self.istep)
         self.osim_model.manager.setFinalTime(self.stepsize * (self.istep + 1))
