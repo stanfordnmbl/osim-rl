@@ -8,7 +8,7 @@ import argparse
 
 # Settings
 CROWDAI_TOKEN = "518ec33d7af656bddfcb83ab614ba079"
-remote_base = 'http://54.154.84.135:80'
+remote_base = 'http://grader.crowdai.org'
 
 # Command line parameters
 parser = argparse.ArgumentParser(description='Submit the result to crowdAI')
