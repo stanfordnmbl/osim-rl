@@ -41,9 +41,8 @@ observation = client.env_create(args.token)
 # Run a single step
 for i in range(501):
     v = np.array(observation).reshape((-1,1,env.observation_space.shape[0]))
-    [observation, reward, done, info] = client.env_step(args.token, actor.predict(v)[0].tolist(), True)
+    [observation, reward, done, info] = client.env_step(actor.predict(v)[0].tolist(), True)
     if done:
         break
 
 client.submit(args.token)
-
