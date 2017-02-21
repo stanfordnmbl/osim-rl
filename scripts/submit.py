@@ -45,4 +45,4 @@ for i in range(501):
     if done:
         break
 
-client.submit(args.token)
+client.submit()
