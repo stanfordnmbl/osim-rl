@@ -16,6 +16,7 @@ class Client(object):
         self.remote_base = remote_base
         self.session = requests.Session()
         self.session.headers.update({'Content-type': 'application/json'})
+        self.instance_id = None
 
     def _parse_server_error_or_raise_for_status(self, resp):
         j = {}
@@ -43,25 +44,25 @@ class Client(object):
         logger.info("GET {}".format(url))
         resp = self.session.get(url)
         return self._parse_server_error_or_raise_for_status(resp)
-        
+
     def env_create(self, token):
         env_id = "Gait"
         route = '/v1/envs/'
         data = {'env_id': env_id,
                 'token': token}
         resp = self._post_request(route, data)
-        instance_id = resp['instance_id']
-        self.env_monitor_start(instance_id, "tmp", force=True)
-        return self.env_reset(instance_id)
+        self.instance_id = resp['instance_id']
+        self.env_monitor_start("tmp", force=True)
+        return self.env_reset()
 
-    def env_reset(self, instance_id):
-        route = '/v1/envs/{}/reset/'.format(instance_id)
+    def env_reset(self):
+        route = '/v1/envs/{}/reset/'.format(self.instance_id)
         resp = self._post_request(route, None)
         observation = resp['observation']
         return observation
 
-    def env_step(self, instance_id, action, render=False):
-        route = '/v1/envs/{}/step/'.format(instance_id)
+    def env_step(self, action, render=False):
+        route = '/v1/envs/{}/step/'.format(self.instance_id)
         data = {'action': action, 'render': render}
         resp = self._post_request(route, data)
         observation = resp['observation']
@@ -70,27 +71,27 @@ class Client(object):
         info = resp['info']
         return [observation, reward, done, info]
 
-    def env_monitor_start(self, instance_id, directory,
+    def env_monitor_start(self, directory,
                               force=False, resume=False, video_callable=False):
-        route = '/v1/envs/{}/monitor/start/'.format(instance_id)
+        route = '/v1/envs/{}/monitor/start/'.format(self.instance_id)
         data = {'directory': directory,
                 'force': force,
                 'resume': resume,
                 'video_callable': video_callable}
         self._post_request(route, data)
 
-    def submit(self, instance_id):
-        route = '/v1/envs/{}/monitor/close/'.format(instance_id)
+    def submit(self):
+        route = '/v1/envs/{}/monitor/close/'.format(self.instance_id)
         result = self._post_request(route, None)
         if result['reward']:
             print("Your total reward from this submission: %f" % result['reward'])
         else:
             print("There was an error in your submission. Please contact administrators.")
-        route = '/v1/envs/{}/close/'.format(instance_id)
-        self.env_close(instance_id)
+        route = '/v1/envs/{}/close/'.format(self.instance_id)
+        self.env_close()
 
-    def env_close(self, instance_id):
-        route = '/v1/envs/{}/close/'.format(instance_id)
+    def env_close(self):
+        route = '/v1/envs/{}/close/'.format(self.instance_id)
         self._post_request(route, None)
 
 class ServerError(Exception):
