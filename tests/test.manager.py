@@ -10,8 +10,8 @@ stepsize = 0.01
 
 for i in range(10):
     for j in range(muscleSet.getSize()):
-#        muscleSet.get(j).setActivation(state, 1.0)
-        muscleSet.get(j).setExcitation(state, 1.0)
+        muscleSet.get(j).setActivation(state, 1.0)
+#        muscleSet.get(j).setExcitation(state, 1.0)
     t = state.getTime()
     manager.setInitialTime(stepsize * i)
     manager.setFinalTime(stepsize * (i + 1))
