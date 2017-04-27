@@ -6,7 +6,7 @@ import opensim
 stepsize = 0.01
 
 # Load existing model
-model_path = "../osim/models/arm2dof6musc.osim"
+model_path = "../osim/models/gait9dof18musc.osim"
 model = opensim.Model(model_path)
 model.setUseVisualizer(True)
 
@@ -18,18 +18,26 @@ controllers = []
 # Add actuators to the controller
 state = model.initSystem() # we need to initialize the system (?)
 muscleSet = model.getMuscles()
+forceSet = model.getForceSet()
+
 for j in range(muscleSet.getSize()):
     func = opensim.Constant(1.0)
     controllers.append(func)
     brain.addActuator(muscleSet.get(j))
     brain.prescribeControlForActuator(j, func)
+
 model.addController(brain)
 
 # Reinitialize the system with the new controller
 state0 = model.initSystem()
 state = opensim.State(state0)
 
-for i in range(1000):
+# Get ligaments
+ligamentSet = []
+for j in range(20, 26):
+    ligamentSet.append(opensim.CoordinateLimitForce.safeDownCast(forceSet.get(j)))
+
+for i in range(100):
     # Set some excitation values
     for j in range(muscleSet.getSize()):
         controllers[j].setValue( ((i + j) % 10) * 0.1)
@@ -43,6 +51,10 @@ for i in range(1000):
     model.realizeDynamics(state)
     print("%f %f" % (t,muscleSet.get(0).getActivation(state)))
     print("%f %f" % (t,muscleSet.get(0).getExcitation(state)))
+
+    # Ligaments
+    for lig in ligamentSet:
+        print(lig.calcLimitForce(state))
 
     # Restart the model every 100 frames
     if (i + 1) % 100 == 0:
