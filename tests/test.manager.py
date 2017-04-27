@@ -32,6 +32,9 @@ model.addController(brain)
 state0 = model.initSystem()
 state = opensim.State(state0)
 
+# Change max force
+muscleSet.get(0).setMaxIsometricForce(100000.0)
+
 # Get ligaments
 ligamentSet = []
 for j in range(20, 26):
