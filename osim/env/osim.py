@@ -46,6 +46,15 @@ class Osim(object):
         for i in range(len(self.curforces)):
             self.muscleSet.get(i).setMaxIsometricForce(self.curforces[i] * self.maxforces[i])
 
+    def get_body(self, name):
+        return self.bodySet.get(name)
+
+    def get_joint(self, name):
+        return self.jointSet.get(name)
+
+    def get_muscle(self, name):
+        return self.muscleSet.get(name)
+
     def reset(self):
         if not self.state0:
             self.state0 = self.model.initSystem()
@@ -130,7 +139,7 @@ class OsimEnv(gym.Env):
     def _reset(self):
         self.istep = 0
         self.osim_model.reset()
-        return np.array([0.0] * self.ninput)
+        return self.get_observation()
 
     def sanitify(self, x):
         if math.isnan(x):
@@ -168,12 +177,5 @@ class OsimEnv(gym.Env):
         res = [ self.get_observation(), self.compute_reward(), self.is_done(), {} ]
         return res
 
-
     def _render(self, mode='human', close=False):
         return
-
-    def log_diagnostics(self, paths):
-        """
-        Log extra information per iteration based on the collected paths
-        """
-        pass

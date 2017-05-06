@@ -1,6 +1,6 @@
 from osim.env.run import RunEnv, generate_env
 
-env = RunEnv(visualize=True)
+env = RunEnv(visualize=False)
 env.setup(10)
 
 observation = env.reset()
