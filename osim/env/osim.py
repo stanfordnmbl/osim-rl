@@ -55,11 +55,8 @@ class Osim(object):
     def get_muscle(self, name):
         return self.muscleSet.get(name)
 
-    def reset(self):
-        if not self.state0:
-            self.state0 = self.model.initSystem()
-
-        self.state = opensim.State(self.state0)
+    def initializeState(self):
+        self.state = self.model.initializeState()
 
 class Spec(object):
     def __init__(self, *args, **kwargs):
@@ -138,7 +135,7 @@ class OsimEnv(gym.Env):
 
     def _reset(self):
         self.istep = 0
-        self.osim_model.reset()
+        self.osim_model.initializeState()
         return self.get_observation()
 
     def sanitify(self, x):
