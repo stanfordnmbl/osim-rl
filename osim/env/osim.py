@@ -129,7 +129,7 @@ class OsimEnv(gym.Env):
         self.horizon = self.timestep_limit
 
         self.configure()
-        self.reset()
+#        self.reset()
 
         self.spec = Spec()
 
