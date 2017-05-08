@@ -45,8 +45,7 @@ class Client(object):
         resp = self.session.get(url)
         return self._parse_server_error_or_raise_for_status(resp)
 
-    def env_create(self, token):
-        env_id = "Gait"
+    def env_create(self, token, env_id = "Run"):
         route = '/v1/envs/'
         data = {'env_id': env_id,
                 'token': token}
