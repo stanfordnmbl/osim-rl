@@ -77,6 +77,7 @@ class RunEnv(OsimEnv):
         self.last_state = super(RunEnv, self).reset()
         self.setup(difficulty, seed)
         self.current_state = self.last_state
+        return self.get_observation()
 
     def compute_reward(self):
         # Compute ligaments penalty
