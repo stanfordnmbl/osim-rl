@@ -17,11 +17,12 @@ args = parser.parse_args()
 
 env = RunEnv(visualize=False)
 
-nb_actions = 18 # env.action_space.shape[0]
+nb_actions = env.action_space.shape[0]
 
+print(env.observation_space.shape)
 # Load the acton
 actor = Sequential()
-actor.add(Flatten(input_shape=(1,) + (31,))) # env.observation_space.shape
+actor.add(Flatten(input_shape=(1,) + env.observation_space.shape)) # 
 actor.add(Dense(32))
 actor.add(Activation('relu'))
 actor.add(Dense(32))
@@ -30,7 +31,7 @@ actor.add(Dense(32))
 actor.add(Activation('relu'))
 actor.add(Dense(nb_actions))
 actor.add(Activation('sigmoid'))
-actor.load_weights(args.model)
+#actor.load_weights(args.model)
 
 client = Client(remote_base)
 
@@ -39,7 +40,6 @@ observation = client.env_create(args.token)
 
 # Run a single step
 for i in range(501):
-    print(observation)
     v = np.array(observation).reshape((-1,1,env.observation_space.shape[0]))
     [observation, reward, done, info] = client.env_step(actor.predict(v)[0].tolist(), True)
     if done:

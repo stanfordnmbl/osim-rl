@@ -49,6 +49,9 @@ class RunEnv(OsimEnv):
     pelvis = None
     env_desc = {"obstacles": [], "muscles": [1]*18}
 
+    ninput = 41
+    noutput = 18
+
     def __init__(self, visualize = True, noutput = None):
         super(RunEnv, self).__init__(visualize = False, noutput = noutput)
         self.osim_model.model.setUseVisualizer(visualize)
