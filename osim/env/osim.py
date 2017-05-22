@@ -150,7 +150,7 @@ class OsimEnv(gym.Env):
 
     def activate_muscles(self, action):
         for j in range(self.osim_model.muscleSet.getSize()):
-            self.osim_model.controllers[j].setValue( action[j] )
+            self.osim_model.controllers[j].setValue( float(action[j]) )
 
     def _step(self, action):
         self.last_action = action

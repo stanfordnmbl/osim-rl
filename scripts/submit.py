@@ -7,7 +7,7 @@ import numpy as np
 import argparse
 
 # Settings
-remote_base = 'http://127.0.0.1:5000' #'http://grader.crowdai.org'
+remote_base = 'http://grader.crowdai.org'
 
 # Command line parameters
 parser = argparse.ArgumentParser(description='Submit the result to crowdAI')
@@ -42,6 +42,7 @@ observation = client.env_create(args.token)
 for i in range(501):
     v = np.array(observation).reshape((-1,1,env.observation_space.shape[0]))
     [observation, reward, done, info] = client.env_step(actor.predict(v)[0].tolist(), True)
+    print(observation)
     if done:
         break
 

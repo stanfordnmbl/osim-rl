@@ -30,7 +30,8 @@ parser.add_argument('--model', dest='model', action='store', default="example.h5
 args = parser.parse_args()
 
 # Load walking environment
-env = GaitEnv(args.visualize)
+env = RunEnv(args.visualize)
+env.reset()
 
 nb_actions = env.action_space.shape[0]
 
