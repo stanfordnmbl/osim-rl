@@ -46,10 +46,12 @@ Your goal is to construct a controler, i.e. a function from the state space (cur
 
     # ...
     total_reward = 0.0
-    for i in range(500):
+    for i in range(200):
         # make a step given by the controler and record the state and the reward
         observation, reward, done, info = env.step(my_controler(observation)) 
         total_reward += reward
+        if done:
+            break
     
     # Your reward is
     print("Total reward %f" % total_reward)
@@ -65,6 +67,14 @@ The trial ends either if the pelvis of the model goes below `0.7` meter or if yo
 After each iteration you get a reward equal to the change of the `x` axis of pelvis during this iteration.
 
 You can test your model on your local machine. For submission, you will need to interact with the remote environment: crowdAI sends you the current `observation` and you need to send back the action you take in the given state.
+
+### Submission
+
+After having trained your model you can submit it by modifying the `/scripts/submit.py` (see the comments in the file for details) and executing
+
+    python submit.py
+
+This script will interact with an environment on the crowdAI.org server.
 
 ### Rules
 
@@ -107,14 +117,6 @@ and for the gait example (walk as far as possible):
 ### Functions
 
 ### Physics of the model
-
-### Submission
-
-After having trained your model you can submit it using the following script
-
-    python submit.py --model sample
-
-This script will interact with an environment on the crowdAI.org server.
 
 ## Questions
 
