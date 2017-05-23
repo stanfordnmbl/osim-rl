@@ -1,5 +1,7 @@
 # NIPS2017: Learning to run
 
+This repository contains software required for participation in the NIPS 2017 Challenge: Learning to Run. See more details about the challenge [here](https://www.crowdai.org/challenges/nips-2017-learning-to-run).
+
 In this competition, you are tasked with developing a controller to enable a physiologically-based human model to navigate a complex obstacle course as quickly as possible. You are provided with a human musculoskeletal model and a physics-based simulation environment where you can synthesize physically and physiologically accurate motion. Potential obstacles include external obstacles like steps, or a slippery floor, along with internal obstacles like muscle weakness or motor noise. You are scored based on the distance you travel through the obstacle course in a set amount of time.
 
 ![HUMAN environment](https://github.com/kidzik/osim-rl/blob/master/demo/training.gif)
