@@ -109,6 +109,12 @@ There are two scripts:
 and for the gait example (walk as far as possible):
 
     python example.py --visualize --test --model sample
+    
+## Datails of the environment
+
+### Functions
+
+### Physics of the model
 
 ### Submission
 
