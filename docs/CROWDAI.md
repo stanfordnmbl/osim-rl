@@ -1,66 +1,31 @@
 # Learning how to walk
 
-Our movement originates in the brain. Many neurological disorders, such as Cerebral Palsy, Multiple Sclerosis or strokes can lead to problems with walking. Treatments are often symptomatic and its often hard to predict outcomes of surgeries. Understanding underlying mechanisms is key to improvement of treatments. This motivates our efforts to model the motor control unit of the brain.
-
-In this challenge your task is to model the motor control unit in a virtual environment. You are given a musculoskeletal model with 16 muscles to control. At every 10ms you send signals to these muscles to activate or deactivate them. The objective is to walk as far as possible in 5 seconds.
-
-For modelling physics we use [OpenSim](https://github.com/opensim-org/opensim-core) - a biomechanical physics environment for musculoskeletal simulations. 
+In this competition, you are tasked with developing a controller to enable a physiologically-based human model to navigate a complex obstacle course as quickly as possible. You are provided with a human musculoskeletal model and a physics-based simulation environment where you can synthesize physically and physiologically accurate motion. Potential obstacles include external obstacles like steps, or a slippery floor, along with internal obstacles like muscle weakness or motor noise. You are scored based on the distance you travel through the obstacle course in a set amount of time.
 
 ![HUMAN environment](https://github.com/kidzik/osim-rl/blob/master/demo/training.gif)
 
-## Evaluation
+For modelling physics we use [OpenSim](https://github.com/opensim-org/opensim-core) - a biomechanical physics environment for musculoskeletal simulations. 
 
-Your task is to build a function `f` which takes current state `observation` (25 dimensional vector) and returns mouscle activations `action` (16 dimensional vector) in a way that maximizes the reward.
+## Getting started
 
-The trial ends either if the pelvis of the model goes below `0.7` meter or if you reach `500` iterations (corresponding to `5` seconds in the virtual environment). Let `N` be the length of the trial. Your total reward is simply the position of the pelvis on the `x` axis after `N` steps. The value is given in centimeters.
+**Anaconda2** is required to run our simulation environment - you can get it from here https://www.continuum.io/downloads choosing version 2.7. In the following part we assume that Anaconda is successfully installed.
 
-After each iteration you get a reward equal to the change of the `x` axis of pelvis during this iteration.
-
-You can test your model on your local machine. For submission, you will need to interact with the remote environment: crowdAI sends you the current `observation` and you need to send back the action you take in the given state.
-
-### Rules
-
-You are allowed to:
-* Modify objective function for training (eg. extra penalty for falling or moving to fast, reward keeping head at the same level, etc.), by 
-* Modify the musculoskeletal model for training (eg. constrain the Y axis of pelvis)
-* Submit a maximum of one submissions each 6 hours.
-
-Note, that the model trained in your modified environment must still be compatible with the challenge environment. 
-
-You are not allowed to:
-* Use external datasets (ex. kinematics of people walking)
-* Engineer the trajectories/muscle activations by hand
-
-Other:
-* crowdAI reserves the right to modify challenge rules as required.
-
-## Installation
-
-Requires OpenSim 4.0 - https://github.com/opensim-org/opensim-core . You can either install it from source (https://github.com/opensim-org/opensim-core/releases/tag/v4.0.0_alpha) or use conda builds as presented below.
-
-**Requires Anaconda2**, you can get it from here https://www.continuum.io/downloads choosing version 2.7.
-Below we assume that Anaconda is installed.
-
-For the moment we only support 64-bit architecture (32-bit coming soon) on either Windows, Linux or Mac OSX. On Windows open a command prompt and type:
+We support Windows, Linux or Mac OSX in 64-bit version. To install our simulator, you first need to create a conda environment with OpenSim package. On Windows open a command prompt and type:
     
-    conda create -n opensim-rl -c kidzik opensim
+    conda create -n opensim-rl -c kidzik opensim git
     activate opensim-rl
 
 on Linux/OSX run:
 
-    conda create -n opensim-rl -c kidzik opensim
+    conda create -n opensim-rl -c kidzik opensim git
     source activate opensim-rl
 
-Then on any system you can install the RL environment with
+These command will create a virtual environment on your computer with simulation libraries installed. Next, you need to install our python reinforcement learning environment. Type (independently on the system)
 
     conda install -c conda-forge lapack git
-    pip install git+https://github.com/kidzik/osim-rl.git
+    pip install git+https://github.com/stanfordnmbl/osim-rl.git
 
-If the command `python -c "import opensim"` runs smoothly you are done! If you encounter this error
-
-    ImportError: /home/deepart/anaconda2/envs/opensim-rl/lib/python2.7/site-packages/opensim/../../../libSimTKcommon.so.3.6: symbol _ZTVNSt7__cxx1119basic_istringstreamIcSt11char_traitsIcESaIcEEE, version GLIBCXX_3.4.21 not defined in file libstdc++.so.6 with link time reference
-    
-Try `conda install libgcc`
+If the command `python -c "import opensim"` runs smoothly you are done! Otherwise, please refer to our FAQ section.
 
 ## Basic usage
 
@@ -90,6 +55,32 @@ Your goal is to construct a controler, i.e. a function from the state space (cur
     print("Total reward %f" % total_reward)
 
 There are many ways to construct the function `my_controler(observation)`. We will show how to do it with a DDPG algorithm, using keras-rl.
+
+## Evaluation
+
+Your task is to build a function `f` which takes current state `observation` (25 dimensional vector) and returns mouscle activations `action` (16 dimensional vector) in a way that maximizes the reward.
+
+The trial ends either if the pelvis of the model goes below `0.7` meter or if you reach `500` iterations (corresponding to `5` seconds in the virtual environment). Let `N` be the length of the trial. Your total reward is simply the position of the pelvis on the `x` axis after `N` steps. The value is given in centimeters.
+
+After each iteration you get a reward equal to the change of the `x` axis of pelvis during this iteration.
+
+You can test your model on your local machine. For submission, you will need to interact with the remote environment: crowdAI sends you the current `observation` and you need to send back the action you take in the given state.
+
+### Rules
+
+You are allowed to:
+* Modify objective function for training (eg. extra penalty for falling or moving to fast, reward keeping head at the same level, etc.), by 
+* Modify the musculoskeletal model for training (eg. constrain the Y axis of pelvis)
+* Submit a maximum of one submissions each 6 hours.
+
+Note, that the model trained in your modified environment must still be compatible with the challenge environment. 
+
+You are not allowed to:
+* Use external datasets (ex. kinematics of people walking)
+* Engineer the trajectories/muscle activations by hand
+
+Other:
+* crowdAI reserves the right to modify challenge rules as required.
 
 ## Training in keras-rl
 
@@ -128,6 +119,14 @@ After having trained your model you can submit it using the following script
 This script will interact with an environment on the crowdAI.org server.
 
 ## Questions
+
+**I'm getting 'version GLIBCXX_3.4.21 not defined in file libstdc++.so.6 with link time reference' error**
+
+If you are getting this error
+
+    ImportError: /home/deepart/anaconda2/envs/opensim-rl/lib/python2.7/site-packages/opensim/../../../libSimTKcommon.so.3.6: symbol _ZTVNSt7__cxx1119basic_istringstreamIcSt11char_traitsIcESaIcEEE, version GLIBCXX_3.4.21 not defined in file libstdc++.so.6 with link time reference
+    
+Try `conda install libgcc`
 
 **Can I use different languages than python?**
 
