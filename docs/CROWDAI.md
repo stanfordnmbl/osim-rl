@@ -31,9 +31,9 @@ If the command `python -c "import opensim"` runs smoothly you are done! Otherwis
 
 To run 200 steps of environment enter `python` interpreter and run:
 
-    from osim.env import GaitEnv
+    from osim.env import RunEnv
 
-    env = GaitEnv(visualize=True)
+    env = RunEnv(visualize=True)
     observation = env.reset()
     for i in range(500):
         observation, reward, done, info = env.step(env.action_space.sample())
