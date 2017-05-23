@@ -35,7 +35,7 @@ To run 200 steps of environment enter `python` interpreter and run:
 
     env = RunEnv(visualize=True)
     observation = env.reset()
-    for i in range(500):
+    for i in range(200):
         observation, reward, done, info = env.step(env.action_space.sample())
 
 ![Random walk](https://github.com/stanfordnmbl/osim-rl/blob/master/demo/random.gif)
@@ -68,19 +68,11 @@ You can test your model on your local machine. For submission, you will need to 
 
 ### Rules
 
-You are allowed to:
-* Modify objective function for training (eg. extra penalty for falling or moving to fast, reward keeping head at the same level, etc.), by 
-* Modify the musculoskeletal model for training (eg. constrain the Y axis of pelvis)
-* Submit a maximum of one submissions each 6 hours.
-
-Note, that the model trained in your modified environment must still be compatible with the challenge environment. 
-
 You are not allowed to:
 * Use external datasets (ex. kinematics of people walking)
-* Engineer the trajectories/muscle activations by hand
 
 Other:
-* crowdAI reserves the right to modify challenge rules as required.
+* Organizers reserve the right to modify challenge rules as required.
 
 ## Training in keras-rl
 
