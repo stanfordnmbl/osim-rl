@@ -90,13 +90,12 @@ class RunEnv(OsimEnv):
             lig_pen += lig.calcLimitForce(self.osim_model.state) ** 2
 
         # Get the pelvis X delta
-        delta_x = self.current_state[2] - self.last_state[2]
+        delta_x = self.current_state[1] - self.last_state[1]
 
         return delta_x - math.sqrt(lig_pen) * 0.001
 
     def is_pelvis_too_low(self):
-        y = self.pelvis.getCoordinate(2).getValue(self.osim_model.state)
-        return (y < 0.65)
+        return (self.current_state[2] < 0.65)
     
     def is_done(self):
         return self.is_pelvis_too_low()
