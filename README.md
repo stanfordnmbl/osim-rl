@@ -1,5 +1,7 @@
 # NIPS2017: Learning to run
 
+This repository contains software required for participation in the NIPS 2017 Challenge: Learning to Run. See more details about the challenge [here](https://www.crowdai.org/challenges/nips-2017-learning-to-run).
+
 In this competition, you are tasked with developing a controller to enable a physiologically-based human model to navigate a complex obstacle course as quickly as possible. You are provided with a human musculoskeletal model and a physics-based simulation environment where you can synthesize physically and physiologically accurate motion. Potential obstacles include external obstacles like steps, or a slippery floor, along with internal obstacles like muscle weakness or motor noise. You are scored based on the distance you travel through the obstacle course in a set amount of time.
 
 ![HUMAN environment](https://github.com/kidzik/osim-rl/blob/master/demo/training.gif)
@@ -46,10 +48,12 @@ Your goal is to construct a controler, i.e. a function from the state space (cur
 
     # ...
     total_reward = 0.0
-    for i in range(500):
+    for i in range(200):
         # make a step given by the controler and record the state and the reward
         observation, reward, done, info = env.step(my_controler(observation)) 
         total_reward += reward
+        if done:
+            break
     
     # Your reward is
     print("Total reward %f" % total_reward)
@@ -65,6 +69,14 @@ The trial ends either if the pelvis of the model goes below `0.7` meter or if yo
 After each iteration you get a reward equal to the change of the `x` axis of pelvis during this iteration.
 
 You can test your model on your local machine. For submission, you will need to interact with the remote environment: crowdAI sends you the current `observation` and you need to send back the action you take in the given state.
+
+### Submission
+
+After having trained your model you can submit it by modifying the `/scripts/submit.py` (see the comments in the file for details) and executing
+
+    python submit.py
+
+This script will interact with an environment on the crowdAI.org server.
 
 ### Rules
 
@@ -107,14 +119,6 @@ and for the gait example (walk as far as possible):
 ### Functions
 
 ### Physics of the model
-
-### Submission
-
-After having trained your model you can submit it using the following script
-
-    python submit.py --model sample
-
-This script will interact with an environment on the crowdAI.org server.
 
 ## Questions
 
