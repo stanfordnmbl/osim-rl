@@ -72,11 +72,32 @@ You can test your model on your local machine. For submission, you will need to 
 
 ### Submission
 
-After having trained your model you can submit it by modifying the `/scripts/submit.py` (see the comments in the file for details) and executing
+```
+import opensim as osim
+from osim.http.client import Client
+from osim.env import *
 
-    python submit.py
+# Settings
+remote_base = "http://grader.crowdai.org"
+crowdai_token = "[YOUR_CROWD_AI_TOKEN_HERE]"
 
-This script will interact with an environment on the crowdAI.org server.
+client = Client(remote_base)
+
+# Create environment
+observation = client.env_create(crowdai_token)
+
+# IMPLEMENTATION OF YOUR CONTROLLER
+# my_controller = ...
+
+# Run a single step
+for i in range(500):
+    [observation, reward, done, info] = client.env_step(my_controller(observation), True)
+    print(observation)
+    if done:
+        break
+
+client.submit()
+```
 
 ### Rules
 
@@ -112,6 +133,14 @@ and for the gait example (walk as far as possible):
 
     python example.py --visualize --test --model sample
     
+### Submission
+
+After having trained your model you can submit it by using `/scripts/submit.py`:
+
+    python submit.py
+
+This script will interact with an environment on the crowdAI.org server.
+    
 ## Datails of the environment
 
 In order to create an environment use
@@ -127,7 +156,7 @@ Parameters:
 
 #### `reset(difficulty, seed = None)`
 
-* `difficulty` - `0,1` or `2`. 0 - no obstacles, `1` - 3 obstacles randomly positioned, `2` - as in `1` but also strength of psoas muscles varies. It is set to z * 100%, where z is a normal variable with the mean 1 and the standard deviation 0.1
+* `difficulty` - `0` - no obstacles, `1` - 3 randomly positioned obstacles (balls fixed in the ground), `2` - as in `1` but also strength of psoas muscles varies. It is set to z * 100%, where z is a normal variable with the mean 1 and the standard deviation 0.1
 * `seed` - starting seed for the random number generator. If the seed is `None`, generation from the previous seed is continued. 
 
 Restart the enivironment with a given `difficulty` level and a `seed`.
