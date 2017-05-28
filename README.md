@@ -32,32 +32,32 @@ If the command `python -c "import opensim"` runs smoothly you are done! Otherwis
 ## Basic usage
 
 To run 200 steps of environment enter `python` interpreter and run:
+```python
+from osim.env import RunEnv
 
-    from osim.env import RunEnv
-
-    env = RunEnv(visualize=True)
-    observation = env.reset()
-    for i in range(200):
-        observation, reward, done, info = env.step(env.action_space.sample())
-
+env = RunEnv(visualize=True)
+observation = env.reset()
+for i in range(200):
+    observation, reward, done, info = env.step(env.action_space.sample())
+```
 ![Random walk](https://github.com/stanfordnmbl/osim-rl/blob/master/demo/random.gif)
 
 In this example muscles are activated randomly (red color indicates an active muscle and blue an inactive muscle). Clearly with this technique we won't go to far.
 
 Your goal is to construct a controler, i.e. a function from the state space (current positions, velocities and accelerations of joints) to action space (muscles activations), to go as far as possible in limited time. Suppose you trained a neural network mapping observations (the current state of the model) to actions (muscles activations), i.e. you have a function `action = my_controler(observation)`, then 
+```python
+# ...
+total_reward = 0.0
+for i in range(200):
+    # make a step given by the controler and record the state and the reward
+    observation, reward, done, info = env.step(my_controler(observation)) 
+    total_reward += reward
+    if done:
+        break
 
-    # ...
-    total_reward = 0.0
-    for i in range(200):
-        # make a step given by the controler and record the state and the reward
-        observation, reward, done, info = env.step(my_controler(observation)) 
-        total_reward += reward
-        if done:
-            break
-    
-    # Your reward is
-    print("Total reward %f" % total_reward)
-
+# Your reward is
+print("Total reward %f" % total_reward)
+```
 There are many ways to construct the function `my_controler(observation)`. We will show how to do it with a DDPG algorithm, using keras-rl.
 
 ## Evaluation
@@ -114,7 +114,37 @@ and for the gait example (walk as far as possible):
     
 ## Datails of the environment
 
-### Functions
+In order to create an environment use
+```python
+    env = RunEnv(visualize = True, max_obstacles = 3)
+```
+Parameters:
+
+* `visualize` - turn the visualizer on and off
+* `max_obstacles` - maximal number of obstacles in the scene
+
+### Methods of `RunEnv`
+
+#### `reset(difficulty, seed = None)`
+
+* `difficulty` - `0,1` or `2`. 0 - no obstacles, `1` - 3 obstacles randomly positioned, `2` - as in `1` but also strength of psoas muscles varies. It is set to z * 100%, where z is a normal variable with the mean 1 and the standard deviation 0.1
+* `seed` - starting seed for the random number generator. If the seed is `None`, generation from the previous seed is continued. 
+
+Restart the enivironment with a given `difficulty` level and a `seed`.
+
+#### `step(action)`
+
+* `action` - a list of length `18` of continous values in `[0,1]` corresponding to excitation of muscles. 
+
+The function returns:
+
+* `observation` - a list of length `41` of real values corresponding to the current state of the model. Variables are explained in the section "Physics of the model".
+
+* `reward` - reward gained in the last iteration. It is computed as a change in position of the pelvis along x axis minus penalty for the use of ligaments. See the "Physics of the model" section for details. 
+
+* `done` - indicates if the move was the last step of the environment. This happens if either `500` iterations were reached or pelvis is below `0.65` meter.
+
+* `info` - for compatibility with OpenAI, currently not used.
 
 ### Physics of the model
 
