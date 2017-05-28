@@ -178,17 +178,26 @@ The function returns:
 
 ### Physics of the model
 
-The model is implemented in [OpenSim](https://github.com/opensim-org/opensim-core)[1] which relies on [Simbody](https://github.com/simbody/simbody) physics engine. 
+The model is implemented in [OpenSim](https://github.com/opensim-org/opensim-core)[1] which relies on [Simbody](https://github.com/simbody/simbody) physics engine. Note that, given recent successes in model-free reinforcement learning, biomechanical details are not required to successfully compete in this challenge.
 
-In a very brief summary, given the musculoskeletal structure of bones, joint and muscles, at each step of the simulation (corresponding to 0.01 seconds):
-* activations of muscles are computed from the excitations vector provided to the `step()` function,
-* muscles are actuated according to these activations,
-* torques generated due to mucsles activity are computed,
-* forces caused by ground reaction are computed,
-* forces influence volcities and positions of joints and the new state is generated.
+In a very brief summary, given the musculoskeletal structure of bones, joint and muscles, at each step of the simulation (corresponding to 0.01 seconds) the engine:
+* computes activations of muscles from the excitations vector provided to the `step()` function,
+* actuates muscles according to these activations,
+* computes torques generated due to mucsles activity,
+* computes forces caused by ground reaction,
+* computes velocities and positions of joints and bodies,
+* generates the new state based on forces, velcities and positions of joints.
 
-In each action following 18 muscles are actuated:
-`right hamstrings_r, bifemsh_r, glut_max_r, iliopsoas_r, rect_fem_r, vasti_r, gastroc_r, soleus_r, tib_ant_r, hamstrings_l, bifemsh_l, glut_max_l, iliopsoas_l, rect_fem_l, vasti_l, gastroc_l, soleus_l, tib_ant_l`
+In each action following 18 muscles are actuated (9 per leg):
+* hamstring,
+* biceps femoris,
+* gluteus maximus,
+* iliopsoas,
+* rectus femoris,
+* vastus,
+* gastrocnemius,
+* soleus,
+* tibialis anterior.
 
 The observation contains 41 values:
 * position of pelvis (rotation, x, y)
