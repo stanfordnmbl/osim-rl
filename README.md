@@ -178,10 +178,30 @@ The function returns:
 
 ### Physics of the model
 
-The model is implemented in [OpenSim](https://github.com/opensim-org/opensim-core)*
+The model is implemented in [OpenSim](https://github.com/opensim-org/opensim-core)[1] which relies on [Simbody](https://github.com/simbody/simbody) physics engine. 
 
+In a very brief summary, given the musculoskeletal structure of bones, joint and muscles, at each step of the simulation (corresponding to 0.01 seconds):
+* activations of muscles are computed from the excitations vector provided to the `step()` function,
+* muscles are actuated according to these activations,
+* torques generated due to mucsles activity are computed,
+* forces caused by ground reaction are computed,
+* forces influence volcities and positions of joints and the new state is generated.
 
-\* Delp, Scott L., et al. "OpenSim: open-source software to create and analyze dynamic simulations of movement." IEEE transactions on biomedical engineering 54.11 (2007): 1940-1950.
+In each action following 18 muscles are actuated:
+`right hamstrings_r, bifemsh_r, glut_max_r, iliopsoas_r, rect_fem_r, vasti_r, gastroc_r, soleus_r, tib_ant_r, hamstrings_l, bifemsh_l, glut_max_l, iliopsoas_l, rect_fem_l, vasti_l, gastroc_l, soleus_l, tib_ant_l`
+
+The observation contains 41 values:
+* position of pelvis (rotation, x, y)
+* velocity of pelvis (rotation, x, y)
+* for each ankle, knee and hip, corresponding rotation (6 values)
+* for each ankle, knee and hip, corresponding angular velocity (6 values)
+* position of the center of mass (2 values)
+* velocity of the center of mass (2 values)
+* positions (x,y) of `head, pelvis, torso, left and right teos, left and right, talus` (14 values)
+* strength of left and right psoas: 1 for `difficulty < 2`, otherwise a random normal variable with mean 1 and standard deviation 0.1 fixed for the entire simulation
+* next obstacle: x distance from the pelvis, y position of the center relative to the the ground, radius
+
+[1] Delp, Scott L., et al. *"OpenSim: open-source software to create and analyze dynamic simulations of movement."* IEEE transactions on biomedical engineering 54.11 (2007): 1940-1950.
 
 ## Questions
 
