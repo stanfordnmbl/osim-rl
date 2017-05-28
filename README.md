@@ -178,6 +178,11 @@ The function returns:
 
 ### Physics of the model
 
+The model is implemented in [OpenSim](https://github.com/opensim-org/opensim-core)*
+
+
+\* Delp, Scott L., et al. "OpenSim: open-source software to create and analyze dynamic simulations of movement." IEEE transactions on biomedical engineering 54.11 (2007): 1940-1950.
+
 ## Questions
 
 **I'm getting 'version GLIBCXX_3.4.21 not defined in file libstdc++.so.6 with link time reference' error**
