@@ -178,6 +178,43 @@ The function returns:
 
 ### Physics of the model
 
+The model is implemented in [OpenSim](https://github.com/opensim-org/opensim-core)[1] which relies on [Simbody](https://github.com/simbody/simbody) physics engine. Note that, given recent successes in model-free reinforcement learning, biomechanical details are not required to successfully compete in this challenge.
+
+In a very brief summary, given the musculoskeletal structure of bones, joint and muscles, at each step of the simulation (corresponding to 0.01 seconds) the engine:
+* computes activations of muscles from the excitations vector provided to the `step()` function,
+* actuates muscles according to these activations,
+* computes torques generated due to mucsles activity,
+* computes forces caused by ground reaction,
+* computes velocities and positions of joints and bodies,
+* generates the new state based on forces, velcities and positions of joints.
+
+In each action following 18 muscles are actuated (9 per leg):
+* hamstring,
+* biceps femoris,
+* gluteus maximus,
+* iliopsoas,
+* rectus femoris,
+* vastus,
+* gastrocnemius,
+* soleus,
+* tibialis anterior.
+The action vector corresponds to these muscles in the same order (9 muscles of the right leg first, then 9 muscles of the left leg).
+
+The observation contains 41 values:
+* position of the pelvis (rotation, x, y)
+* velocity of the pelvis (rotation, x, y)
+* for each ankle, knee and hip, corresponding rotation (6 values)
+* for each ankle, knee and hip, corresponding angular velocity (6 values)
+* position of the center of mass (2 values)
+* velocity of the center of mass (2 values)
+* positions (x,y) of `head, pelvis, torso, left and right teos, left and right talus` (14 values)
+* strength of left and right psoas: 1 for `difficulty < 2`, otherwise a random normal variable with mean 1 and standard deviation 0.1 fixed for the entire simulation
+* next obstacle: x distance from the pelvis, y position of the center relative to the the ground, radius.
+
+For more details on the actual simulation please refer to [1].
+
+[1] Delp, Scott L., et al. *"OpenSim: open-source software to create and analyze dynamic simulations of movement."* IEEE transactions on biomedical engineering 54.11 (2007): 1940-1950.
+
 ## Questions
 
 **I'm getting 'version GLIBCXX_3.4.21 not defined in file libstdc++.so.6 with link time reference' error**
