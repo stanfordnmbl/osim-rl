@@ -72,6 +72,8 @@ You can test your model on your local machine. For submission, you will need to 
 
 ### Submission
 
+Assuming your controller is trained and is represented as a function `my_controller(observation)` returning an `action` you can submit it to crowdAI through interaction with an environment there:
+
 ```python
 import opensim as osim
 from osim.http.client import Client
