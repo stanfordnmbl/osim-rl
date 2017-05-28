@@ -206,9 +206,11 @@ The observation contains 41 values:
 * for each ankle, knee and hip, corresponding angular velocity (6 values)
 * position of the center of mass (2 values)
 * velocity of the center of mass (2 values)
-* positions (x,y) of `head, pelvis, torso, left and right teos, left and right, talus` (14 values)
+* positions (x,y) of `head, pelvis, torso, left and right teos, left and right talus` (14 values)
 * strength of left and right psoas: 1 for `difficulty < 2`, otherwise a random normal variable with mean 1 and standard deviation 0.1 fixed for the entire simulation
-* next obstacle: x distance from the pelvis, y position of the center relative to the the ground, radius
+* next obstacle: x distance from the pelvis, y position of the center relative to the the ground, radius.
+
+For more details on the actual simulation please refer to [1].
 
 [1] Delp, Scott L., et al. *"OpenSim: open-source software to create and analyze dynamic simulations of movement."* IEEE transactions on biomedical engineering 54.11 (2007): 1940-1950.
 
