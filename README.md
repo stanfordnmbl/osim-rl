@@ -147,18 +147,17 @@ This script will interact with an environment on the crowdAI.org server.
 
 In order to create an environment use
 ```python
-    env = RunEnv(visualize = True, max_obstacles = 3)
+    env = RunEnv(visualize = True)
 ```
 Parameters:
 
 * `visualize` - turn the visualizer on and off
-* `max_obstacles` - maximal number of obstacles in the scene
 
 ### Methods of `RunEnv`
 
-#### `reset(difficulty, seed = None)`
+#### `reset(difficulty = 0, seed = None)`
 
-* `difficulty` - `0` - no obstacles, `1` - 3 randomly positioned obstacles (balls fixed in the ground), `2` - as in `1` but also strength of psoas muscles varies. It is set to z * 100%, where z is a normal variable with the mean 1 and the standard deviation 0.1
+* `difficulty` - `0` - no obstacles, `1` - 2 randomly positioned obstacles (balls fixed in the ground), `2` - as in `1` but also strength of psoas muscles varies. It is set to z * 100%, where z is a normal variable with the mean 1 and the standard deviation 0.1
 * `seed` - starting seed for the random number generator. If the seed is `None`, generation from the previous seed is continued. 
 
 Restart the enivironment with a given `difficulty` level and a `seed`.
