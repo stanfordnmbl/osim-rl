@@ -201,8 +201,8 @@ In each action following 18 muscles are actuated (9 per leg):
 The action vector corresponds to these muscles in the same order (9 muscles of the right leg first, then 9 muscles of the left leg).
 
 The observation contains 41 values:
-* position of pelvis (rotation, x, y)
-* velocity of pelvis (rotation, x, y)
+* position of the pelvis (rotation, x, y)
+* velocity of the pelvis (rotation, x, y)
 * for each ankle, knee and hip, corresponding rotation (6 values)
 * for each ankle, knee and hip, corresponding angular velocity (6 values)
 * position of the center of mass (2 values)
