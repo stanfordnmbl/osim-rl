@@ -6,39 +6,12 @@ import random
 import string
 from .osim import OsimEnv
 
-def generate_env(difficulty, seed, max_obstacles):
-    if seed:
-        np.random.seed(seed)
-
-    # obstacles
-    num_obstacles = max(0, min(int(difficulty/3), max_obstacles)) # min(np.random.poisson(difficulty, 1), max_obstacles)
-
-    xs = np.random.uniform(2, 10.0, num_obstacles)
-    ys = np.random.uniform(-0.5, 0.25, num_obstacles)
-    rs = [0.05 + r for r in np.random.exponential(0.01*difficulty, num_obstacles)]
-
-    ys = map(lambda (x,y): x*y, zip(ys, rs))
-
-    # muscle strength
-    rpsoas = 1.1 - np.random.normal(0, difficulty / 20.0)
-    lpsoas = 1.1 - np.random.normal(0, difficulty / 20.0)
-    rpsoas = max(0.1, rpsoas)
-    lpsoas = max(0.1, lpsoas)
-    muscles = [1] * 18
-
-    # modify only psoas
-    muscles[3] = rpsoas
-    muscles[11] = lpsoas
-
-    obstacles = zip(xs,ys,rs)
-    obstacles.sort()
-
-    return {
-        'muscles': muscles,
-        'obstacles': obstacles
-    }
-    
 class RunEnv(OsimEnv):
+    STATE_PELVIS_X = 1
+    STATE_PELVIS_Y = 2
+    MUSCLES_PSOAS_R = 3
+    MUSCLES_PSOAS_L = 11
+
     obstacles = []
     num_obstacles = 0
     max_obstacles = None
@@ -52,9 +25,9 @@ class RunEnv(OsimEnv):
     ninput = 41
     noutput = 18
 
-    def __init__(self, visualize = True, noutput = None, max_obstacles = 3):
+    def __init__(self, visualize = True, max_obstacles = 2):
         self.max_obstacles = max_obstacles
-        super(RunEnv, self).__init__(visualize = False, noutput = noutput)
+        super(RunEnv, self).__init__(visualize = False, noutput = self.noutput)
         self.osim_model.model.setUseVisualizer(visualize)
         self.create_obstacles()
         state = self.osim_model.model.initSystem()
@@ -68,7 +41,7 @@ class RunEnv(OsimEnv):
     def setup(self, difficulty, seed=None):
         # create the new env
         # set up obstacles
-        self.env_desc = generate_env(difficulty, seed, self.max_obstacles)
+        self.env_desc = self.generate_env(difficulty, seed, self.max_obstacles)
         
         self.clear_obstacles(self.osim_model.state)
         for x,y,r in self.env_desc['obstacles']:
@@ -90,12 +63,12 @@ class RunEnv(OsimEnv):
             lig_pen += lig.calcLimitForce(self.osim_model.state) ** 2
 
         # Get the pelvis X delta
-        delta_x = self.current_state[1] - self.last_state[1]
+        delta_x = self.current_state[self.STATE_PELVIS_X] - self.last_state[self.STATE_PELVIS_X]
 
-        return delta_x - math.sqrt(lig_pen) * 0.001
+        return delta_x #- math.sqrt(lig_pen) * 0.001
 
     def is_pelvis_too_low(self):
-        return (self.current_state[2] < 0.65)
+        return (self.current_state[self.STATE_PELVIS_Y] < 0.65)
     
     def is_done(self):
         return self.is_pelvis_too_low()
@@ -118,7 +91,6 @@ class RunEnv(OsimEnv):
                 print(i,self.osim_model.forceSet.get(i).getName())
             print("")
 
-
         # The only joint that has to be cast
         self.pelvis = opensim.PlanarJoint.safeDownCast(self.osim_model.get_joint("ground_pelvis"))
 
@@ -129,7 +101,7 @@ class RunEnv(OsimEnv):
 
     def next_obstacle(self):
         obstacles = self.env_desc['obstacles']
-        x = self.pelvis.getCoordinate(1).getValue(self.osim_model.state)
+        x = self.pelvis.getCoordinate(self.STATE_PELVIS_X).getValue(self.osim_model.state)
         for obstacle in obstacles:
             if obstacle[0] + obstacle[2] < x:
                 continue
@@ -153,7 +125,7 @@ class RunEnv(OsimEnv):
 
         body_transforms = [[self.osim_model.get_body(body).getTransformInGround(self.osim_model.state).p()[i] for i in range(2)] for body in bodies]
 
-        muscles = [ self.env_desc['muscles'][3], self.env_desc['muscles'][11] ]
+        muscles = [ self.env_desc['muscles'][self.MUSCLES_PSOAS_R], self.env_desc['muscles'][self.MUSCLES_PSOAS_R] ]
     
         # see the next obstacle
         obstacle = self.next_obstacle()
@@ -208,11 +180,11 @@ class RunEnv(OsimEnv):
     def clear_obstacles(self, state):
         for j in range(0, self.max_obstacles):
             joint = self.obstacles[j]["joint"]
-            # joint.getCoordinate(1).setValue(state, 0)
-            # joint.getCoordinate(2).setValue(state, 0)
-            # self.obstacles[j]["contact"].setRadius(0.1)
-            # for i in range(3):
-            #     joint.getCoordinate(i).setLocked(state, True)
+            joint.getCoordinate(1).setValue(state, 0)
+            joint.getCoordinate(2).setValue(state, -0.1)
+            self.obstacles[j]["contact"].setRadius(0.0001)
+            for i in range(3):
+                joint.getCoordinate(i).setLocked(state, True)
 
         self.num_obstacles = 0
         pass
@@ -231,3 +203,40 @@ class RunEnv(OsimEnv):
 
         self.num_obstacles += 1
         pass
+
+    def generate_env(self, difficulty, seed, max_obstacles):
+        if seed:
+            np.random.seed(seed)
+
+        # obstacles
+        num_obstacles = min(2*(difficulty > 0), max_obstacles) # min(np.random.poisson(difficulty, 1), max_obstacles)
+
+        xs = np.random.uniform(2, 10.0, num_obstacles)
+        ys = np.random.uniform(-0.5, 0.25, num_obstacles)
+        rs = [0.05 + r for r in np.random.exponential(0.05, num_obstacles)]
+
+        ys = map(lambda (x,y): x*y, zip(ys, rs))
+
+        # muscle strength
+        rpsoas = 1
+        lpsoas = 1
+        if difficulty == 2:
+            rpsoas = 1 - np.random.normal(0, 0.1)
+            lpsoas = 1 - np.random.normal(0, 0.1)
+            rpsoas = max(0.1, rpsoas)
+            lpsoas = max(0.1, lpsoas)
+
+        muscles = [1] * 18
+            
+        # modify only psoas
+        muscles[self.MUSCLES_PSOAS_R] = rpsoas
+        muscles[self.MUSCLES_PSOAS_L] = lpsoas
+
+        obstacles = zip(xs,ys,rs)
+        obstacles.sort()
+
+        return {
+            'muscles': muscles,
+            'obstacles': obstacles
+        }
+
