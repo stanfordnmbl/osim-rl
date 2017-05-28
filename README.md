@@ -198,6 +198,7 @@ In each action following 18 muscles are actuated (9 per leg):
 * gastrocnemius,
 * soleus,
 * tibialis anterior.
+The action vector corresponds to these muscles in the same order (9 muscles of the right leg first, then 9 muscles of the left leg).
 
 The observation contains 41 values:
 * position of pelvis (rotation, x, y)
