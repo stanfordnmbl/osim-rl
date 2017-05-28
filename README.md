@@ -72,7 +72,7 @@ You can test your model on your local machine. For submission, you will need to 
 
 ### Submission
 
-```
+```python
 import opensim as osim
 from osim.http.client import Client
 from osim.env import *
