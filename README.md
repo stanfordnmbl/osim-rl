@@ -235,6 +235,14 @@ https://github.com/kidzik/osim-rl-grader. Find more details here [OpenAI http cl
 Yes, you can use https://hub.docker.com/r/stanfordnmbl/opensim-rl/
 Note, that connecting a display to a docker can be tricky and it's system dependent. Nevertheless, for training your models the display is not necessary -- the docker container can be handy for using multiple machines.
 
+**Some libraries are missing. What is required to run the environment?**
+
+Most of the libraries by dafoult exist in major distributions of operating systems or are automatically downloaded by the conda environment. Yet, sometimes things are still missing. The minimal set of dependencies under Linux can be installed with
+
+    sudo apt install libglu1-mesa libglu1-mesa-dev libsm6 libxi-dev libxmu-dev liblapack-dev
+
+Please, try to find equivalent libraries for your OS and let us know -- we will put them here.
+
 ## Credits
 
 This challenge would not be possible without:
