@@ -111,7 +111,7 @@ Additional rules:
 
 Below we present how to train a basic controller using [keras-rl](https://github.com/matthiasplappert/keras-rl). First you need to install extra packages:
 
-    conda install keras
+    conda install keras -c conda-forge
     pip install git+https://github.com/matthiasplappert/keras-rl.git
     git clone http://github.com/stanfordnmbl/osim-rl.git
     
