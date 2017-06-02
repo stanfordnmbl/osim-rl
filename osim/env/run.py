@@ -92,10 +92,10 @@ class RunEnv(OsimEnv):
                 print(i,self.osim_model.forceSet.get(i).getName())
             print("")
 
-        for i in range(18):
-            m = opensim.Thelen2003Muscle.safeDownCast(self.osim_model.muscleSet.get(i))
-            m.setActivationTimeConstant(0.0001) # default 0.01
-            m.setDeactivationTimeConstant(0.0001) # default 0.04
+        # for i in range(18):
+        #     m = opensim.Thelen2003Muscle.safeDownCast(self.osim_model.muscleSet.get(i))
+        #     m.setActivationTimeConstant(0.0001) # default 0.01
+        #     m.setDeactivationTimeConstant(0.0001) # default 0.04
 
         # The only joint that has to be cast
         self.pelvis = opensim.PlanarJoint.safeDownCast(self.osim_model.get_joint("ground_pelvis"))
