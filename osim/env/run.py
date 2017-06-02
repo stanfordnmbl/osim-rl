@@ -51,10 +51,11 @@ class RunEnv(OsimEnv):
         self.osim_model.set_strength(self.env_desc['muscles'])
 
     def reset(self, difficulty=0, seed=None):
-        self.last_state = super(RunEnv, self).reset()
+        super(RunEnv, self).reset()
+        self.last_state = self.get_observation()
         self.setup(difficulty, seed)
         self.current_state = self.last_state
-        return self.get_observation()
+        return self.last_state
 
     def compute_reward(self):
         # Compute ligaments penalty
@@ -90,6 +91,11 @@ class RunEnv(OsimEnv):
             for i in range(26):
                 print(i,self.osim_model.forceSet.get(i).getName())
             print("")
+
+        for i in range(18):
+            m = opensim.Thelen2003Muscle.safeDownCast(self.osim_model.muscleSet.get(i))
+            m.setActivationTimeConstant(0.0001) # default 0.01
+            m.setDeactivationTimeConstant(0.0001) # default 0.04
 
         # The only joint that has to be cast
         self.pelvis = opensim.PlanarJoint.safeDownCast(self.osim_model.get_joint("ground_pelvis"))

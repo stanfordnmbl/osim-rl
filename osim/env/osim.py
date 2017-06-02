@@ -149,6 +149,8 @@ class OsimEnv(gym.Env):
         return x
 
     def activate_muscles(self, action):
+        if np.any(np.isnan(action)):
+            raise ValueError("NaN passed in the activation vector. Values in [0,1] interval are required.")
         for j in range(self.osim_model.muscleSet.getSize()):
             self.osim_model.controllers[j].setValue( float(action[j]) )
 
