@@ -241,7 +241,7 @@ Note, that connecting a display to a docker can be tricky and it's system depend
 
 Most of the libraries by dafoult exist in major distributions of operating systems or are automatically downloaded by the conda environment. Yet, sometimes things are still missing. The minimal set of dependencies under Linux can be installed with
 
-    sudo apt install libglu1-mesa libglu1-mesa-dev libsm6 libxi-dev libxmu-dev liblapack-dev
+    sudo apt install libquadmath0 libglu1-mesa libglu1-mesa-dev libsm6 libxi-dev libxmu-dev liblapack-dev
 
 Please, try to find equivalent libraries for your OS and let us know -- we will put them here.
 
