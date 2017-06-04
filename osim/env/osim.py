@@ -13,7 +13,6 @@ class Osim(object):
     joints = []
     bodies = []
     brain = None
-    controllers = []
 
     maxforces = []
     curforces = []
@@ -30,10 +29,10 @@ class Osim(object):
         self.forceSet = self.model.getForceSet()
         self.bodySet = self.model.getBodySet()
         self.jointSet = self.model.getJointSet()
+        self.contactGeometrySet = self.model.getContactGeometrySet()
         
         for j in range(self.muscleSet.getSize()):
             func = opensim.Constant(1.0)
-            self.controllers.append(func)
             self.brain.addActuator(self.muscleSet.get(j))
             self.brain.prescribeControlForActuator(j, func)
 
@@ -55,6 +54,9 @@ class Osim(object):
 
     def get_muscle(self, name):
         return self.muscleSet.get(name)
+
+    def get_contact_geometry(self, name):
+        return self.contactGeometrySet.get(name)
 
     def initializeState(self):
         self.state = self.model.initializeState()
@@ -152,13 +154,16 @@ class OsimEnv(gym.Env):
     def activate_muscles(self, action):
         if np.any(np.isnan(action)):
             raise ValueError("NaN passed in the activation vector. Values in [0,1] interval are required.")
-        for j in range(self.osim_model.muscleSet.getSize()):
-            self.osim_model.controllers[j].setValue( float(action[j]) )
+        brain = opensim.PrescribedController.safeDownCast(self.osim_model.model.getControllerSet().get(0))
+        functionSet = brain.get_ControlFunctions()
+
+        for j in range(functionSet.getSize()):
+            func = opensim.Constant.safeDownCast(functionSet.get(j))
+            func.setValue( float(action[j]) )
 
     def _step(self, action):
         self.last_action = action
 
-        # action = action[0]
         self.activate_muscles(action)
 
         # Integrate one step

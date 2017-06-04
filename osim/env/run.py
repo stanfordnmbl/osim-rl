@@ -12,7 +12,6 @@ class RunEnv(OsimEnv):
     MUSCLES_PSOAS_R = 3
     MUSCLES_PSOAS_L = 11
 
-    obstacles = []
     num_obstacles = 0
     max_obstacles = None
 
@@ -25,7 +24,7 @@ class RunEnv(OsimEnv):
     ninput = 41
     noutput = 18
 
-    def __init__(self, visualize = True, max_obstacles = 2):
+    def __init__(self, visualize = True, max_obstacles = 0):
         self.max_obstacles = max_obstacles
         super(RunEnv, self).__init__(visualize = False, noutput = self.noutput)
         self.osim_model.model.setUseVisualizer(visualize)
@@ -60,13 +59,15 @@ class RunEnv(OsimEnv):
     def compute_reward(self):
         # Compute ligaments penalty
         lig_pen = 0
-        for lig in self.ligamentSet:
+        # Get ligaments
+        for j in range(20, 26):
+            lig = opensim.CoordinateLimitForce.safeDownCast(self.osim_model.forceSet.get(j))
             lig_pen += lig.calcLimitForce(self.osim_model.state) ** 2
 
         # Get the pelvis X delta
         delta_x = self.current_state[self.STATE_PELVIS_X] - self.last_state[self.STATE_PELVIS_X]
 
-        return delta_x #- math.sqrt(lig_pen) * 0.001
+        return delta_x - math.sqrt(lig_pen) * 0.0001
 
     def is_pelvis_too_low(self):
         return (self.current_state[self.STATE_PELVIS_Y] < 0.65)
@@ -99,11 +100,6 @@ class RunEnv(OsimEnv):
 
         # The only joint that has to be cast
         self.pelvis = opensim.PlanarJoint.safeDownCast(self.osim_model.get_joint("ground_pelvis"))
-
-        # Get ligaments
-        self.forceSet = self.osim_model.model.getForceSet()
-        for j in range(20, 26):
-            self.ligamentSet.append(opensim.CoordinateLimitForce.safeDownCast(self.forceSet.get(j)))
 
     def next_obstacle(self):
         obstacles = self.env_desc['obstacles']
@@ -154,14 +150,15 @@ class RunEnv(OsimEnv):
                                   opensim.Vec3(0, 0, 0),
                                   opensim.Vec3(0, 0, 0))
 
-            self.osim_model.model.addComponent(pj)
-            self.osim_model.model.addComponent(blockos)
+            self.osim_model.model.addJoint(pj)
+            self.osim_model.model.addBody(blockos)
 
             block = opensim.ContactSphere(r, opensim.Vec3(0,0,0), blockos)
             block.setName(name + '-contact')
             self.osim_model.model.addContactGeometry(block)
 
             force = opensim.HuntCrossleyForce()
+            force.setName(name + '-force')
             
             force.addGeometry(name + '-contact')
             force.addGeometry("r_heel")
@@ -175,20 +172,19 @@ class RunEnv(OsimEnv):
             force.setDynamicFriction(0.0)
             force.setViscousFriction(0.0)
 
-            self.obstacles.append({
-                'joint': pj,
-                'force': force,
-                'contact': block,
-            })
-
             self.osim_model.model.addForce(force);
 
     def clear_obstacles(self, state):
         for j in range(0, self.max_obstacles):
-            joint = self.obstacles[j]["joint"]
+            joint_generic = self.osim_model.get_joint("%d-pin" % j)
+            joint = opensim.PlanarJoint.safeDownCast(joint_generic)
             joint.getCoordinate(1).setValue(state, 0)
             joint.getCoordinate(2).setValue(state, -0.1)
-            self.obstacles[j]["contact"].setRadius(0.0001)
+
+            contact_generic = self.osim_model.get_contact_geometry("%d-contact" % j)
+            contact = opensim.ContactSphere.safeDownCast(contact_generic)
+            contact.setRadius(0.0001)
+
             for i in range(3):
                 joint.getCoordinate(i).setLocked(state, True)
 
@@ -197,8 +193,13 @@ class RunEnv(OsimEnv):
         
     def add_obstacle(self, state, x, y, r):
         # set obstacle number num_obstacles
-        self.obstacles[self.num_obstacles]["contact"].setRadius(r)
-        self.obstacles[self.num_obstacles]["force"].setStiffness(1.0e6/r)
+        contact_generic = self.osim_model.get_contact_geometry("%d-contact" % self.num_obstacles)
+        contact = opensim.ContactSphere.safeDownCast(contact_generic)
+        contact.setRadius(r)
+
+        force_generic = self.osim_model.get_force("%d-force" % self.num_obstacles)
+        force = opensim.HuntCrossleyForce.safeDownCast(contact_generic)
+        force.setStiffness(1.0e6/r)
 
         joint = self.obstacles[self.num_obstacles]["joint"]
         newpos = [x,y] 
