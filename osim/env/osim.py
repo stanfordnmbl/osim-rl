@@ -12,7 +12,7 @@ class Osim(object):
     state0 = None
     joints = []
     bodies = []
-    brain = opensim.PrescribedController()
+    brain = None
     controllers = []
 
     maxforces = []
@@ -21,6 +21,7 @@ class Osim(object):
     def __init__(self, model_path, visualize):
         self.model = opensim.Model(model_path)
         self.model.initSystem()
+        self.brain = opensim.PrescribedController()
 
         # Enable the visualizer
         self.model.setUseVisualizer(visualize)
