@@ -6,7 +6,6 @@ import argparse
 
 # Settings
 remote_base = 'http://grader.crowdai.org'
-remote_base = 'http://127.0.0.1:5000'
 
 # Command line parameters
 parser = argparse.ArgumentParser(description='Submit the result to crowdAI')
