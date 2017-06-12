@@ -24,7 +24,7 @@ class RunEnv(OsimEnv):
     ninput = 41
     noutput = 18
 
-    def __init__(self, visualize = True, max_obstacles = 0):
+    def __init__(self, visualize = True, max_obstacles = 3):
         self.max_obstacles = max_obstacles
         super(RunEnv, self).__init__(visualize = False, noutput = self.noutput)
         self.osim_model.model.setUseVisualizer(visualize)
@@ -49,7 +49,7 @@ class RunEnv(OsimEnv):
         # set up muscle strength
         self.osim_model.set_strength(self.env_desc['muscles'])
 
-    def reset(self, difficulty=0, seed=None):
+    def reset(self, difficulty=2, seed=None):
         super(RunEnv, self).reset()
         self.last_state = self.get_observation()
         self.setup(difficulty, seed)
@@ -142,7 +142,7 @@ class RunEnv(OsimEnv):
         for i in range(self.max_obstacles):
             name = i.__str__()
             blockos = opensim.Body(name + '-block', 0.0001 , opensim.Vec3(0), opensim.Inertia(1,1,.0001,0,0,0) );
-            pj = opensim.PlanarJoint(name + '-pin',
+            pj = opensim.PlanarJoint(name + '-joint',
                                   self.osim_model.model.getGround(), # PhysicalFrame
                                   opensim.Vec3(0, 0, 0),
                                   opensim.Vec3(0, 0, 0),
@@ -176,7 +176,7 @@ class RunEnv(OsimEnv):
 
     def clear_obstacles(self, state):
         for j in range(0, self.max_obstacles):
-            joint_generic = self.osim_model.get_joint("%d-pin" % j)
+            joint_generic = self.osim_model.get_joint("%d-joint" % j)
             joint = opensim.PlanarJoint.safeDownCast(joint_generic)
             joint.getCoordinate(1).setValue(state, 0)
             joint.getCoordinate(2).setValue(state, -0.1)
@@ -198,10 +198,12 @@ class RunEnv(OsimEnv):
         contact.setRadius(r)
 
         force_generic = self.osim_model.get_force("%d-force" % self.num_obstacles)
-        force = opensim.HuntCrossleyForce.safeDownCast(contact_generic)
+        force = opensim.HuntCrossleyForce.safeDownCast(force_generic)
         force.setStiffness(1.0e6/r)
 
-        joint = self.obstacles[self.num_obstacles]["joint"]
+        joint_generic = self.osim_model.get_joint("%d-joint" % self.num_obstacles)
+        joint = opensim.PlanarJoint.safeDownCast(joint_generic)
+        
         newpos = [x,y] 
         for i in range(2):
             joint.getCoordinate(1 + i).setLocked(state, False)
@@ -216,9 +218,9 @@ class RunEnv(OsimEnv):
             np.random.seed(seed)
 
         # obstacles
-        num_obstacles = min(2*(difficulty > 0), max_obstacles) # min(np.random.poisson(difficulty, 1), max_obstacles)
+        num_obstacles = max_obstacles*(difficulty > 0) #min(2*(difficulty > 0), max_obstacles)
 
-        xs = np.random.uniform(2, 10.0, num_obstacles)
+        xs = np.random.uniform(2.0, 10.0, num_obstacles)
         ys = np.random.uniform(-0.5, 0.25, num_obstacles)
         rs = [0.05 + r for r in np.random.exponential(0.05, num_obstacles)]
 
@@ -230,8 +232,8 @@ class RunEnv(OsimEnv):
         if difficulty == 2:
             rpsoas = 1 - np.random.normal(0, 0.1)
             lpsoas = 1 - np.random.normal(0, 0.1)
-            rpsoas = max(0.1, rpsoas)
-            lpsoas = max(0.1, lpsoas)
+            rpsoas = max(0.5, rpsoas)
+            lpsoas = max(0.5, lpsoas)
 
         muscles = [1] * 18
             

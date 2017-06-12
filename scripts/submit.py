@@ -6,6 +6,7 @@ import argparse
 
 # Settings
 remote_base = 'http://grader.crowdai.org'
+remote_base = 'http://127.0.0.1:5000'
 
 # Command line parameters
 parser = argparse.ArgumentParser(description='Submit the result to crowdAI')
@@ -24,6 +25,8 @@ for i in range(501):
     [observation, reward, done, info] = client.env_step(env.action_space.sample().tolist())
     print(observation)
     if done:
-        break
+        observation = client.env_reset()
+        if not observation:
+            break
 
 client.submit()

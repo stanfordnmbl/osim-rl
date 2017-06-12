@@ -58,6 +58,9 @@ class Osim(object):
     def get_contact_geometry(self, name):
         return self.contactGeometrySet.get(name)
 
+    def get_force(self, name):
+        return self.forceSet.get(name)
+
     def initializeState(self):
         self.state = self.model.initializeState()
 
