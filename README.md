@@ -159,14 +159,14 @@ Parameters:
 
 ### Methods of `RunEnv`
 
-#### `reset(difficulty = 0, seed = None)`
+#### `reset(difficulty = 2, seed = None)`
 
 Restart the enivironment with a given `difficulty` level and a `seed`.
 
 * `difficulty` - `0` - no obstacles, `1` - 3 randomly positioned obstacles (balls fixed in the ground), `2` - same as `1` but also strength of psoas muscles varies. It is set to z * 100%, where z is a normal variable with the mean 1 and the standard deviation 0.1
 * `seed` - starting seed for the random number generator. If the seed is `None`, generation from the previous seed is continued. 
 
-Your solution will be graded in the environment with `difficulty = 2`.
+Your solution will be graded in the environment with `difficulty = 2`, yet it might be easier to train your model with `difficulty = 0` first and then retrain with a higher difficulty
 
 #### `step(action)`
 
