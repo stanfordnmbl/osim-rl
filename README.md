@@ -10,7 +10,7 @@ For modelling physics we use [OpenSim](https://github.com/opensim-org/opensim-co
 
 ## Getting started
 
-**Anaconda2** is required to run our simulation environment - you can get it from here https://www.continuum.io/downloads; you must choose version 2.7. In the following part we assume that Anaconda is successfully installed.
+**Anaconda** is required to run our simulation environment - you can get it from here https://www.continuum.io/downloads. In the following part we assume that Anaconda is successfully installed.
 
 We support Windows, Linux, and Mac OSX (all in 64-bit). To install our simulator, you first need to create a conda environment with the OpenSim package. On Windows, open a command prompt and type:
     
