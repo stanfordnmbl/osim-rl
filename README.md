@@ -58,7 +58,35 @@ for i in range(200):
 # Your reward is
 print("Total reward %f" % total_reward)
 ```
-There are many ways to construct the function `my_controller(observation)`. We will show how to do it with a DDPG (Deep Deterministic Policy Gradients) algorithm, using `keras-rl`.
+There are many ways to construct the function `my_controller(observation)`. We will show how to do it with a DDPG (Deep Deterministic Policy Gradients) algorithm, using `keras-rl`. If you already have experience with training reinforcement learning models, you can skip the next chapter and go to [evaluation](#evaluation)
+
+## Training in keras-rl
+
+Below we present how to train a basic controller using [keras-rl](https://github.com/matthiasplappert/keras-rl). First you need to install extra packages:
+
+    conda install keras -c conda-forge
+    pip install git+https://github.com/matthiasplappert/keras-rl.git
+    git clone http://github.com/stanfordnmbl/osim-rl.git
+    
+`keras-rl` is an excelent package compatible with OpenAI, which allows you to quickly build your first models!
+
+Go to the `scripts` subdirectory from this repository
+    
+    cd osim-rl/scripts
+
+There are two scripts:
+* `example.py` for training (and testing) an agent using the DDPG algorithm. 
+* `submit.py` for submitting the result to crowdAI.org
+
+### Training
+
+    python example.py --visualize --train --model sample
+    
+### Test
+
+and for the gait example (walk as far as possible):
+
+    python example.py --visualize --test --model sample
 
 ## Evaluation
 
@@ -89,7 +117,7 @@ client = Client(remote_base)
 observation = client.env_create(crowdai_token)
 
 # IMPLEMENTATION OF YOUR CONTROLLER
-# my_controller = ...
+# my_controller = ... (for example the one trained in keras_rl)
 
 # Run a single step
 for i in range(1500):
@@ -113,42 +141,6 @@ Additional rules:
 * You are not allowed to use external datasets (e.g., kinematics of people walking),
 * Organizers reserve the right to modify challenge rules as required.
 
-## Training in keras-rl
-
-Below we present how to train a basic controller using [keras-rl](https://github.com/matthiasplappert/keras-rl). First you need to install extra packages:
-
-    conda install keras -c conda-forge
-    pip install git+https://github.com/matthiasplappert/keras-rl.git
-    git clone http://github.com/stanfordnmbl/osim-rl.git
-    
-`keras-rl` is an excelent package compatible with OpenAI, which allows you to quickly build your first models!
-
-Go to the `scripts` subdirectory from this repository
-    
-    cd osim-rl/scripts
-
-There are two scripts:
-* `example.py` for training (and testing) an agent using the DDPG algorithm. 
-* `submit.py` for submitting the result to crowdAI.org
-
-### Training
-
-    python example.py --visualize --train --model sample
-    
-### Test
-
-and for the gait example (walk as far as possible):
-
-    python example.py --visualize --test --model sample
-    
-### Submission
-
-After you train your model, you can submit it by using `/scripts/submit.py`:
-
-    python submit.py
-
-This script will interact with an environment on the crowdAI.org server.
-    
 ## Datails of the environment
 
 In order to create an environment, use:
