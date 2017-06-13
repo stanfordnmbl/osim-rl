@@ -161,12 +161,14 @@ Parameters:
 
 #### `reset(difficulty = 0, seed = None)`
 
-* `difficulty` - `0` - no obstacles, `1` - 2 randomly positioned obstacles (balls fixed in the ground), `2` - same as `1` but also strength of psoas muscles varies. It is set to z * 100%, where z is a normal variable with the mean 1 and the standard deviation 0.1
-* `seed` - starting seed for the random number generator. If the seed is `None`, generation from the previous seed is continued. 
-
 Restart the enivironment with a given `difficulty` level and a `seed`.
 
+* `difficulty` - `0` - no obstacles, `1` - 3 randomly positioned obstacles (balls fixed in the ground), `2` - same as `1` but also strength of psoas muscles varies. It is set to z * 100%, where z is a normal variable with the mean 1 and the standard deviation 0.1
+* `seed` - starting seed for the random number generator. If the seed is `None`, generation from the previous seed is continued. 
+
 #### `step(action)`
+
+Make one iteration of the simulation.
 
 * `action` - a list of length `18` of continuous values in `[0,1]` corresponding to excitation of muscles. 
 
