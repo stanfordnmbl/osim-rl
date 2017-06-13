@@ -6,23 +6,25 @@ In this competition, you are tasked with developing a controller to enable a phy
 
 ![HUMAN environment](https://github.com/kidzik/osim-rl/blob/master/demo/training.gif)
 
-For modelling physics we use [OpenSim](https://github.com/opensim-org/opensim-core) - a biomechanical physics environment for musculoskeletal simulations. 
+To model physics and biomechanics we use [OpenSim](https://github.com/opensim-org/opensim-core) - a biomechanical physics environment for musculoskeletal simulations. 
 
 ## Getting started
 
-**Anaconda** is required to run our simulation environment - you can get it from here https://www.continuum.io/downloads. In the following part we assume that Anaconda is successfully installed.
+**Anaconda** is required to run our simulation environment - you can get it from here https://www.continuum.io/downloads. In the following instructions we assume that Anaconda is successfully installed.
 
-We support Windows, Linux, and Mac OSX (all in 64-bit). To install our simulator, you first need to create a conda environment with the OpenSim package. On Windows, open a command prompt and type:
+We support Windows, Linux, and Mac OSX (all in 64-bit). To install our simulator, you first need to create a conda environment with the OpenSim package. 
+
+On **Windows**, open a command prompt and type:
     
     conda create -n opensim-rl -c kidzik opensim git
     activate opensim-rl
 
-On Linux/OSX, run:
+On **Linux/OSX**, run:
 
     conda create -n opensim-rl -c kidzik opensim git
     source activate opensim-rl
 
-These commands will create a virtual environment on your computer with the necessary simulation libraries installed. Next, you need to install our python reinforcement learning environment. Type (on all platforms)
+These commands will create a virtual environment on your computer with the necessary simulation libraries installed. Next, you need to install our python reinforcement learning environment. Type (on all platforms):
 
     conda install -c conda-forge lapack git
     pip install git+https://github.com/stanfordnmbl/osim-rl.git
