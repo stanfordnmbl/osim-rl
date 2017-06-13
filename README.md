@@ -135,7 +135,9 @@ for i in range(1500):
 client.submit()
 ```
 
-Not that during the submission, the environment will get restarted. Since the environment is stochastic, you will need to submit three trials -- this way we make sure that your model is robust.
+In the place of `[YOUR_CROWD_AI_TOKEN_HERE]` put your token from the profile page from [crowdai.org](http://crowdai.org/) website.
+
+Note that during the submission, the environment will get restarted. Since the environment is stochastic, you will need to submit three trials -- this way we make sure that your model is robust.
 
 ### Rules
 
