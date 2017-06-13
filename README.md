@@ -88,6 +88,10 @@ and for the gait example (walk as far as possible):
 
     python example.py --visualize --test --model sample
 
+### Comments
+
+Note that it will take a while to train this model. You can find many tutorials and frameworks on-line. Try them out!
+
 ## Evaluation
 
 Your task is to build a function `f` which takes current state `observation` (41 dimensional vector) and returns muscle excitations `action` (18 dimensional vector) in a way that maximizes the reward. See the Section "Details of the environment" for a more precise description.
@@ -98,7 +102,7 @@ After each iteration you get a reward equal to the change of the `x` axis of pel
 
 You can test your model on your local machine. For submission, you will need to interact with the remote environment: crowdAI sends you the current `observation` and you need to send back the action you take in the given state. You will be evaluated at three different levels of difficulty. For details, please refer to "Detalis of the environment".
 
-### Submission
+## Submission
 
 Assuming your controller is trained and is represented as a function `my_controller(observation)` returning an `action` you can submit it to crowdAI through interaction with an environment there:
 
