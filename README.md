@@ -58,7 +58,7 @@ for i in range(200):
 # Your reward is
 print("Total reward %f" % total_reward)
 ```
-There are many ways to construct the function `my_controller(observation)`. We will show how to do it with a DDPG (Deep Deterministic Policy Gradients) algorithm, using `keras-rl`. If you already have experience with training reinforcement learning models, you can skip the next chapter and go to [evaluation](#evaluation)
+There are many ways to construct the function `my_controller(observation)`. We will show how to do it with a DDPG (Deep Deterministic Policy Gradients) algorithm, using `keras-rl`. If you already have experience with training reinforcement learning models, you can skip the next chapter and go to [evaluation](#evaluation).
 
 ## Training in keras-rl
 
@@ -102,7 +102,7 @@ After each iteration you get a reward equal to the change of the `x` axis of pel
 
 You can test your model on your local machine. For submission, you will need to interact with the remote environment: crowdAI sends you the current `observation` and you need to send back the action you take in the given state. You will be evaluated at three different levels of difficulty. For details, please refer to "Detalis of the environment".
 
-## Submission
+### Submission
 
 Assuming your controller is trained and is represented as a function `my_controller(observation)` returning an `action` you can submit it to crowdAI through interaction with an environment there:
 
