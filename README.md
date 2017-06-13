@@ -46,7 +46,7 @@ for i in range(200):
 
 In this example, muscles are activated randomly (red indicates an active muscle and blue an inactive muscle). Clearly with this technique we won't go too far.
 
-Your goal is to construct a controller, i.e. a function from the state space (current positions, velocities and accelerations of joints) to action space (muscle excitations), to go as far as possible in limited time. Suppose you trained a neural network mapping observations (the current state of the model) to actions (muscle excitations), i.e. you have a function `action = my_controller(observation)`, then 
+Your goal is to construct a controller, i.e. a function from the state space (current positions, velocities and accelerations of joints) to action space (muscle excitations), that will enable to model to travel as far as possible in a fixed amount of time. Suppose you trained a neural network mapping observations (the current state of the model) to actions (muscle excitations), i.e. you have a function `action = my_controller(observation)`, then 
 ```python
 # ...
 total_reward = 0.0
@@ -60,7 +60,7 @@ for i in range(200):
 # Your reward is
 print("Total reward %f" % total_reward)
 ```
-There are many ways to construct the function `my_controller(observation)`. We will show how to do it with a DDPG (Deep Deterministic Policy Gradients) algorithm, using `keras-rl`. If you already have experience with training reinforcement learning models, you can skip the next chapter and go to [evaluation](#evaluation).
+There are many ways to construct the function `my_controller(observation)`. We will show how to do it with a DDPG (Deep Deterministic Policy Gradients) algorithm, using `keras-rl`. If you already have experience with training reinforcement learning models, you can skip the next section and go to [evaluation](#evaluation).
 
 ## Training in keras-rl
 
