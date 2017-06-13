@@ -36,7 +36,7 @@ To run 200 steps of environment enter the `python` interpreter and run the follo
 from osim.env import RunEnv
 
 env = RunEnv(visualize=True)
-observation = env.reset()
+observation = env.reset(difficulty = 0)
 for i in range(200):
     observation, reward, done, info = env.step(env.action_space.sample())
 ```
@@ -92,16 +92,22 @@ observation = client.env_create(crowdai_token)
 # my_controller = ...
 
 # Run a single step
-for i in range(500):
+for i in range(1500):
     [observation, reward, done, info] = client.env_step(my_controller(observation), True)
     print(observation)
     if done:
-        break
+        observation = client.env_reset()
+        if not observation:
+            break
 
 client.submit()
 ```
 
+Not that during the submission, the environment will get restarted. Since the environment is stochastic, you will need to submit three trials -- this way we make sure that your model is robust.
+
 ### Rules
+
+In order to avoid overfitting to the training environment, top 10 participants will be asked to resubmit their solutions in the private challenge. The final ranking will be based on results from that private phaze.
 
 Additional rules:
 * You are not allowed to use external datasets (e.g., kinematics of people walking),
