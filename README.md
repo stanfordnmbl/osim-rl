@@ -29,7 +29,7 @@ These commands will create a virtual environment on your computer with the neces
     conda install -c conda-forge lapack git
     pip install git+https://github.com/stanfordnmbl/osim-rl.git
 
-If the command `python -c "import opensim"` runs smoothly, you are done! Otherwise, please refer to our [FAQ](Frequently-asked-questions) section.
+If the command `python -c "import opensim"` runs smoothly, you are done! Otherwise, please refer to our [FAQ](#frequently-asked-questions) section.
 
 ## Basic usage
 
