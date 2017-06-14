@@ -95,16 +95,16 @@ and for the gait example (walk as far as possible):
 Note that it will take a while to train this model. You can find many tutorials, frameworks and lessons on-line. We particularly recommend:
 
 Tutorials & courses:
-* http://rll.berkeley.edu/deeprlcourse/
-* http://karpathy.github.io/2016/05/31/rl/
-* https://www.nervanasys.com/demystifying-deep-reinforcement-learning/
-* https://www.youtube.com/watch?v=2pWv7GOvuf0&list=PLHOg3HfW_teiYiq8yndRVwQ95LLPVUDJe
-* https://github.com/dennybritz/reinforcement-learning
+* [Berkeley Deep RL course by Sergey Levine](http://rll.berkeley.edu/deeprlcourse/)
+* [Intro to RL on Karpathy's blog](http://karpathy.github.io/2016/05/31/rl/)
+* [Intro to RL by Tambet Matiisen](https://www.nervanasys.com/demystifying-deep-reinforcement-learning/)
+* [Deep RL course of David Silver](https://www.youtube.com/watch?v=2pWv7GOvuf0&list=PLHOg3HfW_teiYiq8yndRVwQ95LLPVUDJe)
+* [A comprehensive list of deep RL resources](https://github.com/dennybritz/reinforcement-learning)
 
 Frameworks and implementations of algorithms:
-* https://github.com/openai/rllab
-* https://github.com/joschu/modular_rl
-* https://github.com/matthiasplappert/keras-rl
+* [RLLAB](https://github.com/openai/rllab)
+* [modular_rl](https://github.com/joschu/modular_rl)
+* [keras-rl](https://github.com/matthiasplappert/keras-rl)
 
 This list is *by no means* exhaustive. If you think some resources are particularly well-fit for this tutorial, please let us know!
 
