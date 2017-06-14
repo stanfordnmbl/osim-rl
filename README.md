@@ -112,7 +112,7 @@ OpenSim and biomechanical aspects of the challenge:
 * [OpenSim paper](http://nmbl.stanford.edu/publications/pdf/Delp2007.pdf)
 * [Simbody paper](http://ac.els-cdn.com/S2210983811000241/1-s2.0-S2210983811000241-main.pdf?_tid=c22ea7d2-50ba-11e7-9f69-00000aacb361&acdnat=1497415051_124f3094c7fec3c60165f5d544a184f4)
 
-This list is *by no means* exhaustive. If you think some resources are particularly well-fit for this tutorial, please let us know!
+This list is *by no means* exhaustive. If you find some resources are particularly well-fit for this tutorial, please let us know!
 
 ## Evaluation
 
