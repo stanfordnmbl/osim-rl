@@ -29,7 +29,7 @@ These commands will create a virtual environment on your computer with the neces
     conda install -c conda-forge lapack git
     pip install git+https://github.com/stanfordnmbl/osim-rl.git
 
-If the command `python -c "import opensim"` runs smoothly, you are done! Otherwise, please refer to our FAQ section.
+If the command `python -c "import opensim"` runs smoothly, you are done! Otherwise, please refer to our [FAQ](Frequently-asked-questions) section.
 
 ## Basic usage
 
@@ -92,7 +92,21 @@ and for the gait example (walk as far as possible):
 
 ### Comments
 
-Note that it will take a while to train this model. You can find many tutorials and frameworks on-line. Try them out!
+Note that it will take a while to train this model. You can find many tutorials, frameworks and lessons on-line. We particularly recommend:
+
+Tutorials & courses:
+* http://rll.berkeley.edu/deeprlcourse/
+* http://karpathy.github.io/2016/05/31/rl/
+* https://www.nervanasys.com/demystifying-deep-reinforcement-learning/
+* https://www.youtube.com/watch?v=2pWv7GOvuf0&list=PLHOg3HfW_teiYiq8yndRVwQ95LLPVUDJe
+* https://github.com/dennybritz/reinforcement-learning
+
+Frameworks and implementations of algorithms:
+* https://github.com/openai/rllab
+* https://github.com/joschu/modular_rl
+* https://github.com/matthiasplappert/keras-rl
+
+This list is *by no means* exhaustive. If you think some resources are particularly well-fit for this tutorial, please let us know!
 
 ## Evaluation
 
@@ -225,7 +239,7 @@ For more details on the actual simulation, please refer to [1].
 
 [1] Delp, Scott L., et al. *"OpenSim: open-source software to create and analyze dynamic simulations of movement."* IEEE transactions on biomedical engineering 54.11 (2007): 1940-1950.
 
-## Frequently Asked Questions (FAQ)
+## Frequently Asked Questions
 
 **I'm getting 'version GLIBCXX_3.4.21 not defined in file libstdc++.so.6 with link time reference' error**
 
