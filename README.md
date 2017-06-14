@@ -62,7 +62,7 @@ print("Total reward %f" % total_reward)
 ```
 There are many ways to construct the function `my_controller(observation)`. We will show how to do it with a DDPG (Deep Deterministic Policy Gradients) algorithm, using `keras-rl`. If you already have experience with training reinforcement learning models, you can skip the next section and go to [evaluation](#evaluation).
 
-## Training in keras-rl
+## Training your first model
 
 Below we present how to train a basic controller using [keras-rl](https://github.com/matthiasplappert/keras-rl). First you need to install extra packages:
 
@@ -90,7 +90,7 @@ and for the gait example (walk as far as possible):
 
     python example.py --visualize --test --model sample
 
-### Comments
+### Moving forward
 
 Note that it will take a while to train this model. You can find many tutorials, frameworks and lessons on-line. We particularly recommend:
 
@@ -105,6 +105,12 @@ Frameworks and implementations of algorithms:
 * [RLLAB](https://github.com/openai/rllab)
 * [modular_rl](https://github.com/joschu/modular_rl)
 * [keras-rl](https://github.com/matthiasplappert/keras-rl)
+
+OpenSim and biomechanical aspects of the challenge:
+* [Muscles model](http://simtk-confluence.stanford.edu:8080/display/OpenSim/First-Order+Activation+Dynamics)
+* [SimTK - simulation toolkit community](https://simtk.org/)
+* [OpenSim paper](http://nmbl.stanford.edu/publications/pdf/Delp2007.pdf)
+* [Simbody paper](http://ac.els-cdn.com/S2210983811000241/1-s2.0-S2210983811000241-main.pdf?_tid=c22ea7d2-50ba-11e7-9f69-00000aacb361&acdnat=1497415051_124f3094c7fec3c60165f5d544a184f4)
 
 This list is *by no means* exhaustive. If you think some resources are particularly well-fit for this tutorial, please let us know!
 
