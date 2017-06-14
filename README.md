@@ -33,7 +33,7 @@ If the command `python -c "import opensim"` runs smoothly, you are done! Otherwi
 
 ## Basic usage
 
-To run 200 steps of environment enter the `python` interpreter and run the following:
+To execute 200 iterations of the simulation enter the `python` interpreter and run the following:
 ```python
 from osim.env import RunEnv
 
@@ -44,7 +44,7 @@ for i in range(200):
 ```
 ![Random walk](https://github.com/stanfordnmbl/osim-rl/blob/master/demo/random.gif)
 
-In this example, muscles are activated randomly (red indicates an active muscle and blue an inactive muscle). Clearly with this technique we won't go too far.
+The function `env.action_space.sample()` returns a random vector for muscle activations, so, in this example, muscles are activated randomly (red indicates an active muscle and blue an inactive muscle).  Clearly with this technique we won't go too far.
 
 Your goal is to construct a controller, i.e. a function from the state space (current positions, velocities and accelerations of joints) to action space (muscle excitations), that will enable to model to travel as far as possible in a fixed amount of time. Suppose you trained a neural network mapping observations (the current state of the model) to actions (muscle excitations), i.e. you have a function `action = my_controller(observation)`, then 
 ```python
