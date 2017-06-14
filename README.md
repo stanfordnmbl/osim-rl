@@ -163,7 +163,7 @@ Additional rules:
 * You are not allowed to use external datasets (e.g., kinematics of people walking),
 * Organizers reserve the right to modify challenge rules as required.
 
-## Datails of the environment
+## Details of the environment
 
 In order to create an environment, use:
 ```python
