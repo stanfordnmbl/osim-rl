@@ -70,7 +70,7 @@ Below we present how to train a basic controller using [keras-rl](https://github
     pip install git+https://github.com/matthiasplappert/keras-rl.git
     git clone http://github.com/stanfordnmbl/osim-rl.git
     
-`keras-rl` is an excelent package compatible with OpenAI, which allows you to quickly build your first models!
+`keras-rl` is an excellent package compatible with OpenAI, which allows you to quickly build your first models!
 
 Go to the `scripts` subdirectory from this repository
     
@@ -94,7 +94,7 @@ and for the gait example (walk as far as possible):
 
 Note that it will take a while to train this model. You can find many tutorials, frameworks and lessons on-line. We particularly recommend:
 
-Tutorials & courses:
+Tutorials & Courses on Reinforcement Learning:
 * [Berkeley Deep RL course by Sergey Levine](http://rll.berkeley.edu/deeprlcourse/)
 * [Intro to RL on Karpathy's blog](http://karpathy.github.io/2016/05/31/rl/)
 * [Intro to RL by Tambet Matiisen](https://www.nervanasys.com/demystifying-deep-reinforcement-learning/)
@@ -106,11 +106,11 @@ Frameworks and implementations of algorithms:
 * [modular_rl](https://github.com/joschu/modular_rl)
 * [keras-rl](https://github.com/matthiasplappert/keras-rl)
 
-OpenSim and biomechanical aspects of the challenge:
-* [Muscles model](http://simtk-confluence.stanford.edu:8080/display/OpenSim/First-Order+Activation+Dynamics)
-* [SimTK - simulation toolkit community](https://simtk.org/)
-* [OpenSim paper](http://nmbl.stanford.edu/publications/pdf/Delp2007.pdf)
-* [Simbody paper](http://ac.els-cdn.com/S2210983811000241/1-s2.0-S2210983811000241-main.pdf?_tid=c22ea7d2-50ba-11e7-9f69-00000aacb361&acdnat=1497415051_124f3094c7fec3c60165f5d544a184f4)
+OpenSim and Biomechanics:
+* [OpenSim Documentation](http://simtk-confluence.stanford.edu:8080/display/OpenSim/OpenSim+Documentation)
+* [Muscle models](http://simtk-confluence.stanford.edu:8080/display/OpenSim/First-Order+Activation+Dynamics)
+* [Publication describing OpenSim](http://nmbl.stanford.edu/publications/pdf/Delp2007.pdf)
+* [Publication describing Simbody (multibody dynamics engine)](http://ac.els-cdn.com/S2210983811000241/1-s2.0-S2210983811000241-main.pdf?_tid=c22ea7d2-50ba-11e7-9f69-00000aacb361&acdnat=1497415051_124f3094c7fec3c60165f5d544a184f4)
 
 This list is *by no means* exhaustive. If you find some resources particularly well-fit for this tutorial, please let us know!
 
