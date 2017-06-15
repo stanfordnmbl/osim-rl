@@ -206,17 +206,17 @@ The function returns:
 
 * `info` - for compatibility with OpenAI, currently not used.
 
-### Physics of the model
+### Physics and biomechanics of the model
 
 The model is implemented in [OpenSim](https://github.com/opensim-org/opensim-core)[1], which relies on the [Simbody](https://github.com/simbody/simbody) physics engine. Note that, given recent successes in model-free reinforcement learning, expertise in biomechanics is not required to successfully compete in this challenge.
 
-In a very brief summary, given the musculoskeletal structure of bones, joint, and muscles, at each step of the simulation (corresponding to 0.01 seconds), the engine:
+To summarize briefly, the agent is a musculoskeletal model that include body segments for each leg, a pelvis segment, and a single segment to represent the upper half of the body (trunk, head, arms). The segments are connected with joints (e.g., knee and hip) and the motion of these joints is controlled by the excitation of muscles. The muscles in the model have complex paths (e.g., muscles can cross more than one joint and there are redundant muscles). The muscle actuators themselves are also highly nonlinear. For example, there is a fisrt order differential equation that relates electrical signal the nervous system sends to a muscle (the excitation) to the activation of a muscle (which describes how much force a muscle will actually generate given the muscle's current force-generating capacity). Given the musculoskeletal structure of bones, joint, and muscles, at each step of the simulation (corresponding to 0.01 seconds), the engine:
 * computes activations of muscles from the excitations vector provided to the `step()` function,
 * actuates muscles according to these activations,
-* computes torques generated due to mucsle activations,
+* computes torques generated due to muscle activations,
 * computes forces caused by contacting the ground,
 * computes velocities and positions of joints and bodies,
-* generates a new state based on forces, velcities, and positions of joints.
+* generates a new state based on forces, velocities, and positions of joints.
 
 In each action, the following 18 muscles are actuated (9 per leg):
 * hamstrings,
