@@ -289,7 +289,9 @@ For issues and problems related to installation process or to the implementation
 
 This challenge would not be possible without:
 * [OpenSim](https://github.com/opensim-org/opensim-core)
-* Stanford NMBL group & Stanford Mobilize Center
+* [National Center for Simulation in Rehabilitation Research](http://opensim.stanford.edu/)
+* [Mobilize Center](http://mobilize.stanford.edu/)
+* [CrowdAI](http://crowdai.org/)
 * [OpenAI gym](https://gym.openai.com/)
 * [OpenAI http client](https://github.com/openai/gym-http-api)
 * [keras-rl](https://github.com/matthiasplappert/keras-rl)
