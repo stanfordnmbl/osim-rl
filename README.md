@@ -165,7 +165,7 @@ Note that during the submission, the environment will get restarted. Since the e
 
 ### Rules
 
-In order to avoid overfitting to the training environment, the top 10 participants will be asked to resubmit their solutions in the private challenge. The final ranking will be based on results from that private phase.
+In order to avoid overfitting to the training environment, the top 10 participants will be asked to resubmit their solutions in the second round of the challenge. Environments in the second round will have the same structure but they will be initialized with different seeds. The final ranking will be based on results from the second round. 
 
 Additional rules:
 * You are not allowed to use external datasets (e.g., kinematics of people walking)
