@@ -72,7 +72,7 @@ Below we present how to train a basic controller using [keras-rl](https://github
     pip install git+https://github.com/matthiasplappert/keras-rl.git
     git clone http://github.com/stanfordnmbl/osim-rl.git
     
-`keras-rl` is an excellent package compatible with OpenAI, which allows you to quickly build your first models!
+`keras-rl` is an excellent package compatible with [OpenAI](http://openai.com/), which allows you to quickly build your first models!
 
 Go to the `scripts` subdirectory from this repository
     
@@ -80,7 +80,7 @@ Go to the `scripts` subdirectory from this repository
 
 There are two scripts:
 * `example.py` for training (and testing) an agent using the DDPG algorithm. 
-* `submit.py` for submitting the result to crowdAI.org
+* `submit.py` for submitting the result to [crowdAI.org](https://www.crowdai.org/challenges/nips-2017-learning-to-run)
 
 ### Training
 
@@ -124,11 +124,11 @@ The trial ends either if the pelvis of the model goes below `0.65` meters or if 
 
 After each iteration you get a reward equal to the change of the `x` axis of pelvis during this iteration minus the magnitude of the ligament forces used in that iteration.
 
-You can test your model on your local machine. For submission, you will need to interact with the remote environment: crowdAI sends you the current `observation` and you need to send back the action you take in the given state. You will be evaluated at three different levels of difficulty. For details, please refer to [Details of the environment](#details-of-the-environment).
+You can test your model on your local machine. For submission, you will need to interact with the remote environment: [crowdAI](https://www.crowdai.org/challenges/nips-2017-learning-to-run) sends you the current `observation` and you need to send back the action you take in the given state. You will be evaluated at three different levels of difficulty. For details, please refer to [Details of the environment](#details-of-the-environment).
 
 ### Submission
 
-Assuming your controller is trained and is represented as a function `my_controller(observation)` returning an `action` you can submit it to crowdAI through interaction with an environment there:
+Assuming your controller is trained and is represented as a function `my_controller(observation)` returning an `action` you can submit it to [crowdAI](https://www.crowdai.org/challenges/nips-2017-learning-to-run) through interaction with an environment there:
 
 ```python
 import opensim as osim
