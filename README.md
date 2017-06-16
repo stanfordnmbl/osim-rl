@@ -10,7 +10,7 @@ To model physics and biomechanics we use [OpenSim](https://github.com/opensim-or
 
 ## Getting started
 
-**Anaconda** is required to run our simulation environment - you can get it from here https://www.continuum.io/downloads. In the following instructions we assume that Anaconda is successfully installed.
+**Anaconda** is required to run our simulations. Anaconda will create a virtual environment with all the necessary libraries, to avoid conflicts with libraries in your operating system. You can get anaconda from here https://www.continuum.io/downloads. In the following instructions we assume that Anaconda is successfully installed.
 
 We support Windows, Linux, and Mac OSX (all in 64-bit). To install our simulator, you first need to create a conda environment with the OpenSim package. 
 
@@ -30,6 +30,8 @@ These commands will create a virtual environment on your computer with the neces
     pip install git+https://github.com/stanfordnmbl/osim-rl.git
 
 If the command `python -c "import opensim"` runs smoothly, you are done! Otherwise, please refer to our [FAQ](#frequently-asked-questions) section.
+
+Note that `source activate opensim-rl` activates the anaconda virtual environment. You need to type it every time you open a new terminal.
 
 ## Basic usage
 
