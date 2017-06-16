@@ -277,6 +277,11 @@ Most of the libraries by dafoult exist in major distributions of operating syste
 
 Please, try to find equivalent libraries for your OS and let us know -- we will put them here.
 
+**I still have more questions, how can I contact you?**
+
+For questions related to the challenge please use [the challenge forum](https://www.crowdai.org/challenges/nips-2017-learning-to-run/topics).
+For issues and problems related to installation process or to the implementation of the simulation environment feel free to fire an [issue on GitHub](https://github.com/stanfordnmbl/osim-rl/issues).
+
 ## Credits
 
 This challenge would not be possible without:
