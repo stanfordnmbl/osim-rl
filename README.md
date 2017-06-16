@@ -133,7 +133,7 @@ Assuming your controller is trained and is represented as a function `my_control
 ```python
 import opensim as osim
 from osim.http.client import Client
-from osim.env import *
+from osim.env import RunEnv
 
 # Settings
 remote_base = "http://grader.crowdai.org"
@@ -175,6 +175,8 @@ Additional rules:
 
 In order to create an environment, use:
 ```python
+    from osim.env import RunEnv
+
     env = RunEnv(visualize = True)
 ```
 Parameters:
