@@ -243,9 +243,10 @@ The observation contains 41 values:
 * strength of left and right psoas: 1 for `difficulty < 2`, otherwise a random normal variable with mean 1 and standard deviation 0.1 fixed for the entire simulation
 * next obstacle: x distance from the pelvis, y position of the center relative to the the ground, radius.
 
-For more details on the actual simulation, please refer to [1].
+For more details on the simulation framework, please refer to [1]. For more specific information about the muscles model we use, please refer to [2] or to [OpenSim documentation](ysimtk-confluence.stanford.edu:8080/display/OpenSim/Muscle+Model+Theory+and+Publications).
 
 [1] Delp, Scott L., et al. *"OpenSim: open-source software to create and analyze dynamic simulations of movement."* IEEE transactions on biomedical engineering 54.11 (2007): 1940-1950.
+[2] Thelen, D.G., (2003) *"Adjustment of muscle mechanics model parameters to simulate dynamic contractions in older adults."* ASME Journal of Biomechanical Engineering, 125(1):70–77.
 
 ## Frequently Asked Questions
 
