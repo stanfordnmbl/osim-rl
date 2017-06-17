@@ -297,5 +297,3 @@ This challenge would not be possible without:
 * [OpenAI http client](https://github.com/openai/gym-http-api)
 * [keras-rl](https://github.com/matthiasplappert/keras-rl)
 * and many other teams, individuals and projects
-
-For details please contact [Łukasz Kidziński](http://kidzinski.com/)
