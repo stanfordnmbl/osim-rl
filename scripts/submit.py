@@ -5,7 +5,7 @@ import numpy as np
 import argparse
 
 # Settings
-remote_base = 'http://grader.crowdai.org'
+remote_base = 'http://grader.crowdai.org:1729'
 
 # Command line parameters
 parser = argparse.ArgumentParser(description='Submit the result to crowdAI')
