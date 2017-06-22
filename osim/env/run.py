@@ -4,7 +4,12 @@ import numpy as np
 import os
 import random
 import string
+from itertools import chain
 from .osim import OsimEnv
+
+def flatten(listOfLists):
+    "Flatten one level of nesting"
+    return chain.from_iterable(listOfLists)
 
 class RunEnv(OsimEnv):
     STATE_PELVIS_X = 1
@@ -108,7 +113,9 @@ class RunEnv(OsimEnv):
             if obstacle[0] + obstacle[2] < x:
                 continue
             else:
-                return map(lambda xy: xy[0]-xy[1], [o for o in zip(obstacle, [x,0,0])])
+                ret = list(obstacle)
+                ret[0] = ret[0] - x
+                return ret
         return [100,0,0]
         
 
@@ -132,7 +139,7 @@ class RunEnv(OsimEnv):
         # see the next obstacle
         obstacle = self.next_obstacle()
 
-        self.current_state = pelvis_pos + pelvis_vel + joint_angles + joint_vel + mass_pos + mass_vel + [item for sublist in body_transforms for item in sublist] + muscles + obstacle
+        self.current_state = pelvis_pos + pelvis_vel + joint_angles + joint_vel + mass_pos + mass_vel + list(flatten(body_transforms)) + muscles + obstacle
         return self.current_state
 
     def create_obstacles(self):
@@ -224,7 +231,7 @@ class RunEnv(OsimEnv):
         ys = np.random.uniform(-0.5, 0.25, num_obstacles)
         rs = [0.05 + r for r in np.random.exponential(0.05, num_obstacles)]
 
-        ys = map(lambda xy: xy[0]*xy[1], [x for x in zip(ys, rs)])
+        ys = map(lambda xy: xy[0]*xy[1], list(zip(ys, rs)))
 
         # muscle strength
         rpsoas = 1
@@ -241,7 +248,7 @@ class RunEnv(OsimEnv):
         muscles[self.MUSCLES_PSOAS_R] = rpsoas
         muscles[self.MUSCLES_PSOAS_L] = lpsoas
 
-        obstacles = [x for x in zip(xs,ys,rs)]
+        obstacles = list(zip(xs,ys,rs))
         obstacles.sort()
 
         return {
