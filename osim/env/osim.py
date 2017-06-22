@@ -85,7 +85,8 @@ class OsimEnv(gym.Env):
     ninput = 0
     noutput = 0
     last_action = None
-
+    spec = None
+    
     metadata = {
         'render.modes': ['human'],
         'video.frames_per_second' : 50

@@ -108,7 +108,7 @@ class RunEnv(OsimEnv):
             if obstacle[0] + obstacle[2] < x:
                 continue
             else:
-                return map(lambda (x,y): x-y, zip(obstacle, [x,0,0]))
+                return map(lambda xy: xy[0]-xy[1], [x for x in zip(obstacle, [xy[0],0,0])])
         return [100,0,0]
         
 
@@ -132,7 +132,8 @@ class RunEnv(OsimEnv):
         # see the next obstacle
         obstacle = self.next_obstacle()
 
-        self.current_state = pelvis_pos + pelvis_vel + joint_angles + joint_vel + mass_pos + mass_vel + reduce(lambda x,y: x+y, body_transforms) + muscles + obstacle
+        print(body_transforms)
+        self.current_state = pelvis_pos + pelvis_vel + joint_angles + joint_vel + mass_pos + mass_vel + [xy[0]+xy[1] for xy in body_transforms] + muscles + obstacle
         return self.current_state
 
     def create_obstacles(self):
@@ -224,7 +225,7 @@ class RunEnv(OsimEnv):
         ys = np.random.uniform(-0.5, 0.25, num_obstacles)
         rs = [0.05 + r for r in np.random.exponential(0.05, num_obstacles)]
 
-        ys = map(lambda (x,y): x*y, zip(ys, rs))
+        ys = map(lambda xy: xy[0]*xy[1], [x for x in zip(ys, rs)])
 
         # muscle strength
         rpsoas = 1
@@ -241,7 +242,7 @@ class RunEnv(OsimEnv):
         muscles[self.MUSCLES_PSOAS_R] = rpsoas
         muscles[self.MUSCLES_PSOAS_L] = lpsoas
 
-        obstacles = zip(xs,ys,rs)
+        obstacles = [x for x in zip(xs,ys,rs)]
         obstacles.sort()
 
         return {
