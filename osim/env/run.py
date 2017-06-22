@@ -132,7 +132,6 @@ class RunEnv(OsimEnv):
         # see the next obstacle
         obstacle = self.next_obstacle()
 
-        print(body_transforms)
         self.current_state = pelvis_pos + pelvis_vel + joint_angles + joint_vel + mass_pos + mass_vel + [item for sublist in body_transforms for item in sublist] + muscles + obstacle
         return self.current_state
 
