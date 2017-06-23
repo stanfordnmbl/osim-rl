@@ -56,6 +56,7 @@ class RunEnv(OsimEnv):
 
     def reset(self, difficulty=2, seed=None):
         super(RunEnv, self).reset()
+        self.istep = 0
         self.last_state = self.get_observation()
         self.setup(difficulty, seed)
         self.current_state = self.last_state
@@ -78,7 +79,7 @@ class RunEnv(OsimEnv):
         return (self.current_state[self.STATE_PELVIS_Y] < 0.65)
     
     def is_done(self):
-        return self.is_pelvis_too_low()
+        return self.is_pelvis_too_low() or (self.istep >= self.spec.timestep_limit)
 
     def configure(self):
         super(RunEnv, self).configure()

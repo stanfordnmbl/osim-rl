@@ -130,12 +130,11 @@ class OsimEnv(gym.Env):
 
         self.action_space = convert_to_gym(self.action_space)
         self.observation_space = convert_to_gym(self.observation_space)
-        self.horizon = self.timestep_limit
+        self.spec = Spec()
+        self.horizon = self.spec.timestep_limit
 
         self.configure()
 #        self.reset()
-
-        self.spec = Spec()
 
     def configure(self):
         pass
