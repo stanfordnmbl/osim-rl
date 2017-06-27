@@ -14,7 +14,7 @@ class SimulationTest(unittest.TestCase):
     def test2(self):
         env = RunEnv(visualize=False)
         env.reset()
-        desc = env.env_desc
+        desc = env.get_env_desc()
         env.reset()
         env.reset_from_desc(desc)
 
