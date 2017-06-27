@@ -42,25 +42,29 @@ class RunEnv(OsimEnv):
             manager.setFinalTime(0.0)
             manager.integrate(state)
 
-    def setup(self, difficulty, seed=None):
-        # create the new env
-        # set up obstacles
-        self.env_desc = self.generate_env(difficulty, seed, self.max_obstacles)
-        
+    def load_env(self, env_desc):
         self.clear_obstacles(self.osim_model.state)
-        for x,y,r in self.env_desc['obstacles']:
+        for x,y,r in env_desc['obstacles']:
             self.add_obstacle(self.osim_model.state,x,y,r)
 
         # set up muscle strength
-        self.osim_model.set_strength(self.env_desc['muscles'])
+        self.osim_model.set_strength(env_desc['muscles'])
 
-    def reset(self, difficulty=2, seed=None):
+    def reset_from_desc(self, env_desc):
         super(RunEnv, self).reset()
+        self.env_desc = env_desc
         self.istep = 0
+        self.load_env(env_desc)
         self.last_state = self.get_observation()
-        self.setup(difficulty, seed)
         self.current_state = self.last_state
         return self.last_state
+
+    def get_env_desc(self):
+        return self.env_desc
+
+    def reset(self, difficulty=2, seed=None):
+        env_desc = self.generate_env(difficulty, seed, self.max_obstacles)
+        return self.reset_from_desc(env_desc)
 
     def compute_reward(self):
         # Compute ligaments penalty
