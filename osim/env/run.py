@@ -109,7 +109,7 @@ class RunEnv(OsimEnv):
             if obstacle[0] + obstacle[2] < x:
                 continue
             else:
-                return map(lambda xy: xy[0]-xy[1], [o for o in zip(obstacle, [x,0,0])])
+                return list(map(lambda xy: xy[0]-xy[1], [o for o in zip(obstacle, [x,0,0])]))
         return [100,0,0]
         
 
