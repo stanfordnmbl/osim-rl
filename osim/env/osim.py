@@ -72,7 +72,7 @@ class Spec(object):
 class OsimEnv(gym.Env):
     stepsize = 0.01
     integration_accuracy = 1e-3
-    timestep_limit = 500
+    timestep_limit = 1000
     test = False
 
     action_space = None
