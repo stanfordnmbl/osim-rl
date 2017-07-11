@@ -229,8 +229,8 @@ class RunEnv(OsimEnv):
         # obstacles
         num_obstacles = max_obstacles*(difficulty > 0) #min(2*(difficulty > 0), max_obstacles)
 
-        xs = np.random.uniform(2.0, 10.0, num_obstacles)
-        ys = np.random.uniform(-0.5, 0.25, num_obstacles)
+        xs = np.random.uniform(1.0, 5.0, num_obstacles)
+        ys = np.random.uniform(-0.25, 0.25, num_obstacles)
         rs = [0.05 + r for r in np.random.exponential(0.05, num_obstacles)]
 
         ys = map(lambda xy: xy[0]*xy[1], list(zip(ys, rs)))

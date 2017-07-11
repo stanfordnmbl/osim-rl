@@ -20,9 +20,8 @@ observation = client.env_create(args.token)
 
 # Run a single step
 #
-# The grader runs 3 simulations of 500 steps each, Hence we attempt to
-# run a max of 500x3=1500 steps
-for i in range(1500):
+# The grader runs 3 simulations of at most 1000 steps each. We stop after the last one
+while True:
     v = np.array(observation).reshape((-1,1,env.observation_space.shape[0]))
     [observation, reward, done, info] = client.env_step(env.action_space.sample().tolist())
     print(observation)
