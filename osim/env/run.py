@@ -135,7 +135,7 @@ class RunEnv(OsimEnv):
 
         body_transforms = [[self.osim_model.get_body(body).getTransformInGround(self.osim_model.state).p()[i] for i in range(2)] for body in bodies]
 
-        muscles = [ self.env_desc['muscles'][self.MUSCLES_PSOAS_R], self.env_desc['muscles'][self.MUSCLES_PSOAS_R] ]
+        muscles = [ self.env_desc['muscles'][self.MUSCLES_PSOAS_L], self.env_desc['muscles'][self.MUSCLES_PSOAS_R] ]
     
         # see the next obstacle
         obstacle = self.next_obstacle()
