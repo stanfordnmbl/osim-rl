@@ -3,7 +3,6 @@ import requests
 import six.moves.urllib.parse as urlparse
 import json
 import os
-import osim
 import pkg_resources
 
 import logging
@@ -52,7 +51,6 @@ class Client(object):
         data = {'env_id': env_id,
                 'token': token,
                 'version': pkg_resources.get_distribution("osim-rl").version }
-        print data
         resp = self._post_request(route, data)
         self.instance_id = resp['instance_id']
         self.env_monitor_start("tmp", force=True)
