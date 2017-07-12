@@ -4,6 +4,7 @@ import six.moves.urllib.parse as urlparse
 import json
 import os
 import pkg_resources
+import sys
 
 import logging
 logger = logging.getLogger(__name__)
@@ -51,7 +52,10 @@ class Client(object):
         data = {'env_id': env_id,
                 'token': token,
                 'version': pkg_resources.get_distribution("osim-rl").version }
-        resp = self._post_request(route, data)
+        try:
+            resp = self._post_request(route, data)
+        except ServerError as e:
+            sys.exit(e.message)
         self.instance_id = resp['instance_id']
         self.env_monitor_start("tmp", force=True)
         return self.env_reset()
