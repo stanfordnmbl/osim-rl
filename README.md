@@ -280,6 +280,10 @@ Most of the libraries by dafoult exist in major distributions of operating syste
 
 Please, try to find equivalent libraries for your OS and let us know -- we will put them here.
 
+**Why there are no energy constraints?**
+
+Please refer to the issue https://github.com/stanfordnmbl/osim-rl/issues/34.
+
 **I still have more questions, how can I contact you?**
 
 For questions related to the challenge please use [the challenge forum](https://www.crowdai.org/challenges/nips-2017-learning-to-run/topics).
