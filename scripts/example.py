@@ -4,7 +4,7 @@ import numpy as np
 import sys
 
 from keras.models import Sequential, Model
-from keras.layers import Dense, Activation, Flatten, Input, merge
+from keras.layers import Dense, Activation, Flatten, Input, concatenate
 from keras.optimizers import Adam
 
 import numpy as np
@@ -55,7 +55,7 @@ print(actor.summary())
 action_input = Input(shape=(nb_actions,), name='action_input')
 observation_input = Input(shape=(1,) + env.observation_space.shape, name='observation_input')
 flattened_observation = Flatten()(observation_input)
-x = merge([action_input, flattened_observation], mode='concat')
+x = concatenate([action_input, flattened_observation])
 x = Dense(64)(x)
 x = Activation('relu')(x)
 x = Dense(64)(x)
@@ -64,7 +64,7 @@ x = Dense(64)(x)
 x = Activation('relu')(x)
 x = Dense(1)(x)
 x = Activation('linear')(x)
-critic = Model(input=[action_input, observation_input], output=x)
+critic = Model(inputs=[action_input, observation_input], outputs=x)
 print(critic.summary())
 
 # Set up the agent for training
