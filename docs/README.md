@@ -18,7 +18,7 @@ However, the old observation is in fact a subset of the new observation so if yo
 ```python
 for j in range(6,12):
     observation[j+6] = observation[j]
-observation[37] = observation[36]
+observation[36] = observation[37]
 observation, reward, done, info = env.step(my_controller(observation))
 ```
 Yet, with new information, your controller should be able to perform betters, so we definitely advise to retrain model.
