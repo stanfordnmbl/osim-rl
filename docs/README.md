@@ -12,3 +12,13 @@ In order to switch to the new environment you need to update the `osim-rl` scrip
 
     pip install git+https://github.com/stanfordnmbl/osim-rl.git -U
 
+Since the observation vector changed, you may need to retrain your existing model to account for these new changes.
+
+However, the old observation is in fact a subset of the new observation so if you want to submit the old model
+
+    for j in range(6,12):
+        observation[j+6] = observation[j]
+    observation[37] = observation[36]
+    observation, reward, done, info = env.step(my_controller(observation))
+
+Yet, with new information, your controller should be able to perform betters, so we definitely advise to retrain the model.
