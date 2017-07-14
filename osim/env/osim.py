@@ -67,7 +67,7 @@ class Osim(object):
 class Spec(object):
     def __init__(self, *args, **kwargs):
         self.id = 0
-        self.timestep_limit = 500
+        self.timestep_limit = 1000
 
 class OsimEnv(gym.Env):
     stepsize = 0.01
