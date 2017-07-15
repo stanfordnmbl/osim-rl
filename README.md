@@ -274,7 +274,7 @@ Note, that connecting a display to a docker can be tricky and it's system depend
 
 **Some libraries are missing. What is required to run the environment?**
 
-Most of the libraries by dafoult exist in major distributions of operating systems or are automatically downloaded by the conda environment. Yet, sometimes things are still missing. The minimal set of dependencies under Linux can be installed with
+Most of the libraries by default exist in major distributions of operating systems or are automatically downloaded by the conda environment. Yet, sometimes things are still missing. The minimal set of dependencies under Linux can be installed with
 
     sudo apt install libquadmath0 libglu1-mesa libglu1-mesa-dev libsm6 libxi-dev libxmu-dev liblapack-dev
 
