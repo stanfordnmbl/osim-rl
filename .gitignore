@@ -4,6 +4,5 @@ scripts/keras-rl/rl
 build/
 *~
 *.log
-*.h5f
 *#
 *.pyc
