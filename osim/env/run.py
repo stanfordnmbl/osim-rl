@@ -73,7 +73,7 @@ class RunEnv(OsimEnv):
         # Get the pelvis X delta
         delta_x = self.current_state[self.STATE_PELVIS_X] - self.last_state[self.STATE_PELVIS_X]
 
-        return delta_x - math.sqrt(lig_pen) * 0.0001
+        return delta_x - math.sqrt(lig_pen) * 10e-8
 
     def is_pelvis_too_low(self):
         return (self.current_state[self.STATE_PELVIS_Y] < 0.65)
