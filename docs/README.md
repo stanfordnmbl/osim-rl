@@ -1,6 +1,6 @@
 # Version 1.4.1
 
-After discussing the way the reward function is computed ( https://github.com/stanfordnmbl/osim-rl/issues/31 ), we decided to further update the environment. Uptill version 1.3, the reward received at every step was the total distance travelled from the starting point minus the ligament forces. As a result, the total reward was the cummulative sum of total distances over all steps (or discreet integral of position in time) minus the total sum of ligament forces.
+After discussing the way the reward function is computed ( https://github.com/stanfordnmbl/osim-rl/issues/43 ), we decided to further update the environment. Uptill version 1.3, the reward received at every step was the total distance travelled from the starting point minus the ligament forces. As a result, the total reward was the cummulative sum of total distances over all steps (or discreet integral of position in time) minus the total sum of ligament forces.
 
 Since, this reward is unconventional in reinforcement learning, we updated the reward function at each step to the distance increment between the two steps minus the ligament forces. As a result, the total reward is the total distance travelled minus the ligament forces. 
 
