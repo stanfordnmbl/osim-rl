@@ -4,10 +4,6 @@ After discussing the way the reward function is computed ( https://github.com/st
 
 Since, this reward is unconventional in reinforcement learning, we updated the reward function at each step to the distance increment between the two steps minus the ligament forces. As a result, the total reward is the total distance travelled minus the ligament forces. 
 
-The current implementation is available in
-https://github.com/stanfordnmbl/osim-rl/tree/iss43
-and will be rolled out soon.
-
 Note that this will change the order of magnitude of the total reward from ~1000 to ~10 (now measured in meters travelled). The change does not affect the API of observations and actions. Moreover the measures are strongly correlated and a good model in the old version should perform well in the current version.
 
 # Version 1.3
