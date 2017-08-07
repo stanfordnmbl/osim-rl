@@ -14,6 +14,7 @@ from rl.memory import SequentialMemory
 from rl.random import OrnsteinUhlenbeckProcess
 
 from osim.env import *
+from osim.http.client import Client
 
 from keras.optimizers import RMSprop
 
@@ -27,6 +28,7 @@ parser.add_argument('--test', dest='train', action='store_false', default=True)
 parser.add_argument('--steps', dest='steps', action='store', default=10000, type=int)
 parser.add_argument('--visualize', dest='visualize', action='store_true', default=False)
 parser.add_argument('--model', dest='model', action='store', default="example.h5f")
+parser.add_argument('--token', dest='token', action='store', required=False)
 args = parser.parse_args()
 
 # Load walking environment
@@ -87,7 +89,30 @@ if args.train:
     # After training is done, we save the final weights.
     agent.save_weights(args.model, overwrite=True)
 
-if not args.train:
+# If TEST and TOKEN, submit to crowdAI
+if not args.train and args.token:
+    # Settings
+    remote_base = 'http://grader.crowdai.org:1729'
+    client = Client(remote_base)
+
+    # Create environment
+    observation = client.env_create(args.token)
+
+    # Run a single step
+    # The grader runs 3 simulations of at most 1000 steps each. We stop after the last one
+    while True:
+        v = np.array(observation).reshape((env.observation_space.shape[0]))
+        action = agent.forward(v)
+        [observation, reward, done, info] = client.env_step(action.tolist())
+        if done:
+            observation = client.env_reset()
+            if not observation:
+                break
+
+    client.submit()
+
+# If TEST and no TOKEN, run some test experiments
+if not args.train and not args.token:
     agent.load_weights(args.model)
     # Finally, evaluate our algorithm for 1 episode.
     agent.test(env, nb_episodes=1, visualize=False, nb_max_episode_steps=500)
