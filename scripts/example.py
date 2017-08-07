@@ -91,6 +91,7 @@ if args.train:
 
 # If TEST and TOKEN, submit to crowdAI
 if not args.train and args.token:
+    agent.load_weights(args.model)
     # Settings
     remote_base = 'http://grader.crowdai.org:1729'
     client = Client(remote_base)
