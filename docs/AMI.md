@@ -20,3 +20,15 @@ once your model is trained you can run
     python example.py --test --model sample --token [YOUR_CROWD_AI_TOKEN]
 
 to submit the solution.
+
+## Screencast
+
+![1](https://s3-eu-west-1.amazonaws.com/kidzinski/opensim-ami/1.png)
+![2](https://s3-eu-west-1.amazonaws.com/kidzinski/opensim-ami/2.png)
+![3](https://s3-eu-west-1.amazonaws.com/kidzinski/opensim-ami/3.png)
+![4](https://s3-eu-west-1.amazonaws.com/kidzinski/opensim-ami/4.png)
+![5](https://s3-eu-west-1.amazonaws.com/kidzinski/opensim-ami/5.png)
+![6](https://s3-eu-west-1.amazonaws.com/kidzinski/opensim-ami/6.png)
+![7](https://s3-eu-west-1.amazonaws.com/kidzinski/opensim-ami/7.png)
+![8](https://s3-eu-west-1.amazonaws.com/kidzinski/opensim-ami/8.png)
+![9](https://s3-eu-west-1.amazonaws.com/kidzinski/opensim-ami/9.png)
