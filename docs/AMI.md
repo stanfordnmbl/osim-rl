@@ -1,7 +1,8 @@
 # Using Amazon AMI
 
 You can easily set up OpenSim Reinforcement learning environmen on AWS Cloud using our AMI.
-Just create a machine using our AMI `ami-971be8ee` and log in using `ssh ubuntu@[IP_OF_THE_MACHINE]`.
+Just create a machine with `ami-971be8ee` and log in using `ssh ubuntu@[IP_OF_THE_MACHINE]`.
+Remember to turn off your machine if you are not using it. Amazon will charge you for every our of use.
 
 ## Screencast
 
@@ -24,7 +25,7 @@ Just create a machine using our AMI `ami-971be8ee` and log in using `ssh ubuntu@
 ### Create a keypair and download it
 ![6](https://s3-eu-west-1.amazonaws.com/kidzinski/opensim-ami/6.png)
 
-**You need to add this key to your keychain or add it to your SSH client.** On Linux/MacOS type `ssh-add [path-to-key.pem]` on windows add it in Putty or other client you use.
+**You need to add this key to your keychain or add it to your SSH client.** On Linux/MacOS type `ssh-add [path-to-key.pem]` on windows add it to your ssh client (e.g. putty)
 
 ### See the confirmation, go to your instances
 ![7](https://s3-eu-west-1.amazonaws.com/kidzinski/opensim-ami/7.png)
