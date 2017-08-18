@@ -226,8 +226,8 @@ class RunEnv(OsimEnv):
         pass
 
     def generate_env(self, difficulty, seed, max_obstacles):
-        if seed:
-            np.random.seed(seed)
+        if seed is not None:
+            np.random.seed(seed) # seed the RNG if seed is provided
 
         # obstacles
         num_obstacles = max_obstacles*(difficulty > 0) #min(2*(difficulty > 0), max_obstacles)
