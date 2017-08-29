@@ -157,6 +157,8 @@ class OsimEnv(gym.Env):
     def activate_muscles(self, action):
         if np.any(np.isnan(action)):
             raise ValueError("NaN passed in the activation vector. Values in [0,1] interval are required.")
+        action = np.clip(action, 0.0, 1.0)
+            
         brain = opensim.PrescribedController.safeDownCast(self.osim_model.model.getControllerSet().get(0))
         functionSet = brain.get_ControlFunctions()
 
