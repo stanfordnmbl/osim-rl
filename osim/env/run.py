@@ -230,18 +230,29 @@ class RunEnv(OsimEnv):
             np.random.seed(seed) # seed the RNG if seed is provided
 
         # obstacles
-        num_obstacles = max_obstacles*(difficulty > 0) #min(2*(difficulty > 0), max_obstacles)
+        num_obstacles = 0
+        xs = []
+        ys = []
+        rs = []
+        
+        if 0 < difficulty and difficulty <= 2:
+            num_obstacles = min(3, max_obstacles)
+            xs = np.random.uniform(1.0, 5.0, num_obstacles)
+            ys = np.random.uniform(-0.25, 0.25, num_obstacles)
+            rs = [0.05 + r for r in np.random.exponential(0.05, num_obstacles)]
 
-        xs = np.random.uniform(1.0, 5.0, num_obstacles)
-        ys = np.random.uniform(-0.25, 0.25, num_obstacles)
-        rs = [0.05 + r for r in np.random.exponential(0.05, num_obstacles)]
+        if difficulty == 3:
+            num_obstacles = min(20, max_obstacles)
+            xs = np.cumsum(np.random.uniform(0.5, 1.5, num_obstacles)) + 1
+            ys = np.random.uniform(-0.05, 0.25, num_obstacles)
+            rs = [0.05 + r for r in np.random.exponential(0.05, num_obstacles)]
 
         ys = map(lambda xy: xy[0]*xy[1], list(zip(ys, rs)))
 
         # muscle strength
         rpsoas = 1
         lpsoas = 1
-        if difficulty == 2:
+        if difficulty >= 2:
             rpsoas = 1 - np.random.normal(0, 0.1)
             lpsoas = 1 - np.random.normal(0, 0.1)
             rpsoas = max(0.5, rpsoas)
