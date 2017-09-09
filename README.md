@@ -284,6 +284,23 @@ Please, try to find equivalent libraries for your OS and let us know -- we will 
 
 Please refer to the issue https://github.com/stanfordnmbl/osim-rl/issues/34.
 
+**I have some memory leaks, what can I do?**
+
+Please refer to
+https://github.com/stanfordnmbl/osim-rl/issues/10
+and to 
+https://github.com/ctmakro/stanford-osrl/blob/master/README.md#note-for-users-on-win7-x64--python-35-2017-07-06
+
+**I see only python3 environment for Linux. How to install Windows environment?**
+
+Please refer to 
+https://github.com/stanfordnmbl/osim-rl/issues/29
+
+**How to visualize observations when running simulations on the server?**
+
+Please refer to
+https://github.com/stanfordnmbl/osim-rl/issues/59
+
 **I still have more questions, how can I contact you?**
 
 For questions related to the challenge please use [the challenge forum](https://www.crowdai.org/challenges/nips-2017-learning-to-run/topics).
