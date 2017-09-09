@@ -57,8 +57,8 @@ class RunEnv(OsimEnv):
     def reset(self, difficulty=2, seed=None):
         super(RunEnv, self).reset()
         self.istep = 0
-        self.last_state = self.get_observation()
         self.setup(difficulty, seed)
+        self.last_state = self.get_observation()
         self.current_state = self.last_state
         return self.last_state
 
