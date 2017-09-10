@@ -289,7 +289,7 @@ Please refer to the issue https://github.com/stanfordnmbl/osim-rl/issues/34.
 Please refer to
 https://github.com/stanfordnmbl/osim-rl/issues/10
 and to 
-https://github.com/ctmakro/stanford-osrl/blob/master/README.md#note-for-users-on-win7-x64--python-35-2017-07-06
+https://github.com/stanfordnmbl/osim-rl/issues/58
 
 **I see only python3 environment for Linux. How to install Windows environment?**
 
