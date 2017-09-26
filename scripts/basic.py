@@ -1,12 +1,12 @@
 from osim.env.run import RunEnv
 
-env = RunEnv(visualize=True, max_obstacles=3)
+env = RunEnv(visualize=True, max_obstacles = 10)
 
-observation = env.reset(difficulty = 3)
+observation = env.reset(difficulty = 2)
 for i in range(200):
     observation, reward, done, info = env.step(env.action_space.sample())
     if done:
-        env.reset()
+        env.reset(difficulty = 2)
 #        break
     
 

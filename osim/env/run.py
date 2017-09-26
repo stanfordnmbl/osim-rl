@@ -235,17 +235,18 @@ class RunEnv(OsimEnv):
         ys = []
         rs = []
         
-        if 0 < difficulty and difficulty <= 2:
+        if 0 < difficulty:
             num_obstacles = min(3, max_obstacles)
             xs = np.random.uniform(1.0, 5.0, num_obstacles)
             ys = np.random.uniform(-0.25, 0.25, num_obstacles)
             rs = [0.05 + r for r in np.random.exponential(0.05, num_obstacles)]
 
         if difficulty == 3:
-            num_obstacles = min(20, max_obstacles)
-            xs = np.cumsum(np.random.uniform(0.5, 1.5, num_obstacles)) + 1
-            ys = np.random.uniform(-0.05, 0.25, num_obstacles)
-            rs = [0.05 + r for r in np.random.exponential(0.05, num_obstacles)]
+            extra_obstacles = max(min(20, max_obstacles) - num_obstacles, 0)
+            xs = np.concatenate([xs,(np.cumsum(np.random.uniform(2.0, 4.0, extra_obstacles)) + 5)])
+            ys = np.concatenate([ys,np.random.uniform(-0.05, 0.25, extra_obstacles)])
+            rs = rs + [0.05 + r for r in np.random.exponential(0.05, extra_obstacles)]
+            num_obstacles = len(xs)
 
         ys = map(lambda xy: xy[0]*xy[1], list(zip(ys, rs)))
 
