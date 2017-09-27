@@ -57,8 +57,8 @@ class RunEnv(OsimEnv):
     def reset(self, difficulty=2, seed=None):
         super(RunEnv, self).reset()
         self.istep = 0
-        self.last_state = self.get_observation()
         self.setup(difficulty, seed)
+        self.last_state = self.get_observation()
         self.current_state = self.last_state
         return self.last_state
 
@@ -230,18 +230,30 @@ class RunEnv(OsimEnv):
             np.random.seed(seed) # seed the RNG if seed is provided
 
         # obstacles
-        num_obstacles = max_obstacles*(difficulty > 0) #min(2*(difficulty > 0), max_obstacles)
+        num_obstacles = 0
+        xs = []
+        ys = []
+        rs = []
+        
+        if 0 < difficulty:
+            num_obstacles = min(3, max_obstacles)
+            xs = np.random.uniform(1.0, 5.0, num_obstacles)
+            ys = np.random.uniform(-0.25, 0.25, num_obstacles)
+            rs = [0.05 + r for r in np.random.exponential(0.05, num_obstacles)]
 
-        xs = np.random.uniform(1.0, 5.0, num_obstacles)
-        ys = np.random.uniform(-0.25, 0.25, num_obstacles)
-        rs = [0.05 + r for r in np.random.exponential(0.05, num_obstacles)]
+        if 0 < difficulty and 3 < max_obstacles:
+            extra_obstacles = max(min(20, max_obstacles) - num_obstacles, 0)
+            xs = np.concatenate([xs,(np.cumsum(np.random.uniform(2.0, 4.0, extra_obstacles)) + 5)])
+            ys = np.concatenate([ys,np.random.uniform(-0.05, 0.25, extra_obstacles)])
+            rs = rs + [0.05 + r for r in np.random.exponential(0.05, extra_obstacles)]
+            num_obstacles = len(xs)
 
         ys = map(lambda xy: xy[0]*xy[1], list(zip(ys, rs)))
 
         # muscle strength
         rpsoas = 1
         lpsoas = 1
-        if difficulty == 2:
+        if difficulty >= 2:
             rpsoas = 1 - np.random.normal(0, 0.1)
             lpsoas = 1 - np.random.normal(0, 0.1)
             rpsoas = max(0.5, rpsoas)

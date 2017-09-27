@@ -157,6 +157,9 @@ class OsimEnv(gym.Env):
     def activate_muscles(self, action):
         if np.any(np.isnan(action)):
             raise ValueError("NaN passed in the activation vector. Values in [0,1] interval are required.")
+        action = np.clip(action, 0.0, 1.0)
+        self.last_action = action
+            
         brain = opensim.PrescribedController.safeDownCast(self.osim_model.model.getControllerSet().get(0))
         functionSet = brain.get_ControlFunctions()
 
@@ -165,8 +168,6 @@ class OsimEnv(gym.Env):
             func.setValue( float(action[j]) )
 
     def _step(self, action):
-        self.last_action = action
-
         self.activate_muscles(action)
 
         # Integrate one step
