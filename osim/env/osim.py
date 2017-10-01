@@ -64,6 +64,9 @@ class Osim(object):
     def initializeState(self):
         self.state = self.model.initializeState()
 
+    def revert(self, state):
+        self.state = state
+
 class Spec(object):
     def __init__(self, *args, **kwargs):
         self.id = 0
