@@ -1,3 +1,15 @@
+# Version 1.5
+
+Grader now accepts only this version. In order to switch to the new environment you need to update the `osim-rl` scripts with the following command:
+
+    pip install git+https://github.com/stanfordnmbl/osim-rl.git -U
+    
+This release includes following bugfixes
+
+* Fixed first observation (previously it wasn't showing the first obstacle correctly). ( https://github.com/stanfordnmbl/osim-rl/issues/53 )
+* Fixed geometries for the right leg. ( https://github.com/stanfordnmbl/osim-rl/issues/75 )
+* Activations from outside [0,1] are clipped to [0,1] ( https://github.com/stanfordnmbl/osim-rl/issues/64 )
+
 # Version 1.4.1
 
 After discussing the way the reward function is computed ( https://github.com/stanfordnmbl/osim-rl/issues/43 ), we decided to further update the environment. Uptill version 1.3, the reward received at every step was the total distance travelled from the starting point minus the ligament forces. As a result, the total reward was the cummulative sum of total distances over all steps (or discreet integral of position in time) minus the total sum of ligament forces.
