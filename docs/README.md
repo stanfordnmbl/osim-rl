@@ -1,3 +1,35 @@
+# Round 2 of the NIPS challenge
+
+In order to minimize overfitting, we will check your solution in the second round on an environment with the **10 obstacles** across a total of **10 simulations**. There will be a limit of total **3 submissions** per participant throughout the entire second round.
+
+Only participants with the score above 15 points on the leaderboard will be invited to submit their solutions in the second round. 
+
+You can recreate the settings of the second round using:
+
+    env = RunEnv(visualize=True, max_obstacles = 10)
+    observation = env.reset(difficulty = 2)
+
+We are excited about these last few weeks and we are looking forward to see your final models. 
+
+Winners will be selected based on leaderboard position at the end of the second round, for these prizes:
+
+* 1st - NVIDIA DGX Station
+* 2nd - NVIDIA Titan Xp
+* 3rd - NVIDIA Titan Xp
+
+Moreover, the winner will receive travel grants to:
+
+* NIPS 2017 (including registration fee), December 8th 2017
+* Stanford, December 12th 2017 (can be changed),
+* Applied ML Days, Switzerland, January 27th-30th 2018.
+
+Please let us know about your availability at NIPS, if you are interested in giving a talk about your solution and if you are already registered, by filling out this [form](https://plantvillage.us12.list-manage.com/track/click?u=f912313fcb27b4deb61905df6&id=cb5cbf2ad2&e=d92672213d).
+ 
+Submit the form until Friday Oct 20, 2017, 23:59 CEST in order to be eligible for the prizes.
+
+Presence at NIPS is not mandatory for eligibility, but it’s highly encouraged.
+If you are not competing for the prizes, but you will be present at NIPS, please also fill out the form.
+
 # Version 1.5
 
 Grader now accepts only this version. In order to switch to the new environment you need to update the `osim-rl` scripts with the following command:
