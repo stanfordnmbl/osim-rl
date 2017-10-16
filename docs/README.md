@@ -1,6 +1,6 @@
 # Round 2 of the NIPS challenge
 
-In order to minimize overfitting, we will check your solution in the second round on an environment with the **10 obstacles** across a total of **10 simulations**. There will be a limit of total **3 submissions** per participant throughout the entire second round.
+In order to minimize overfitting, we will check your solution in the second round on an environment with the **10 obstacles** across a total of **3 simulations**. There will be a limit of total **3 submissions** per participant throughout the entire second round.
 
 Only participants with the score above 15 points on the leaderboard will be invited to submit their solutions in the second round. 
 
