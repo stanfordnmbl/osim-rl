@@ -25,8 +25,6 @@ Moreover, the winner will receive travel grants to:
 
 Please let us know about your availability at NIPS, if you are interested in giving a talk about your solution and if you are already registered, by filling out this [form](https://plantvillage.us12.list-manage.com/track/click?u=f912313fcb27b4deb61905df6&id=cb5cbf2ad2&e=d92672213d).
  
-Submit the form until Friday Oct 27, 2017, 23:59 CEST in order to be eligible for the prizes.
-
 Presence at NIPS is not mandatory for eligibility, but it’s highly encouraged.
 If you are not competing for the prizes, but you will be present at NIPS, please also fill out the form.
 
