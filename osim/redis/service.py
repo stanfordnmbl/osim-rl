@@ -82,7 +82,7 @@ class OsimRlRedisService:
                         return self._error_template(_error_message)
                     else:
                         self.env = RunEnv(visualize = _payload['visualize'], max_obstacles=10)
-                        _observation = self.env.reset()
+                        _observation = self.env.reset(seed=self.seed_map[self.simulation_count]))
                         _observation = np.array(_observation).tolist()
                         _command_response = {}
                         _command_response['type'] = messages.OSIM_RL.ENV_CREATE_RESPONSE
@@ -99,7 +99,7 @@ class OsimRlRedisService:
                     """
                     self.simulation_count += 1
                     if self.seed_map and self.simulation_count < len(self.seed_map):
-                        _observation = self.env.reset()
+                        _observation = self.env.reset(seed=self.seed_map[self.simulation_count])
                         _observation = list(_observation)
                         _command_response = {}
                         _command_response['type'] = messages.OSIM_RL.ENV_RESET_RESPONSE
