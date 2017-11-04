@@ -10,17 +10,14 @@ import os
 
 
 class OsimRlRedisService:
-    def __init__(self, seed_map=False, remote_host='127.0.0.1', remote_port=6379, remote_db=0, remote_password=None, verbose=False):
+    def __init__(self, osim_rl_redis_service_id='osim_rl_redis_service_id', seed_map=False, remote_host='127.0.0.1', remote_port=6379, remote_db=0, remote_password=None, verbose=False):
         """
             TODO: Expose more RunEnv related variables
         """
         print("Attempting to connect to redis server at {}:{}/{}".format(remote_host, remote_port, remote_db))
         self.redis_pool = redis.ConnectionPool(host=remote_host, port=remote_port, db=remote_db, password=remote_password)
         self.namespace = "osim-rl"
-        try:
-            self.service_id =  os.environ['osim_rl_redis_service_id']
-        except KeyError:
-            self.service_id = "osim_rl_redis_service_id"
+        self.service_id = osim_rl_redis_service_id
         self.command_channel = "{}::{}::commands".format(self.namespace, self.service_id)
         self.env = False
         self.reward = 0
@@ -165,12 +162,16 @@ class OsimRlRedisService:
                 return self._error_template(str(e))
 
 if __name__ == "__main__":
-    if 'redis_auth' in os.environ.keys():
-        grader = OsimRlRedisService(seed_map="11,22,33", verbose=True)
-        result = grader.run()
-        if result['type'] == messages.OSIM_RL.ENV_SUBMIT_RESPONSE:
-            reward = result['payload']
-            print("Cumulative Reward : ", reward)
-        else:
-            #Evaluation failed
-            print("Evaluation Failed : ", result['payload'])
+    import argparse
+    parser = argparse.ArgumentParser(description='Submit the result to crowdAI')
+    parser.add_argument('--port', dest='port', action='store', required=True)
+    args = parser.parse_args()
+
+    grader = OsimRlRedisService(remote_port=int(args.port), seed_map="11,22,33", verbose=True)
+    result = grader.run()
+    if result['type'] == messages.OSIM_RL.ENV_SUBMIT_RESPONSE:
+        reward = result['payload']
+        print("Cumulative Reward : ", reward)
+    else:
+        #Evaluation failed
+        print("Evaluation Failed : ", result['payload'])
