@@ -1,2 +1,3 @@
 numpy
 git+https://github.com/openai/gym
+redis==2.10.6
