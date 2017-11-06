@@ -10,7 +10,7 @@ import os
 
 
 class OsimRlRedisService:
-    def __init__(self, osim_rl_redis_service_id='osim_rl_redis_service_id', seed_map=False, remote_host='127.0.0.1', remote_port=6379, remote_db=0, remote_password=None, verbose=False):
+    def __init__(self, osim_rl_redis_service_id='osim_rl_redis_service_id', seed_map=False, max_steps=1000, remote_host='127.0.0.1', remote_port=6379, remote_db=0, remote_password=None, verbose=False):
         """
             TODO: Expose more RunEnv related variables
         """
@@ -20,9 +20,12 @@ class OsimRlRedisService:
         self.service_id = osim_rl_redis_service_id
         self.command_channel = "{}::{}::commands".format(self.namespace, self.service_id)
         self.env = False
+        self.env_available = False
         self.reward = 0
         self.simulation_count = 0
+        self.current_step = 0
         self.verbose = verbose
+        self.max_steps = max_steps
         self.initalize_seed_map(seed_map)
 
     def initalize_seed_map(self, seed_map_string):
@@ -82,7 +85,9 @@ class OsimRlRedisService:
                         return self._error_template(_error_message)
                     else:
                         self.env = RunEnv(visualize = _payload['visualize'], max_obstacles=10)
-                        _observation = self.env.reset(seed=self.seed_map[self.simulation_count]))
+                        _observation = self.env.reset(seed=self.seed_map[self.simulation_count], difficulty=2)
+                        self.env_available = True
+                        self.current_step = 0
                         _observation = np.array(_observation).tolist()
                         _command_response = {}
                         _command_response['type'] = messages.OSIM_RL.ENV_CREATE_RESPONSE
@@ -99,7 +104,9 @@ class OsimRlRedisService:
                     """
                     self.simulation_count += 1
                     if self.seed_map and self.simulation_count < len(self.seed_map):
-                        _observation = self.env.reset(seed=self.seed_map[self.simulation_count])
+                        _observation = self.env.reset(seed=self.seed_map[self.simulation_count], difficulty=2)
+                        self.env_available = True
+                        self.current_step = 0
                         _observation = list(_observation)
                         _command_response = {}
                         _command_response['type'] = messages.OSIM_RL.ENV_RESET_RESPONSE
@@ -124,16 +131,44 @@ class OsimRlRedisService:
                     args = command['payload']
                     action = args['action']
                     action = np.array(action)
-                    [observation, reward, done, info] = self.env.step(action)
+                    if self.env and self.env_available:
+                        [observation, reward, done, info] = self.env.step(action)
+                    else:
+                        if self.env:
+                            raise Exception("Attempt to call `step` function after max_steps={} in a single simulation. Please reset your environment before calling the `step` function after max_step s".format(self.max_steps))
+                        else:
+                                raise Exception("Attempt to call `step` function on a non existent `env`")
                     self.reward += reward
-                    _command_response = {}
-                    _command_response['type'] = messages.OSIM_RL.ENV_STEP_RESPONSE
-                    _command_response['payload'] = {}
-                    _command_response['payload']['observation'] = np.array(observation).tolist()
-                    _command_response['payload']['reward'] = reward
-                    _command_response['payload']['done'] = done
-                    _command_response['payload']['info'] = info
+                    self.current_step += 1
+                    if self.current_step >= self.max_steps:
+                        _command_response = {}
+                        _command_response['type'] = messages.OSIM_RL.ENV_STEP_RESPONSE
+                        _command_response['payload'] = {}
+                        _command_response['payload']['observation'] = np.array(observation).tolist()
+                        _command_response['payload']['reward'] = reward
+                        _command_response['payload']['done'] = True
+                        _command_response['payload']['info'] = info
+
+                        """
+                        Mark env as unavailable until next reset
+                        """
+                        self.env_available = False
+                    else:
+                        _command_response = {}
+                        _command_response['type'] = messages.OSIM_RL.ENV_STEP_RESPONSE
+                        _command_response['payload'] = {}
+                        _command_response['payload']['observation'] = np.array(observation).tolist()
+                        _command_response['payload']['reward'] = reward
+                        _command_response['payload']['done'] = done
+                        _command_response['payload']['info'] = info
+
+                        if done:
+                            """
+                                Mark env as unavailable until next reset
+                            """
+                            self.env_available = False
                     if self.verbose: print("Responding with : ", _command_response)
+                    if self.verbose: print("Current Step : ", self.current_step)
                     _redis.rpush(command_response_channel, json.dumps(_command_response))
                 elif command['type'] == messages.OSIM_RL.ENV_SUBMIT:
                     """
@@ -167,7 +202,7 @@ if __name__ == "__main__":
     parser.add_argument('--port', dest='port', action='store', required=True)
     args = parser.parse_args()
 
-    grader = OsimRlRedisService(remote_port=int(args.port), seed_map="11,22,33", verbose=True)
+    grader = OsimRlRedisService(remote_port=int(args.port), seed_map="11,22,33", max_steps=1000, verbose=True)
     result = grader.run()
     if result['type'] == messages.OSIM_RL.ENV_SUBMIT_RESPONSE:
         reward = result['payload']
