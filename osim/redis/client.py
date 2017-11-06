@@ -6,7 +6,7 @@ import sys
 import numpy as np
 import hashlib
 import random
-import messages
+from osim.redis import messages
 
 import logging
 logger = logging.getLogger(__name__)
@@ -43,7 +43,7 @@ class Client(object):
         return redis.Redis(connection_pool=self.redis_pool)
 
     def _generate_response_channel(self):
-        random_hash = hashlib.md5("{}".format(random.randint(0, 10**10))).hexdigest()
+        random_hash = hashlib.md5("{}".format(random.randint(0, 10**10)).encode('utf-8')).hexdigest()
         response_channel = "{}::{}::response::{}".format(   self.namespace,
                                                             self.service_id,
                                                             random_hash)
