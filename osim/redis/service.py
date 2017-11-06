@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from __future__ import print_function
 import redis
-import messages
+from osim.redis import messages
 import json
 import numpy as np
 import osim
