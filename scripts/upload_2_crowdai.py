@@ -10,6 +10,6 @@ parser.add_argument('--docker_container', dest='docker_container', action='store
 args = parser.parse_args()
 
 challenge = crowdai.Challenge("Learning2RunChallengeNIPS2017", args.api_key)
-result = challenge.submit(docker_container)
+result = challenge.submit(args.docker_container)
 
 print(result)
