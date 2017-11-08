@@ -56,7 +56,7 @@ class OsimRlRedisService:
             if self.verbose: print("Current Simulation : ", self.simulation_count)
             if self.seed_map and self.verbose and self.simulation_count < len(self.seed_map): print("Current SEED : ", self.seed_map[self.simulation_count])
             try:
-                command = json.loads(command)
+                command = json.loads(command.decode('utf-8'))
                 if self.verbose: print("Received Request : ", command)
                 command_response_channel = command['response_channel']
                 if command['type'] == messages.OSIM_RL.PING:
