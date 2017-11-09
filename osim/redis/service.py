@@ -25,6 +25,7 @@ class OsimRlRedisService:
         self.simulation_count = 0
         self.current_step = 0
         self.verbose = verbose
+        self.visualize = visualize
         self.max_steps = max_steps
         self.initalize_seed_map(seed_map)
 
@@ -82,7 +83,7 @@ class OsimRlRedisService:
                         _redis.rpush( command_response_channel, self._error_template(_error_message))
                         return self._error_template(_error_message)
                     else:
-                        self.env = RunEnv(visualize = visualize, max_obstacles=10)
+                        self.env = RunEnv(visualize = self.visualize, max_obstacles=10)
                         _observation = self.env.reset(seed=self.seed_map[self.simulation_count], difficulty=2)
                         self.env_available = True
                         self.current_step = 0
