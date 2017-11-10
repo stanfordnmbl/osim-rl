@@ -23,6 +23,7 @@ class OsimRlRedisService:
         self.env_available = False
         self.reward = 0
         self.simulation_count = 0
+        self.simualation_rewards = []
         self.current_step = 0
         self.verbose = verbose
         self.visualize = visualize
@@ -85,6 +86,7 @@ class OsimRlRedisService:
                     else:
                         self.env = RunEnv(visualize = self.visualize, max_obstacles=10)
                         _observation = self.env.reset(seed=self.seed_map[self.simulation_count], difficulty=2)
+                        self.simualation_rewards.append(0)
                         self.env_available = True
                         self.current_step = 0
                         _observation = np.array(_observation).tolist()
@@ -104,6 +106,7 @@ class OsimRlRedisService:
                     self.simulation_count += 1
                     if self.seed_map and self.simulation_count < len(self.seed_map):
                         _observation = self.env.reset(seed=self.seed_map[self.simulation_count], difficulty=2)
+                        self.simualation_rewards.append(0)
                         self.env_available = True
                         self.current_step = 0
                         _observation = list(_observation)
@@ -138,6 +141,7 @@ class OsimRlRedisService:
                         else:
                                 raise Exception("Attempt to call `step` function on a non existent `env`")
                     self.reward += reward
+                    self.simualation_rewards[-1] += reward
                     self.current_step += 1
                     if self.current_step >= self.max_steps:
                         _command_response = {}
@@ -177,7 +181,10 @@ class OsimRlRedisService:
                     """
                     _response = {}
                     _response['type'] = messages.OSIM_RL.ENV_SUBMIT_RESPONSE
-                    _response['payload'] = np.float(self.reward)/len(self.seed_map) #Mean Reward
+                    _payload = {}
+                    _payload['mean_reward'] = np.float(self.reward)/len(self.seed_map) #Mean reward
+                    _payload['simulation_rewards'] = self.simualation_rewards
+                    _response['payload'] = _payload
                     _redis.rpush(command_response_channel, json.dumps(_response))
                     if self.verbose: print("Responding with : ", _response)
                     return _response
@@ -204,8 +211,8 @@ if __name__ == "__main__":
     grader = OsimRlRedisService(remote_port=int(args.port), seed_map="11,22,33", max_steps=1000, verbose=True)
     result = grader.run()
     if result['type'] == messages.OSIM_RL.ENV_SUBMIT_RESPONSE:
-        reward = result['payload']
-        print("Cumulative Reward : ", reward)
+        cumulative_results = result['payload']
+        print("Reward : ", cumulative_results)
     else:
         #Evaluation failed
         print("Evaluation Failed : ", result['payload'])
