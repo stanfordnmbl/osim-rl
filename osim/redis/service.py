@@ -51,8 +51,7 @@ class OsimRlRedisService:
         return _response
 
     @timeout_decorator.timeout(15*60)#15*60 seconds timeout for each command
-    def get_next_command(self):
-        _redis = self.get_redis_connection()
+    def get_next_command(self, _redis):
         command = _redis.brpop(self.command_channel)[1]
         return command
 
@@ -60,7 +59,8 @@ class OsimRlRedisService:
         print("Listening for commands at : ", self.command_channel)
         while True:
             try:
-                command = self.get_next_command()
+                _redis = self.get_redis_connection()
+                command = self.get_next_command(_redis)
             except timeout_decorator.timeout_decorator.TimeoutError:
                 raise Exception("Timeout in step {} of simulation {}".format(self.current_step, self.simulation_count))
             command_response_channel = "default_response_channel"
