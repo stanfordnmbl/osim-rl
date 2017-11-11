@@ -8,6 +8,7 @@ import osim
 from osim.env import *
 import os
 import timeout_decorator
+import time
 
 
 
@@ -26,6 +27,8 @@ class OsimRlRedisService:
         self.reward = 0
         self.simulation_count = 0
         self.simualation_rewards = []
+        self.simulation_times = []
+        self.begin_simulation = False
         self.current_step = 0
         self.verbose = verbose
         self.visualize = visualize
@@ -96,6 +99,7 @@ class OsimRlRedisService:
                     else:
                         self.env = RunEnv(visualize = self.visualize, max_obstacles=10)
                         _observation = self.env.reset(seed=self.seed_map[self.simulation_count], difficulty=2)
+                        self.begin_simulation = time.time()
                         self.simualation_rewards.append(0)
                         self.env_available = True
                         self.current_step = 0
@@ -114,6 +118,9 @@ class OsimRlRedisService:
                         False if no simulations are left
                     """
                     self.simulation_count += 1
+                    if self.begin_simulation:
+                        self.simulation_times.append(time.time()-self.begin_simulation)
+                        self.begin_simulation = time.time()
                     if self.seed_map and self.simulation_count < len(self.seed_map):
                         _observation = self.env.reset(seed=self.seed_map[self.simulation_count], difficulty=2)
                         self.simualation_rewards.append(0)
@@ -194,6 +201,7 @@ class OsimRlRedisService:
                     _payload = {}
                     _payload['mean_reward'] = np.float(self.reward)/len(self.seed_map) #Mean reward
                     _payload['simulation_rewards'] = self.simualation_rewards
+                    _payload['simulation_times'] = self.simulation_times
                     _response['payload'] = _payload
                     _redis.rpush(command_response_channel, json.dumps(_response))
                     if self.verbose: print("Responding with : ", _response)
@@ -222,7 +230,7 @@ if __name__ == "__main__":
     result = grader.run()
     if result['type'] == messages.OSIM_RL.ENV_SUBMIT_RESPONSE:
         cumulative_results = result['payload']
-        print("Reward : ", cumulative_results)
+        print("Results : ", cumulative_results)
     elif result['type'] == messages.OSIM_RL.ERROR:
         error = result['payload']
         raise Exception("Evaluation Failed : {}".format(str(error)))
