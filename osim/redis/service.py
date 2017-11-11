@@ -7,6 +7,8 @@ import numpy as np
 import osim
 from osim.env import *
 import os
+import timeout_decorator
+
 
 
 class OsimRlRedisService:
@@ -48,11 +50,19 @@ class OsimRlRedisService:
         _response['payload'] = payload
         return _response
 
+    @timeout_decorator.timeout(15*60)#15*60 seconds timeout for each command
+    def get_next_command(self):
+        _redis = self.get_redis_connection()
+        command = _redis.brpop(self.command_channel)[1]
+        return command
+
     def run(self):
         print("Listening for commands at : ", self.command_channel)
         while True:
-            _redis = self.get_redis_connection()
-            command = _redis.brpop(self.command_channel)[1]
+            try:
+                command = self.get_next_command()
+            except timeout_decorator.timeout_decorator.TimeoutError:
+                raise Exception("Timeout in step {} of simulation {}".format(self.current_step, self.simulation_count))
             command_response_channel = "default_response_channel"
             if self.verbose: print("Self.Reward : ", self.reward)
             if self.verbose: print("Current Simulation : ", self.simulation_count)
@@ -213,6 +223,9 @@ if __name__ == "__main__":
     if result['type'] == messages.OSIM_RL.ENV_SUBMIT_RESPONSE:
         cumulative_results = result['payload']
         print("Reward : ", cumulative_results)
+    elif result['type'] == messages.OSIM_RL.ERROR:
+        error = result['payload']
+        raise Exception("Evaluation Failed : {}".format(str(error)))
     else:
         #Evaluation failed
         print("Evaluation Failed : ", result['payload'])

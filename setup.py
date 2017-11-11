@@ -19,7 +19,7 @@ setup(name='osim-rl',
       packages=find_packages(),
       package_data={'osim': ['models/Geometry/*.vtp', 'models/*.osim']},
       include_package_data=True,
-      install_requires=['numpy','gym', 'redis'],
+      install_requires=['numpy','gym', 'redis', 'timeout-decorator'],
       classifiers=[
           'Intended Audience :: Science/Research',
           'Operating System :: OS Independent',
