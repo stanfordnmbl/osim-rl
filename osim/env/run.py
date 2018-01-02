@@ -29,7 +29,8 @@ class RunEnv(OsimEnv):
     ninput = 41
     noutput = 18
 
-    
+    observations_file = None
+    actions_file = None
 
     def __init__(self, visualize = True, max_obstacles = 3, report = None):
         self.max_obstacles = max_obstacles
