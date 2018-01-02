@@ -22,14 +22,16 @@ class RunEnv(OsimEnv):
 
     model_path = os.path.join(os.path.dirname(__file__), '../models/gait9dof18musc.osim')
     ligamentSet = []
-    verbose = False
+    verbose = True
     pelvis = None
     env_desc = {"obstacles": [], "muscles": [1]*18}
 
     ninput = 41
     noutput = 18
 
-    def __init__(self, visualize = True, max_obstacles = 3):
+    
+
+    def __init__(self, visualize = True, max_obstacles = 3, report = None):
         self.max_obstacles = max_obstacles
         super(RunEnv, self).__init__(visualize = False, noutput = self.noutput)
         self.osim_model.model.setUseVisualizer(visualize)
@@ -41,6 +43,12 @@ class RunEnv(OsimEnv):
             manager.setInitialTime(-0.00001)
             manager.setFinalTime(0.0)
             manager.integrate(state)
+
+        if report:
+            self.observations_file = open("%s-obs.csv" % (report,),"w")
+            self.actions_file = open("%s-act.csv" % (report,),"w")
+            self.get_headers()
+            
 
     def setup(self, difficulty, seed=None):
         # create the new env
@@ -99,6 +107,16 @@ class RunEnv(OsimEnv):
                 print(i,self.osim_model.forceSet.get(i).getName())
             print("")
 
+            print("Ground reaction:")
+
+            # Right foot
+            for i in range(self.osim_model.forceSet.get(18).getRecordLabels().size()):
+                print(i,self.osim_model.forceSet.get(18).getRecordLabels().get(i))
+                
+            # Left foot
+            for i in range(self.osim_model.forceSet.get(19).getRecordLabels().size()):
+                print(i,self.osim_model.forceSet.get(19).getRecordLabels().get(i))
+
         # for i in range(18):
         #     m = opensim.Thelen2003Muscle.safeDownCast(self.osim_model.muscleSet.get(i))
         #     m.setActivationTimeConstant(0.0001) # default 0.01
@@ -123,6 +141,41 @@ class RunEnv(OsimEnv):
         self.last_state = self.current_state
         return super(RunEnv, self)._step(action)
 
+    def get_headers(self):
+        bodies = ['head', 'pelvis', 'torso', 'toes_l', 'toes_r', 'talus_l', 'talus_r']
+
+        pelvis_pos = ["pelvis.val." + self.pelvis.getCoordinate(i).getName() for i in range(3)]
+        pelvis_vel = ["pelvis.speed." + self.pelvis.getCoordinate(i).getName() for i in range(3)]
+
+        jnts = ['hip_r','knee_r','ankle_r','hip_l','knee_l','ankle_l']
+        joint_angles = [jnts[i] + "." + self.osim_model.get_joint(jnts[i]).getCoordinate().getName() for i in range(6)]
+        joint_vel = [jnts[i] + "." + self.osim_model.get_joint(jnts[i]).getCoordinate().getName() for i in range(6)]
+
+        mass_pos = ["mass.pos.x", "mass.pos.y"]
+        mass_vel = ["mass.vel.x", "mass.vel.y"]
+
+        tmp = ["x", "y"]
+
+        body_transforms = [[body + ".pos." + tmp[i] for i in range(2)] for body in bodies]
+
+        muscles = [ "psoas_l.strength", "psoas_r.strength"]
+    
+        # see the next obstacle
+        obstacle = ["obstacle.delta_x","obstacle.y","obstacle.radius"]
+
+#        feet = [opensim.HuntCrossleyForce.safeDownCast(self.osim_model.forceSet.get(j)) for j in range(20,22)]
+        current_state_header = pelvis_pos + pelvis_vel + joint_angles + joint_vel + mass_pos + mass_vel + list(flatten(body_transforms)) + muscles + obstacle
+
+        foot_forces = list(flatten([
+            [self.osim_model.forceSet.get(18 + i).getRecordLabels().get(j) for j in range(18) ] for i in range(2)
+        ]))
+
+        act_str_lst = ["idx"] + [self.osim_model.muscleSet.get(i).getName() for i in range(18)]
+        obs_str_lst = ["idx"] + current_state_header + [self.osim_model.muscleSet.get(i).getName() for i in range(18)] + foot_forces
+        
+        self.actions_file.write( ", ".join(act_str_lst) + "\n")
+        self.observations_file.write( ", ".join(obs_str_lst) + "\n")
+
     def get_observation(self):
         bodies = ['head', 'pelvis', 'torso', 'toes_l', 'toes_r', 'talus_l', 'talus_r']
 
@@ -146,7 +199,18 @@ class RunEnv(OsimEnv):
 #        feet = [opensim.HuntCrossleyForce.safeDownCast(self.osim_model.forceSet.get(j)) for j in range(20,22)]
         self.current_state = pelvis_pos + pelvis_vel + joint_angles + joint_vel + mass_pos + mass_vel + list(flatten(body_transforms)) + muscles + obstacle
 
-#        print self.current_state + [self.osim_model.muscleSet.get(i).getActivation(self.osim_model.state) for i in range(18)]
+        self.osim_model.model.realizeAcceleration(self.osim_model.state)
+        foot_forces = list(flatten([
+            [self.osim_model.forceSet.get(18 + i).getRecordValues(self.osim_model.state).get(j) for j in range(18) ] for i in range(2)
+        ]))
+
+        if self.observations_file and self.last_action is not None:
+            act_str_lst = [str(x) for x in ([self.istep,] + list(self.last_action) )]
+            obs_str_lst = [str(x) for x in ([self.istep,] + list(self.current_state) + [self.osim_model.muscleSet.get(i).getActivation(self.osim_model.state) for i in range(18)] + foot_forces)]
+#            print(self.istep, act_str_lst)
+            self.actions_file.write( ", ".join(act_str_lst) + "\n")
+            self.observations_file.write( ", ".join(obs_str_lst) + "\n")
+            
         return self.current_state
 
     def create_obstacles(self):
