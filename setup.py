@@ -7,7 +7,7 @@ from setuptools import setup, find_packages
 
 # This provides the variable `__version__`.
 # execfile('opensim/version.py')
-__version__ = "1.5.3"
+__version__ = "1.5.4"
 
 setup(name='osim-rl',
       version=__version__,

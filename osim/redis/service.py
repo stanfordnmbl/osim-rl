@@ -121,6 +121,15 @@ class OsimRlRedisService:
                         self.env_available = True
                         self.current_step = 0
                         _observation = np.array(_observation).tolist()
+                        if self.report:
+                            """
+                                In case of reporting mode, truncate to the first
+                                41 observations.
+                                (The rest are extra activations which are used only for reporting
+                                and should not be available to the agent)
+                            """
+                            _observation = _observation[:41]
+
                         _command_response = {}
                         _command_response['type'] = messages.OSIM_RL.ENV_CREATE_RESPONSE
                         _command_response['payload'] = {}
@@ -144,6 +153,15 @@ class OsimRlRedisService:
                         self.env_available = True
                         self.current_step = 0
                         _observation = list(_observation)
+                        if self.report:
+                            """
+                                In case of reporting mode, truncate to the first
+                                41 observations.
+                                (The rest are extra activations which are used only for reporting
+                                and should not be available to the agent)
+                            """
+                            _observation = _observation[:41]
+
                         _command_response = {}
                         _command_response['type'] = messages.OSIM_RL.ENV_RESET_RESPONSE
                         _command_response['payload'] = {}
@@ -168,7 +186,7 @@ class OsimRlRedisService:
                     action = args['action']
                     action = np.array(action)
                     if self.env and self.env_available:
-                        [observation, reward, done, info] = self.env.step(action)
+                        [_observation, reward, done, info] = self.env.step(action)
                     else:
                         if self.env:
                             raise Exception("Attempt to call `step` function after max_steps={} in a single simulation. Please reset your environment before calling the `step` function after max_step s".format(self.max_steps))
@@ -177,11 +195,21 @@ class OsimRlRedisService:
                     self.reward += reward
                     self.simualation_rewards[-1] += reward
                     self.current_step += 1
+                    _observation = np.array(_observation).tolist()
+                    if self.report:
+                        """
+                            In case of reporting mode, truncate to the first
+                            41 observations.
+                            (The rest are extra activations which are used only for reporting
+                            and should not be available to the agent)
+                        """
+                        _observation = _observation[:41]
+
                     if self.current_step >= self.max_steps:
                         _command_response = {}
                         _command_response['type'] = messages.OSIM_RL.ENV_STEP_RESPONSE
                         _command_response['payload'] = {}
-                        _command_response['payload']['observation'] = np.array(observation).tolist()
+                        _command_response['payload']['observation'] = _observation
                         _command_response['payload']['reward'] = reward
                         _command_response['payload']['done'] = True
                         _command_response['payload']['info'] = info
@@ -194,7 +222,7 @@ class OsimRlRedisService:
                         _command_response = {}
                         _command_response['type'] = messages.OSIM_RL.ENV_STEP_RESPONSE
                         _command_response['payload'] = {}
-                        _command_response['payload']['observation'] = np.array(observation).tolist()
+                        _command_response['payload']['observation'] = _observation
                         _command_response['payload']['reward'] = reward
                         _command_response['payload']['done'] = done
                         _command_response['payload']['info'] = info
