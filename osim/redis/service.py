@@ -14,17 +14,18 @@ import time
 
 class OsimRlRedisService:
     def __init__(   self,
-                    osim_rl_redis_service_id='osim_rl_redis_service_id',
-                    seed_map=False,
-                    max_steps=1000,
-                    remote_host='127.0.0.1',
-                    remote_port=6379,
-                    remote_db=0,
-                    remote_password=None,
-                    difficulty=2,
-                    max_obstacles=10,
-                    visualize=False,
-                    verbose=False):
+                    osim_rl_redis_service_id = 'osim_rl_redis_service_id',
+                    seed_map = False,
+                    max_steps = 1000,
+                    remote_host = '127.0.0.1',
+                    remote_port = 6379,
+                    remote_db = 0,
+                    remote_password = None,
+                    difficulty = 2,
+                    max_obstacles = 10,
+                    visualize = False,
+                    report = None,
+                    verbose = False):
         """
             TODO: Expose more RunEnv related variables
         """
@@ -45,6 +46,7 @@ class OsimRlRedisService:
         self.max_obstacles = max_obstacles
         self.verbose = verbose
         self.visualize = visualize
+        self.report = report
         self.max_steps = max_steps
         self.initalize_seed_map(seed_map)
 
@@ -110,7 +112,9 @@ class OsimRlRedisService:
                         _redis.rpush( command_response_channel, self._error_template(_error_message))
                         return self._error_template(_error_message)
                     else:
-                        self.env = RunEnv(visualize = self.visualize, max_obstacles=self.max_obstacles)
+                        self.env = RunEnv(  visualize = self.visualize,
+                                            max_obstacles = self.max_obstacles,
+                                            report = self.report)
                         _observation = self.env.reset(seed=self.seed_map[self.simulation_count], difficulty=self.difficulty)
                         self.begin_simulation = time.time()
                         self.simualation_rewards.append(0)
