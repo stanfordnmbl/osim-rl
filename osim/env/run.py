@@ -46,16 +46,17 @@ class RunEnv(OsimEnv):
             manager.integrate(state)
 
         if report:
-            self.observations_file = open("%s-obs.csv" % (report,),"w")
-            self.actions_file = open("%s-act.csv" % (report,),"w")
+            bufsize = 0
+            self.observations_file = open("%s-obs.csv" % (report,),"w", bufsize)
+            self.actions_file = open("%s-act.csv" % (report,),"w", bufsize)
             self.get_headers()
-            
+
 
     def setup(self, difficulty, seed=None):
         # create the new env
         # set up obstacles
         self.env_desc = self.generate_env(difficulty, seed, self.max_obstacles)
-        
+
         self.clear_obstacles(self.osim_model.state)
         for x,y,r in self.env_desc['obstacles']:
             self.add_obstacle(self.osim_model.state,x,y,r)
@@ -86,7 +87,7 @@ class RunEnv(OsimEnv):
 
     def is_pelvis_too_low(self):
         return (self.current_state[self.STATE_PELVIS_Y] < 0.65)
-    
+
     def is_done(self):
         return self.is_pelvis_too_low() or (self.istep >= self.spec.timestep_limit)
 
@@ -113,7 +114,7 @@ class RunEnv(OsimEnv):
             # Right foot
             for i in range(self.osim_model.forceSet.get(18).getRecordLabels().size()):
                 print(i,self.osim_model.forceSet.get(18).getRecordLabels().get(i))
-                
+
             # Left foot
             for i in range(self.osim_model.forceSet.get(19).getRecordLabels().size()):
                 print(i,self.osim_model.forceSet.get(19).getRecordLabels().get(i))
@@ -137,7 +138,7 @@ class RunEnv(OsimEnv):
                 ret[0] = ret[0] - x
                 return ret
         return [100,0,0]
-        
+
     def _step(self, action):
         self.last_state = self.current_state
         return super(RunEnv, self)._step(action)
@@ -160,7 +161,7 @@ class RunEnv(OsimEnv):
         body_transforms = [[body + ".pos." + tmp[i] for i in range(2)] for body in bodies]
 
         muscles = [ "psoas_l.strength", "psoas_r.strength"]
-    
+
         # see the next obstacle
         obstacle = ["obstacle.delta_x","obstacle.y","obstacle.radius"]
 
@@ -173,7 +174,7 @@ class RunEnv(OsimEnv):
 
         act_str_lst = ["idx"] + [self.osim_model.muscleSet.get(i).getName() for i in range(18)]
         obs_str_lst = ["idx"] + current_state_header + [self.osim_model.muscleSet.get(i).getName() for i in range(18)] + foot_forces
-        
+
         self.actions_file.write( ", ".join(act_str_lst) + "\n")
         self.observations_file.write( ", ".join(obs_str_lst) + "\n")
 
@@ -187,13 +188,13 @@ class RunEnv(OsimEnv):
         joint_angles = [self.osim_model.get_joint(jnts[i]).getCoordinate().getValue(self.osim_model.state) for i in range(6)]
         joint_vel = [self.osim_model.get_joint(jnts[i]).getCoordinate().getSpeedValue(self.osim_model.state) for i in range(6)]
 
-        mass_pos = [self.osim_model.model.calcMassCenterPosition(self.osim_model.state)[i] for i in range(2)]  
+        mass_pos = [self.osim_model.model.calcMassCenterPosition(self.osim_model.state)[i] for i in range(2)]
         mass_vel = [self.osim_model.model.calcMassCenterVelocity(self.osim_model.state)[i] for i in range(2)]
 
         body_transforms = [[self.osim_model.get_body(body).getTransformInGround(self.osim_model.state).p()[i] for i in range(2)] for body in bodies]
 
         muscles = [ self.env_desc['muscles'][self.MUSCLES_PSOAS_L], self.env_desc['muscles'][self.MUSCLES_PSOAS_R] ]
-    
+
         # see the next obstacle
         obstacle = self.next_obstacle()
 
@@ -211,7 +212,7 @@ class RunEnv(OsimEnv):
 #            print(self.istep, act_str_lst)
             self.actions_file.write( ", ".join(act_str_lst) + "\n")
             self.observations_file.write( ", ".join(obs_str_lst) + "\n")
-            
+
         return self.current_state
 
     def create_obstacles(self):
@@ -238,13 +239,13 @@ class RunEnv(OsimEnv):
 
             force = opensim.HuntCrossleyForce()
             force.setName(name + '-force')
-            
+
             force.addGeometry(name + '-contact')
             force.addGeometry("r_heel")
             force.addGeometry("l_heel")
             force.addGeometry("r_toe")
             force.addGeometry("l_toe")
-        
+
             force.setStiffness(1.0e6/r)
             force.setDissipation(1e-5)
             force.setStaticFriction(0.0)
@@ -269,7 +270,7 @@ class RunEnv(OsimEnv):
 
         self.num_obstacles = 0
         pass
-        
+
     def add_obstacle(self, state, x, y, r):
         # set obstacle number num_obstacles
         contact_generic = self.osim_model.get_contact_geometry("%d-contact" % self.num_obstacles)
@@ -282,8 +283,8 @@ class RunEnv(OsimEnv):
 
         joint_generic = self.osim_model.get_joint("%d-joint" % self.num_obstacles)
         joint = opensim.PlanarJoint.safeDownCast(joint_generic)
-        
-        newpos = [x,y] 
+
+        newpos = [x,y]
         for i in range(2):
             joint.getCoordinate(1 + i).setLocked(state, False)
             joint.getCoordinate(1 + i).setValue(state, newpos[i], False)
@@ -301,7 +302,7 @@ class RunEnv(OsimEnv):
         xs = []
         ys = []
         rs = []
-        
+
         if 0 < difficulty:
             num_obstacles = min(3, max_obstacles)
             xs = np.random.uniform(1.0, 5.0, num_obstacles)
@@ -327,7 +328,7 @@ class RunEnv(OsimEnv):
             lpsoas = max(0.5, lpsoas)
 
         muscles = [1] * 18
-            
+
         # modify only psoas
         muscles[self.MUSCLES_PSOAS_R] = rpsoas
         muscles[self.MUSCLES_PSOAS_L] = lpsoas
@@ -339,4 +340,3 @@ class RunEnv(OsimEnv):
             'muscles': muscles,
             'obstacles': obstacles
         }
-
