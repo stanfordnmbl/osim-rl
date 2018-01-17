@@ -96,7 +96,7 @@ class RunEnv(OsimEnv):
 
         if self.verbose:
             print("JOINTS")
-            for i in range(11):
+            for i in range(self.osim_model.jointSet.getSize()):
                 print(i,self.osim_model.jointSet.get(i).getName())
             print("\nBODIES")
             for i in range(13):
