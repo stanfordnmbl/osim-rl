@@ -91,7 +91,8 @@ class OsimEnv(gym.Env):
     last_action = None
     spec = None
 
-    model_path = os.path.join(os.path.dirname(__file__), '../models/MoBL_ARMS_J.osim')    
+    model_path = os.path.join(os.path.dirname(__file__), '../models/gait9dof18musc.osim')    
+#    model_path = os.path.join(os.path.dirname(__file__), '../models/MoBL_ARMS_J.osim')    
 
     metadata = {
         'render.modes': ['human'],
@@ -182,7 +183,60 @@ class OsimEnv(gym.Env):
             func.setValue( float(action[j]) )
 
     def get_observation(self):
-        return []
+        self.osim_model.model.realizeAcceleration(self.osim_model.state)
+
+        res = {}
+
+        ## Joints
+        res["joint_pos"] = {}
+        res["joint_vel"] = {}
+        res["joint_acc"] = {}
+        for i in range(self.osim_model.jointSet.getSize()):
+            joint = self.osim_model.jointSet.get(i)
+            name = joint.getName()
+            res["joint_pos"][name] = [joint.get_coordinates(i).getValue(self.osim_model.state) for i in range(joint.numCoordinates())]
+            res["joint_vel"][name] = [joint.get_coordinates(i).getSpeedValue(self.osim_model.state) for i in range(joint.numCoordinates())]
+            res["joint_acc"][name] = [joint.get_coordinates(i).getAccelerationValue(self.osim_model.state) for i in range(joint.numCoordinates())]
+
+        ## Bodies
+        res["body_pos"] = {}
+        res["body_vel"] = {}
+        res["body_acc"] = {}
+        res["body_pos_rot"] = {}
+        res["body_vel_rot"] = {}
+        res["body_acc_rot"] = {}
+        for i in range(self.osim_model.bodySet.getSize()):
+            body = self.osim_model.bodySet.get(i)
+            name = body.getName()
+            res["body_pos"][name] = [body.getTransformInGround(self.osim_model.state).p()[i] for i in range(3)]
+            res["body_vel"][name] = [body.getVelocityInGround(self.osim_model.state).get(1).get(i) for i in range(3)]
+            res["body_acc"][name] = [body.getAccelerationInGround(self.osim_model.state).get(1).get(i) for i in range(3)]
+            
+            res["body_pos_rot"][name] = [body.getTransformInGround(self.osim_model.state).R().convertRotationToBodyFixedXYZ().get(i) for i in range(3)]
+            res["body_vel_rot"][name] = [body.getVelocityInGround(self.osim_model.state).get(0).get(i) for i in range(3)]
+            res["body_acc_rot"][name] = [body.getAccelerationInGround(self.osim_model.state).get(0).get(i) for i in range(3)]
+
+        ## Forces
+        res["forces"] = {}
+        for i in range(self.osim_model.forceSet.getSize()):
+            force = self.osim_model.forceSet.get(i)
+            name = force.getName()
+            values = force.getRecordValues(self.osim_model.state)
+            res["forces"][name] = [values.get(i) for i in range(values.size())]
+
+        ## Muscles
+        res["muscles"] = {}
+        for i in range(self.osim_model.muscleSet.getSize()):
+            muscle = self.osim_model.muscleSet.get(i)
+            name = muscle.getName()
+            res["muscles"][name] = {}
+            res["muscles"][name]["activation"] = muscle.getActivation(self.osim_model.state)
+            res["muscles"][name]["fiber_length"] = muscle.getFiberLength(self.osim_model.state)
+            res["muscles"][name]["fiber_velocity"] = muscle.getFiberVelocity(self.osim_model.state)
+            res["muscles"][name]["fiber_force"] = muscle.getFiberForce(self.osim_model.state)
+            # We can get more properties from here http://myosin.sourceforge.net/2125/classOpenSim_1_1Muscle.html 
+        
+        return res
 
     def _step(self, action):
         self.activate_muscles(action)
