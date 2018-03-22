@@ -29,6 +29,7 @@ class Osim(object):
         self.forceSet = self.model.getForceSet()
         self.bodySet = self.model.getBodySet()
         self.jointSet = self.model.getJointSet()
+        self.markerSet = self.model.getMarkerSet()
         self.contactGeometrySet = self.model.getContactGeometrySet()
         
         for j in range(self.muscleSet.getSize()):
@@ -54,6 +55,9 @@ class Osim(object):
 
     def get_muscle(self, name):
         return self.muscleSet.get(name)
+
+    def get_marker(self, name):
+        return self.markerSet.get(name)
 
     def get_contact_geometry(self, name):
         return self.contactGeometrySet.get(name)
@@ -91,9 +95,10 @@ class OsimEnv(gym.Env):
     last_action = None
     spec = None
 
-    model_path = os.path.join(os.path.dirname(__file__), '../models/gait9dof18musc.osim')    
+#    model_path = os.path.join(os.path.dirname(__file__), '../models/gait9dof18musc.osim')    
 #    model_path = os.path.join(os.path.dirname(__file__), '../models/MoBL_ARMS_J.osim')    
-
+    model_path = os.path.join(os.path.dirname(__file__), '../models/MoBL_ARMS_J_Simple_032118.osim')
+    
     metadata = {
         'render.modes': ['human'],
         'video.frames_per_second' : 50
@@ -159,6 +164,9 @@ class OsimEnv(gym.Env):
             print("\nFORCES")
             for i in range(self.osim_model.forceSet.getSize()):
                 print(i,self.osim_model.forceSet.get(i).getName())
+            print("\nMARKERS")
+            for i in range(self.osim_model.markerSet.getSize()):
+                print(i,self.osim_model.markerSet.get(i).getName())
             print("")
 
         self.noutput = self.osim_model.muscleSet.getSize()
@@ -236,6 +244,16 @@ class OsimEnv(gym.Env):
             res["muscles"][name]["fiber_force"] = muscle.getFiberForce(self.osim_model.state)
             # We can get more properties from here http://myosin.sourceforge.net/2125/classOpenSim_1_1Muscle.html 
         
+        ## Markers
+        res["markers"] = {}
+        for i in range(self.osim_model.markerSet.getSize()):
+            marker = self.osim_model.markerSet.get(i)
+            name = marker.getName()
+            res["markers"][name] = {}
+            res["markers"][name]["pos"] = [marker.getLocationInGround(self.osim_model.state)[i] for i in range(3)]
+            res["markers"][name]["vel"] = [marker.getVelocityInGround(self.osim_model.state)[i] for i in range(3)]
+            res["markers"][name]["acc"] = [marker.getAccelerationInGround(self.osim_model.state)[i] for i in range(3)]
+
         return res
 
     def _step(self, action):
