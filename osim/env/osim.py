@@ -174,12 +174,13 @@ class OsimEnv(gym.Env):
         self.activate_muscles(action)
 
         # Integrate one step
-        manager = opensim.Manager(self.osim_model.model)
-        manager.setInitialTime(self.stepsize * self.istep)
-        manager.setFinalTime(self.stepsize * (self.istep + 1))
-
+        if self.istep == 0:
+            print ("Initializing the model!")
+            self.manager = opensim.Manager(self.osim_model.model)
+            self.osim_model.state.setTime(self.stepsize * self.istep)
+            self.manager.initialize(self.osim_model.state)
         try:
-            manager.integrate(self.osim_model.state)
+            self.osim_model.state = self.manager.integrate(self.stepsize * (self.istep + 1))
         except Exception as e:
             print (e)
             return self.get_observation(), -500, True, {}

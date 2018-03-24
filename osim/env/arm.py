@@ -19,12 +19,6 @@ class ArmEnv(OsimEnv):
         self.timestep_limit = 200
         self.spec.timestep_limit = 200
 
-        if visualize:
-            manager = opensim.Manager(self.osim_model.model)
-            manager.setInitialTime(-0.00001)
-            manager.setFinalTime(0.0)
-            manager.integrate(state)
-
     def configure(self):
         super(ArmEnv, self).configure()
         self.osim_model.joints.append(opensim.CustomJoint.safeDownCast(self.osim_model.jointSet.get(0)))
@@ -77,9 +71,9 @@ class ArmEnv(OsimEnv):
         self.obs = invars
 
         if 0 == (self.istep-1) % 100:
-            print "\nDistance: %f" % (self.angular_dist(invars[2],self.shoulder) + self.angular_dist(invars[3],self.elbow))
-            print "True positions: (%f,%f)" % (self.shoulder, self.elbow)
-            print "Reached: (%f,%f)" % (invars[2], invars[3])
+            print("\nDistance: %f" % (self.angular_dist(invars[2],self.shoulder) + self.angular_dist(invars[3],self.elbow)))
+            print("True positions: (%f,%f)" % (self.shoulder, self.elbow))
+            print("Reached: (%f,%f)" % (invars[2], invars[3]))
             self.new_target()
 
         return invars

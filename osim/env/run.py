@@ -39,16 +39,10 @@ class RunEnv(OsimEnv):
         self.create_obstacles()
         state = self.osim_model.model.initSystem()
 
-        if visualize:
-            manager = opensim.Manager(self.osim_model.model)
-            manager.setInitialTime(-0.00001)
-            manager.setFinalTime(0.0)
-            manager.integrate(state)
-
         if report:
             bufsize = 0
-            self.observations_file = open("%s-obs.csv" % (report,),"w", bufsize)
-            self.actions_file = open("%s-act.csv" % (report,),"w", bufsize)
+            # self.observations_file = open("%s-obs.csv" % (report,),"w", bufsize)
+            # self.actions_file = open("%s-act.csv" % (report,),"w", bufsize)
             self.get_headers()
 
 
@@ -175,8 +169,8 @@ class RunEnv(OsimEnv):
         act_str_lst = ["idx"] + [self.osim_model.muscleSet.get(i).getName() for i in range(18)]
         obs_str_lst = ["idx"] + current_state_header + [self.osim_model.muscleSet.get(i).getName() for i in range(18)] + foot_forces
 
-        self.actions_file.write( ", ".join(act_str_lst) + "\n")
-        self.observations_file.write( ", ".join(obs_str_lst) + "\n")
+        # self.actions_file.write( ", ".join(act_str_lst) + "\n")
+        # self.observations_file.write( ", ".join(obs_str_lst) + "\n")
 
     def get_observation(self):
         bodies = ['head', 'pelvis', 'torso', 'toes_l', 'toes_r', 'talus_l', 'talus_r']
@@ -210,8 +204,8 @@ class RunEnv(OsimEnv):
             act_str_lst = [str(x) for x in ([self.istep,] + list(self.last_action) )]
             obs_str_lst = [str(x) for x in ([self.istep,] + list(self.current_state) + [self.osim_model.muscleSet.get(i).getActivation(self.osim_model.state) for i in range(18)] + foot_forces)]
 #            print(self.istep, act_str_lst)
-            self.actions_file.write( ", ".join(act_str_lst) + "\n")
-            self.observations_file.write( ", ".join(obs_str_lst) + "\n")
+            # self.actions_file.write( ", ".join(act_str_lst) + "\n")
+            # self.observations_file.write( ", ".join(obs_str_lst) + "\n")
 
         return self.current_state
 
