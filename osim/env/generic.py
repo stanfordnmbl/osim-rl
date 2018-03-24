@@ -172,7 +172,8 @@ class OsimEnv(gym.Env):
         self.noutput = self.osim_model.muscleSet.getSize()
 #        self.ninput =
 
-    def _reset(self):
+    def reset(self):
+        
         self.istep = 0
         self.osim_model.initializeState()
         return self.get_observation()
@@ -256,7 +257,7 @@ class OsimEnv(gym.Env):
 
         return res
 
-    def _step(self, action):
+    def step(self, action):
         self.activate_muscles(action)
 
         # Integrate one step
@@ -278,5 +279,5 @@ class OsimEnv(gym.Env):
         res = [ self.get_observation(), self.compute_reward(), self.is_done(), {} ]
         return res
 
-    def _render(self, mode='human', close=False):
+    def render(self, mode='human', close=False):
         return

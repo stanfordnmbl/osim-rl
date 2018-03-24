@@ -142,7 +142,8 @@ class OsimEnv(gym.Env):
     def configure(self):
         pass
 
-    def _reset(self):
+
+        super(OsimEnv, self).reset()
         self.istep = 0
         self.osim_model.initializeState()
         return self.get_observation()
@@ -170,7 +171,7 @@ class OsimEnv(gym.Env):
             func = opensim.Constant.safeDownCast(functionSet.get(j))
             func.setValue( float(action[j]) )
 
-    def _step(self, action):
+    def step(self, action):
         self.activate_muscles(action)
 
         # Integrate one step
@@ -190,5 +191,5 @@ class OsimEnv(gym.Env):
         res = [ self.get_observation(), self.compute_reward(), self.is_done(), {} ]
         return res
 
-    def _render(self, mode='human', close=False):
-        return
+    def render(self, mode='human', close=False):
+        pass
