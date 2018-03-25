@@ -4,7 +4,7 @@ This repository contains software required for participation in the NIPS 2018 Ch
 
 In this competition, you are tasked with developing a controller to enable a physiologically-based human model to navigate a complex obstacle course as quickly as possible. You are provided with a human musculoskeletal model and a physics-based simulation environment where you can synthesize physically and physiologically accurate motion. Potential obstacles include external obstacles like steps, or a slippery floor, along with internal obstacles like muscle weakness or motor noise. You are scored based on the distance you travel through the obstacle course in a set amount of time.
 
-![HUMAN environment](https://github.com/kidzik/osim-rl/blob/master/demo/training.gif)
+![HUMAN environment](https://s3-eu-west-1.amazonaws.com/kidzinski/nips-challenge/gifs/training.gif)
 
 To model physics and biomechanics we use [OpenSim](https://github.com/opensim-org/opensim-core) - a biomechanical physics environment for musculoskeletal simulations.
 
@@ -44,7 +44,7 @@ observation = env.reset(difficulty = 0)
 for i in range(200):
     observation, reward, done, info = env.step(env.action_space.sample())
 ```
-![Random walk](https://github.com/stanfordnmbl/osim-rl/blob/master/demo/random.gif)
+![Random walk](https://s3-eu-west-1.amazonaws.com/kidzinski/nips-challenge/gifs/random.gif)
 
 The function `env.action_space.sample()` returns a random vector for muscle activations, so, in this example, muscles are activated randomly (red indicates an active muscle and blue an inactive muscle).  Clearly with this technique we won't go too far.
 
