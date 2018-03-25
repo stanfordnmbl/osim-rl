@@ -162,6 +162,12 @@ class OsimModel(object):
             res["markers"][name]["vel"] = [marker.getVelocityInGround(self.state)[i] for i in range(3)]
             res["markers"][name]["acc"] = [marker.getAccelerationInGround(self.state)[i] for i in range(3)]
 
+        ## Other
+        res["misc"] = {}
+        res["misc"]["mass_center_pos"] = [self.model.calcMassCenterPosition(self.state)[i] for i in range(2)]
+        res["misc"]["mass_center_vel"] = [self.model.calcMassCenterVelocity(self.state)[i] for i in range(2)]
+        res["misc"]["mass_center_acc"] = [self.model.calcMassCenterAcceleration(self.state)[i] for i in range(2)]
+
         return res
 
     def get_state_desc(self):
@@ -249,9 +255,8 @@ class OsimEnv(gym.Env):
     spec = None
     time_limit = 1e10
 
-    model_path = os.path.join(os.path.dirname(__file__), '../models/MoBL_ARMS_J.osim')    
+    model_path = None # os.path.join(os.path.dirname(__file__), '../models/MODEL_NAME.osim')    
 
-    
     metadata = {
         'render.modes': ['human'],
         'video.frames_per_second' : None
@@ -277,6 +282,9 @@ class OsimEnv(gym.Env):
         self.action_space = convert_to_gym(self.action_space)
         self.observation_space = convert_to_gym(self.observation_space)
 
+    def get_state_desc(self):
+        return self.osim_model.get_state_desc()
+    
     def get_observation(self):
         return self.osim_model.get_state_desc()
 
@@ -294,21 +302,25 @@ class OsimEnv(gym.Env):
 
 class RunEnv(OsimEnv):
     model_path = os.path.join(os.path.dirname(__file__), '../models/gait9dof18musc.osim')    
-    time_limit = 10
+    time_limit = 100
     
     def is_done(self):
-        observation = self.get_observation()
-        return observation["joint_pos"]["ground_pelvis"][2] < 0.7
+        state_desc = self.get_state_desc()
+        return state_desc["joint_pos"]["ground_pelvis"][2] < 0.7
+
+    def get_observation(self):
+        state_desc = self.get_state_desc()
+        return state_desc["misc"]["mass_center_pos"] + state_desc["misc"]["mass_center_vel"]
 
     def reward(self):
         return 0
 
 class Arm3dEnv(OsimEnv):
     model_path = os.path.join(os.path.dirname(__file__), '../models/MoBL_ARMS_J_Simple_032118.osim')
-    time_limit = 10
+    time_limit = 100
 
     def is_done(self):
-        observation = self.get_observation()
+        state_desc = self.get_state_desc()
         return False
 
     def reward(self):
