@@ -27,7 +27,10 @@ class OsimModel(object):
     brain = None
     verbose = False
     istep = 0
+    
     state_desc_istep = None
+    prev_state_desc = None
+    state_desc = None
 
     maxforces = []
     curforces = []
@@ -172,6 +175,7 @@ class OsimModel(object):
 
     def get_state_desc(self):
         if self.state_desc_istep != self.istep:
+            self.prev_state_desc = self.state_desc
             self.state_desc = self.compute_state_desc()
             self.state_desc_istep = self.istep
         return self.state_desc
@@ -208,7 +212,7 @@ class OsimModel(object):
         self.istep = 0
 
         self.manager = opensim.Manager(self.model)
-        self.manager.setIntegratorAccuracy(1e-1)
+        self.manager.setIntegratorAccuracy(5e-4)
         self.manager.initialize(self.state)
 
     def get_state(self, state):
@@ -249,11 +253,10 @@ class OsimEnv(gym.Env):
     verbose = False
 
     visualize = False
-    ninput = 0
-    noutput = 0
-    last_action = None
     spec = None
     time_limit = 1e10
+
+    prev_state_desc = None
 
     model_path = None # os.path.join(os.path.dirname(__file__), '../models/MODEL_NAME.osim')    
 
@@ -278,21 +281,30 @@ class OsimEnv(gym.Env):
         if not self.action_space:
             self.action_space = ( [0.0] * self.osim_model.get_action_space_size(), [1.0] * self.osim_model.get_action_space_size() )
         if not self.observation_space:
-            self.observation_space = ( [-math.pi] * self.ninput, [math.pi] * self.ninput )
+            self.observation_space = ( [-math.pi] * self.get_observation_space_size(), [math.pi] * self.get_observation_space_size() )
         self.action_space = convert_to_gym(self.action_space)
         self.observation_space = convert_to_gym(self.observation_space)
 
     def get_state_desc(self):
         return self.osim_model.get_state_desc()
-    
+
+    def get_prev_state_desc(self):
+        return self.prev_state_desc
+
     def get_observation(self):
+        # This one will normally be overwrtitten by the environments
+        # In particular, for the gym we want a vector and not a dictionary
         return self.osim_model.get_state_desc()
+
+    def get_observation_space_size(self):
+        return 0
 
     def reset(self):
         self.osim_model.reset()
         return self.get_observation()
 
     def step(self, action):
+        self.prev_state_desc = self.get_state_desc()        
         self.osim_model.actuate(action)
         self.osim_model.integrate()
         return [ self.get_observation(), self.reward(), self.is_done() or (self.osim_model.istep >= self.spec.timestep_limit), {} ]
@@ -300,9 +312,10 @@ class OsimEnv(gym.Env):
     def render(self, mode='human', close=False):
         return
 
-class RunEnv(OsimEnv):
+class L2RunEnv(OsimEnv):
     model_path = os.path.join(os.path.dirname(__file__), '../models/gait9dof18musc.osim')    
-    time_limit = 100
+    time_limit = 300
+    ninput = 99
     
     def is_done(self):
         state_desc = self.get_state_desc()
@@ -310,10 +323,36 @@ class RunEnv(OsimEnv):
 
     def get_observation(self):
         state_desc = self.get_state_desc()
-        return state_desc["misc"]["mass_center_pos"] + state_desc["misc"]["mass_center_vel"]
+
+        # Augmented environment from the L2R challenge
+        res = []
+
+        for body_part in ["pelvis","head","torso","toes_l","toes_r","talus_l","talus_r"]:
+            res = res + state_desc["body_pos_rot"][body_part][2:]
+            res = res + state_desc["body_pos"][body_part][0:2]
+            res = res + state_desc["body_vel_rot"][body_part][2:]
+            res = res + state_desc["body_vel"][body_part][0:2]
+            res = res + state_desc["body_acc_rot"][body_part][2:]
+            res = res + state_desc["body_acc"][body_part][0:2]
+
+        for joint in ["ankle_l","ankle_r","back","ground_pelvis","hip_l","hip_r","knee_l","knee_r"]:
+            res = res + state_desc["joint_pos"][joint]
+            res = res + state_desc["joint_vel"][joint]
+            res = res + state_desc["joint_acc"][joint]
+
+        res = res + state_desc["misc"]["mass_center_pos"] + state_desc["misc"]["mass_center_vel"] + state_desc["misc"]["mass_center_acc"]
+
+        return res
+
+    def get_observation_space_size(self):
+        return 99
 
     def reward(self):
-        return 0
+        state_desc = self.get_state_desc()
+        prev_state_desc = self.get_prev_state_desc()
+        if not prev_state_desc:
+            return 0
+        return state_desc["joint_pos"]["ground_pelvis"][1] - prev_state_desc["joint_pos"]["ground_pelvis"][1]
 
 class Arm3dEnv(OsimEnv):
     model_path = os.path.join(os.path.dirname(__file__), '../models/MoBL_ARMS_J_Simple_032118.osim')
