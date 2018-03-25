@@ -44,7 +44,7 @@ def run(seed, noise_type, layer_norm, evaluation, **kwargs):
     env = bench.Monitor(env, logger.get_dir() and os.path.join(logger.get_dir(), str(rank)))
 
     if evaluation and rank==0:
-        eval_env = L2RunEnvGymified(visualize = False)
+        eval_env = gymify_osim_env(L2RunEnv(visualize = False))
         eval_env = bench.Monitor(eval_env, os.path.join(logger.get_dir(), 'gym_eval'))
         env = bench.Monitor(env, None)
     else:
