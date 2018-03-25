@@ -1,11 +1,11 @@
-from osim.env.generic import OsimEnv
+from osim.env.osim import RunEnv
 import pprint
 
-env = OsimEnv(visualize=True)
+env = RunEnv(visualize=True)
 
 observation = env.reset()
 for i in range(200):
     observation, reward, done, info = env.step(env.action_space.sample())
-    pprint.pprint(observation)
+#    pprint.pprint(observation)
     if done:
         env.reset()
