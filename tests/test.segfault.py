@@ -1,4 +1,3 @@
-from osim.env.osim import Osim
 import os
 import opensim
 
@@ -37,11 +36,11 @@ def test(model_path, visualize):
 test(model_path,False)
 test(model_path,False)
 
-from osim.env.run import RunEnv
+from osim.env import L2RunEnv
 
-env = RunEnv(visualize=False)
-env1 = RunEnv(visualize=False)
+env = L2RunEnv(visualize=False)
+env1 = L2RunEnv(visualize=False)
 env1.reset()
-env1.compute_reward()
+env1.reward()
 env.reset()
-env.compute_reward()
+env.reward()

@@ -59,20 +59,24 @@ ligamentSet = []
 for j in range(20, 26):
     ligamentSet.append(opensim.CoordinateLimitForce.safeDownCast(forceSet.get(j)))
 
-for i in range(1000):
+state.setTime(0)
+manager = opensim.Manager(model)
+manager.setIntegratorAccuracy(5e-4)
+manager.initialize(state)
+
+for i in range(20):
     # Set some excitation values
     for j in range(muscleSet.getSize()):
         controllers[j].setValue( ((i + j) % 10) * 0.1)
 
     # Integrate
-    t = state.getTime()
-    manager = opensim.Manager(model)
-    manager.integrate(state, t + stepsize)
+    t = (i+1) * stepsize
+    manager.integrate(t)
 
     # Report activations and excitations
     model.realizeDynamics(state)
-    print("%f %f" % (t,muscleSet.get(0).getActivation(state)))
-    print("%f %f" % (t,muscleSet.get(0).getExcitation(state)))
+    print("%f %f" % (t, muscleSet.get(0).getActivation(state)))
+    print("%f %f" % (t, muscleSet.get(0).getExcitation(state)))
 
     # Ligaments
     for lig in ligamentSet:

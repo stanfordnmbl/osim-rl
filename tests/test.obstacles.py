@@ -38,11 +38,14 @@ state = model.initSystem()
 for i in range(6):
     ballJoint.getCoordinate(i).setLocked(state, True)
 
+state.setTime(0)
+manager = opensim.Manager(model)
+manager.setIntegratorAccuracy(5e-4)
+manager.initialize(state)
+
 # Simulate
 for i in range(100):
-    t = state.getTime()
-    manager = opensim.Manager(model)
-    manager.integrate(state, t + stepsize)
+    manager.integrate(i + stepsize)
 
     # Restart the model every 10 frames, with the new position of the ball
     if (i + 1) % 10 == 0:

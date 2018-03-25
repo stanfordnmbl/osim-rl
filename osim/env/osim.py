@@ -206,20 +206,24 @@ class OsimModel(object):
     def get_action_space_size(self):
         return self.noutput
 
+    def reset_manager(self):
+        self.manager = opensim.Manager(self.model)
+        self.manager.setIntegratorAccuracy(5e-4)
+        self.manager.initialize(self.state)
+
     def reset(self):
         self.state = self.model.initializeState()
         self.state.setTime(0)
         self.istep = 0
 
-        self.manager = opensim.Manager(self.model)
-        self.manager.setIntegratorAccuracy(5e-4)
-        self.manager.initialize(self.state)
+        self.reset_manager()
 
     def get_state(self, state):
         return self.state
 
     def set_state(self, state):
         self.state = state
+        self.reset_manager()
 
     def integrate(self):
         # Define the new endtime of the simulation
