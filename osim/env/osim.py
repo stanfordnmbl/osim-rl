@@ -319,7 +319,6 @@ class OsimEnv(gym.Env):
 class L2RunEnv(OsimEnv):
     model_path = os.path.join(os.path.dirname(__file__), '../models/gait9dof18musc.osim')    
     time_limit = 300
-    ninput = 99
     
     def is_done(self):
         state_desc = self.get_state_desc()
@@ -357,14 +356,3 @@ class L2RunEnv(OsimEnv):
         if not prev_state_desc:
             return 0
         return state_desc["joint_pos"]["ground_pelvis"][1] - prev_state_desc["joint_pos"]["ground_pelvis"][1]
-
-class Arm3dEnv(OsimEnv):
-    model_path = os.path.join(os.path.dirname(__file__), '../models/MoBL_ARMS_J_Simple_032118.osim')
-    time_limit = 100
-
-    def is_done(self):
-        state_desc = self.get_state_desc()
-        return False
-
-    def reward(self):
-        return 0
