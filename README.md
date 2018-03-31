@@ -306,6 +306,32 @@ https://github.com/stanfordnmbl/osim-rl/issues/59
 For questions related to the challenge please use [the challenge forum](https://www.crowdai.org/challenges/nips-2017-learning-to-run/topics).
 For issues and problems related to installation process or to the implementation of the simulation environment feel free to create an [issue on GitHub](https://github.com/stanfordnmbl/osim-rl/issues).
 
+## Citing
+
+If you use `osim-rl` in your research, you can cite it as follows:
+
+    @incollection{kidzinski2018learningtorun,
+      author      = "Kidzi\'nski, {\L}ukasz and Mohanty, Sharada P and Ong, Carmichael and Hicks, Jennifer and Francis, Sean and Levine, Sergey and Salath\'e, Marcel and Delp, Scott",
+      title       = "Learning to Run challenge: Synthesizing physiologically accurate motion using deep reinforcement learning",
+      editor      = "Escalera, Sergio and Weimer, Markus",
+      booktitle   = "NIPS 2017 Competition Book",
+      publisher   = "Springer",
+      address     = "Springer",
+      year        = 2018
+    }
+
+If you use solutions from the Learning to Run challenge, you can cite it as:
+
+    @incollection{kidzinski2018l2rsolutions,
+      author      = "Kidzi\'nski, {\L}ukasz and Mohanty, Sharada P and Ong, Carmichael and Huang, Zhewei and Zhou, Shuchang and Pechenko, Anton and Stelmaszczyk, Adam and Jarosik, Piotr and Pavlov, Mikhail and Kolesnikov, Sergey and Plis, Sergey and Chen, Zhibo and Zhang, Zhizheng and Chen, Jiale and Shi, Jun and Zheng, Zhuobin and Yuan, Chun and Lin, Zhihui and Michalewski, Henryk and Miłoś, Piotr and Osiński, Błażej and Melnik andrew and Schilling, Malte and Ritter, Helge and Carroll, Sean and Hicks, Jennifer and Levine, Sergey and Salathé, Marcel and Delp, Scott",
+      title       = "Learning to run challenge solutions: Adapting reinforcement learning methods for neuromusculoskeletal environments",
+      editor      = "Escalera, Sergio and Weimer, Markus",
+      booktitle   = "NIPS 2017 Competition Book",
+      publisher   = "Springer",
+      address     = "Springer",
+      year        = 2018
+    }
+
 ## Credits
 
 This challenge would not be possible without:
