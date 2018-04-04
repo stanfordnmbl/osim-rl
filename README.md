@@ -323,9 +323,7 @@ If you use `osim-rl` in your research, you can cite it as follows:
 If you use the top solutions or other solution reports from the Learning to Run challenge, you can cite them as:
 
     @incollection{jaskowski2018rltorunfast,
-      author      = "Ja\'skowski, Wojciech and Lykkeb{\o}, Odd Rune and
-    Toklu, Nihat Engin and Trifterer, Florian and Buk, Zden\v{e}k and Koutn\'{i}k, Jan and Gomez,
-        Faustino",
+      author      = "Ja\'skowski, Wojciech and Lykkeb{\o}, Odd Rune and Toklu, Nihat Engin and Trifterer, Florian and Buk, Zden\v{e}k and Koutn\'{i}k, Jan and Gomez, Faustino",
       title       = "{Reinforcement Learning to Run... Fast}",
       editor      = "Escalera, Sergio and Weimer, Markus",
       booktitle   = "NIPS 2017 Competition Book",
