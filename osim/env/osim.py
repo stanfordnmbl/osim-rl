@@ -4,6 +4,7 @@ import os
 from .utils.mygym import convert_to_gym
 import gym
 import opensim
+import random
 
 ## OpenSim interface
 # The amin purpose of this class is to provide wrap all 
@@ -73,19 +74,19 @@ class OsimModel(object):
         print("JOINTS")
         for i in range(self.jointSet.getSize()):
             print(i,self.jointSet.get(i).getName())
-            print("\nBODIES")
+        print("\nBODIES")
         for i in range(self.bodySet.getSize()):
             print(i,self.bodySet.get(i).getName())
-            print("\nMUSCLES")
+        print("\nMUSCLES")
         for i in range(self.muscleSet.getSize()):
             print(i,self.muscleSet.get(i).getName())
-            print("\nFORCES")
+        print("\nFORCES")
         for i in range(self.forceSet.getSize()):
             print(i,self.forceSet.get(i).getName())
-            print("\nMARKERS")
+        print("\nMARKERS")
         for i in range(self.markerSet.getSize()):
             print(i,self.markerSet.get(i).getName())
-            print("")
+        print("")
 
     def actuate(self, action):
         if np.any(np.isnan(action)):
@@ -208,7 +209,7 @@ class OsimModel(object):
 
     def reset_manager(self):
         self.manager = opensim.Manager(self.model)
-        self.manager.setIntegratorAccuracy(5e-4)
+        self.manager.setIntegratorAccuracy(5e-3)
         self.manager.initialize(self.state)
 
     def reset(self):
@@ -218,7 +219,7 @@ class OsimModel(object):
 
         self.reset_manager()
 
-    def get_state(self, state):
+    def get_state(self):
         return self.state
 
     def set_state(self, state):
@@ -285,7 +286,8 @@ class OsimEnv(gym.Env):
         if not self.action_space:
             self.action_space = ( [0.0] * self.osim_model.get_action_space_size(), [1.0] * self.osim_model.get_action_space_size() )
         if not self.observation_space:
-            self.observation_space = ( [-math.pi] * self.get_observation_space_size(), [math.pi] * self.get_observation_space_size() )
+#            self.observation_space = ( [-math.pi*100] * self.get_observation_space_size(), [math.pi*100] * self.get_observation_space_s
+            self.observation_space = ( [0] * self.get_observation_space_size(), [0] * self.get_observation_space_size() )
         self.action_space = convert_to_gym(self.action_space)
         self.observation_space = convert_to_gym(self.observation_space)
 
@@ -320,39 +322,135 @@ class L2RunEnv(OsimEnv):
     model_path = os.path.join(os.path.dirname(__file__), '../models/gait9dof18musc.osim')    
     time_limit = 300
     
-    def is_done(self):
-        state_desc = self.get_state_desc()
-        return state_desc["joint_pos"]["ground_pelvis"][2] < 0.7
-
     def get_observation(self):
         state_desc = self.get_state_desc()
 
         # Augmented environment from the L2R challenge
         res = []
+        pelvis = None
 
-        for body_part in ["pelvis","head","torso","toes_l","toes_r","talus_l","talus_r"]:
-            res = res + state_desc["body_pos_rot"][body_part][2:]
-            res = res + state_desc["body_pos"][body_part][0:2]
-            res = res + state_desc["body_vel_rot"][body_part][2:]
-            res = res + state_desc["body_vel"][body_part][0:2]
-            res = res + state_desc["body_acc_rot"][body_part][2:]
-            res = res + state_desc["body_acc"][body_part][0:2]
+        for body_part in ["pelvis", "head","torso","toes_l","toes_r","talus_l","talus_r"]:
+            cur = []
+            cur += state_desc["body_pos"][body_part][0:2]
+            cur += state_desc["body_vel"][body_part][0:2]
+            cur += state_desc["body_acc"][body_part][0:2]
+            cur += state_desc["body_pos_rot"][body_part][2:]
+            cur += state_desc["body_vel_rot"][body_part][2:]
+            cur += state_desc["body_acc_rot"][body_part][2:]
+            if body_part == "pelvis":
+                pelvis = cur
+                res += cur[6:]
+            else:
+                cur = [cur[i] - pelvis[i] for i in range(len(pelvis))]
+                res += cur
 
         for joint in ["ankle_l","ankle_r","back","ground_pelvis","hip_l","hip_r","knee_l","knee_r"]:
-            res = res + state_desc["joint_pos"][joint]
-            res = res + state_desc["joint_vel"][joint]
-            res = res + state_desc["joint_acc"][joint]
+            res += state_desc["joint_pos"][joint]
+            res += state_desc["joint_vel"][joint]
+            res += state_desc["joint_acc"][joint]
+
+        for muscle in state_desc["muscles"].keys():
+            res += [state_desc["muscles"][muscle]["activation"]]
+            res += [state_desc["muscles"][muscle]["fiber_length"]]
+            res += [state_desc["muscles"][muscle]["fiber_velocity"]]
 
         res = res + state_desc["misc"]["mass_center_pos"] + state_desc["misc"]["mass_center_vel"] + state_desc["misc"]["mass_center_acc"]
 
         return res
 
     def get_observation_space_size(self):
-        return 99
+        return 147
 
     def reward(self):
         state_desc = self.get_state_desc()
         prev_state_desc = self.get_prev_state_desc()
         if not prev_state_desc:
             return 0
-        return state_desc["joint_pos"]["ground_pelvis"][1] - prev_state_desc["joint_pos"]["ground_pelvis"][1]
+        return state_desc["joint_pos"]["ground_pelvis"][1] - prev_state_desc["joint_pos"]["ground_pelvis"][1] - (state_desc["joint_pos"]["ground_pelvis"][2] < 0.7) * 1000
+
+
+class Arm2DEnv(OsimEnv):
+    model_path = os.path.join(os.path.dirname(__file__), '../models/arm2dof6musc.osim')    
+    time_limit = 50
+
+    def get_observation(self):
+        state_desc = self.get_state_desc()
+
+        res = []
+
+        for body_part in ["r_humerus", "r_ulna_radius_hand"]:
+            res += state_desc["body_pos"][body_part][0:2]
+            res += state_desc["body_vel"][body_part][0:2]
+            res += state_desc["body_acc"][body_part][0:2]
+            res += state_desc["body_pos_rot"][body_part][2:]
+            res += state_desc["body_vel_rot"][body_part][2:]
+            res += state_desc["body_acc_rot"][body_part][2:]
+
+        for joint in ["r_shoulder","r_elbow",]:
+            res += state_desc["joint_pos"][joint]
+            res += state_desc["joint_vel"][joint]
+            res += state_desc["joint_acc"][joint]
+
+        for muscle in state_desc["muscles"].keys():
+            res += [state_desc["muscles"][muscle]["activation"]]
+            res += [state_desc["muscles"][muscle]["fiber_length"]]
+            res += [state_desc["muscles"][muscle]["fiber_velocity"]]
+
+        res += state_desc["markers"]["r_radius_styloid"]["pos"][:2]
+
+        return res
+
+    def get_observation_space_size(self):
+        return 44
+
+    def generate_new_target(self):
+        theta = random.uniform(math.pi, math.pi*3/2)
+        radius = random.uniform(0.45, 0.65)
+        self.target_x = math.cos(theta) * radius 
+        self.target_y = math.sin(theta) * radius
+
+        state = self.osim_model.get_state()
+
+#        self.target_joint.getCoordinate(0).setValue(state, self.target_x, False)
+        self.target_joint.getCoordinate(1).setValue(state, self.target_x, False)
+
+        self.target_joint.getCoordinate(2).setLocked(state, False)
+        self.target_joint.getCoordinate(2).setValue(state, self.target_y, False)
+        self.target_joint.getCoordinate(2).setLocked(state, True)
+        
+        
+    def reset(self):
+        obs = super(Arm2DEnv, self).reset()
+        self.generate_new_target()
+        self.osim_model.reset_manager()
+        return obs
+
+    def __init__(self, *args, **kwargs):
+        super(Arm2DEnv, self).__init__(*args, **kwargs)
+        blockos = opensim.Body('target', 0.0001 , opensim.Vec3(0), opensim.Inertia(1,1,.0001,0,0,0) );
+        self.target_joint = opensim.PlanarJoint('target-joint',
+                                  self.osim_model.model.getGround(), # PhysicalFrame
+                                  opensim.Vec3(0, 0, 0),
+                                  opensim.Vec3(0, 0, 0),
+                                  blockos, # PhysicalFrame
+                                  opensim.Vec3(0, 0, -0.25),
+                                  opensim.Vec3(0, 0, 0))
+
+        geometry = opensim.Ellipsoid(0.02, 0.02, 0.02);
+        geometry.setColor(opensim.Gray);
+        blockos.attachGeometry(geometry)
+
+        self.osim_model.model.addJoint(self.target_joint)
+        self.osim_model.model.addBody(blockos)
+        
+        self.osim_model.model.initSystem()
+    
+    def reward(self):
+        state_desc = self.get_state_desc()
+        prev_state_desc = self.get_prev_state_desc()
+        if not prev_state_desc:
+            return 0
+        penalty = (state_desc["markers"]["r_radius_styloid"]["pos"][0] - self.target_x)**2 + (state_desc["markers"]["r_radius_styloid"]["pos"][1] - self.target_y)**2
+        # print(state_desc["markers"]["r_radius_styloid"]["pos"])
+        # print((self.target_x, self.target_y))
+        return -penalty
