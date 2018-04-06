@@ -332,7 +332,7 @@ class L2RunEnv(OsimEnv):
     ## Values in the observation vector
     # y, vx, vy, ax, ay, rz, vrz, arz of pelvis (8 values)
     # x, y, vx, vy, ax, ay, rz, vrz, arz of head, torso, toes_l, toes_r, talus_l, talus_r (9*6 values)
-    # rz, vrz, arz of ankle_l, ankle_r, back, pelvis, hip_l, hip_r, knee_l, knee_r (8*3 values)
+    # rz, vrz, arz of ankle_l, ankle_r, back, hip_l, hip_r, knee_l, knee_r (7*3 values)
     # activation, fiber_len, fiber_vel for all muscles (3*18)
     # x, y, vx, vy, ax, ay ofg center of mass (6)
     # 8 + 9*6 + 8*3 + 3*18 + 6 = 146
@@ -365,11 +365,6 @@ class L2RunEnv(OsimEnv):
             res += state_desc["joint_vel"][joint]
             res += state_desc["joint_acc"][joint]
 
-        # special treatment of the pelvis joint which also has X,Y which we skip
-        res += state_desc["joint_pos"]["ground_pelvis"][:1]
-        res += state_desc["joint_vel"]["ground_pelvis"][:1]
-        res += state_desc["joint_acc"]["ground_pelvis"][:1]
-
         for muscle in state_desc["muscles"].keys():
             res += [state_desc["muscles"][muscle]["activation"]]
             res += [state_desc["muscles"][muscle]["fiber_length"]]
@@ -381,7 +376,7 @@ class L2RunEnv(OsimEnv):
         return res
 
     def get_observation_space_size(self):
-        return 146
+        return 143
 
     def reward(self):
         state_desc = self.get_state_desc()
