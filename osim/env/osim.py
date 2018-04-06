@@ -305,6 +305,9 @@ class OsimEnv(gym.Env):
     def get_observation_space_size(self):
         return 0
 
+    def get_action_space_size(self):
+        return self.osim_model.get_action_space_size()
+
     def reset(self):
         self.osim_model.reset()
         return self.get_observation()
@@ -452,4 +455,4 @@ class Arm2DEnv(OsimEnv):
         penalty = (state_desc["markers"]["r_radius_styloid"]["pos"][0] - self.target_x)**2 + (state_desc["markers"]["r_radius_styloid"]["pos"][1] - self.target_y)**2
         # print(state_desc["markers"]["r_radius_styloid"]["pos"])
         # print((self.target_x, self.target_y))
-        return -penalty
+        return 1.-penalty
