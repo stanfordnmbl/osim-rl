@@ -372,19 +372,21 @@ class L2RunEnv(OsimEnv):
 class Arm2DEnv(OsimEnv):
     model_path = os.path.join(os.path.dirname(__file__), '../models/arm2dof6musc.osim')    
     time_limit = 50
+    target_x = 0
+    target_y = 0
 
     def get_observation(self):
         state_desc = self.get_state_desc()
 
-        res = []
+        res = [self.target_x, self.target_y]
 
-        for body_part in ["r_humerus", "r_ulna_radius_hand"]:
-            res += state_desc["body_pos"][body_part][0:2]
-            res += state_desc["body_vel"][body_part][0:2]
-            res += state_desc["body_acc"][body_part][0:2]
-            res += state_desc["body_pos_rot"][body_part][2:]
-            res += state_desc["body_vel_rot"][body_part][2:]
-            res += state_desc["body_acc_rot"][body_part][2:]
+        # for body_part in ["r_humerus", "r_ulna_radius_hand"]:
+        #     res += state_desc["body_pos"][body_part][0:2]
+        #     res += state_desc["body_vel"][body_part][0:2]
+        #     res += state_desc["body_acc"][body_part][0:2]
+        #     res += state_desc["body_pos_rot"][body_part][2:]
+        #     res += state_desc["body_vel_rot"][body_part][2:]
+        #     res += state_desc["body_acc_rot"][body_part][2:]
 
         for joint in ["r_shoulder","r_elbow",]:
             res += state_desc["joint_pos"][joint]
@@ -393,19 +395,19 @@ class Arm2DEnv(OsimEnv):
 
         for muscle in state_desc["muscles"].keys():
             res += [state_desc["muscles"][muscle]["activation"]]
-            res += [state_desc["muscles"][muscle]["fiber_length"]]
-            res += [state_desc["muscles"][muscle]["fiber_velocity"]]
+            # res += [state_desc["muscles"][muscle]["fiber_length"]]
+            # res += [state_desc["muscles"][muscle]["fiber_velocity"]]
 
         res += state_desc["markers"]["r_radius_styloid"]["pos"][:2]
 
         return res
 
     def get_observation_space_size(self):
-        return 44
+        return 16 #46
 
     def generate_new_target(self):
-        theta = random.uniform(math.pi, math.pi*3/2)
-        radius = random.uniform(0.45, 0.65)
+        theta = random.uniform(math.pi, math.pi*7/4)
+        radius = random.uniform(0.25, 0.65)
         self.target_x = math.cos(theta) * radius 
         self.target_y = math.sin(theta) * radius
 
@@ -437,7 +439,7 @@ class Arm2DEnv(OsimEnv):
                                   opensim.Vec3(0, 0, 0))
 
         geometry = opensim.Ellipsoid(0.02, 0.02, 0.02);
-        geometry.setColor(opensim.Gray);
+        geometry.setColor(opensim.Green);
         blockos.attachGeometry(geometry)
 
         self.osim_model.model.addJoint(self.target_joint)
@@ -447,9 +449,6 @@ class Arm2DEnv(OsimEnv):
     
     def reward(self):
         state_desc = self.get_state_desc()
-        prev_state_desc = self.get_prev_state_desc()
-        if not prev_state_desc:
-            return 0
         penalty = (state_desc["markers"]["r_radius_styloid"]["pos"][0] - self.target_x)**2 + (state_desc["markers"]["r_radius_styloid"]["pos"][1] - self.target_y)**2
         # print(state_desc["markers"]["r_radius_styloid"]["pos"])
         # print((self.target_x, self.target_y))
