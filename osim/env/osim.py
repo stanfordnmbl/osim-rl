@@ -355,7 +355,9 @@ class L2RunEnv(OsimEnv):
                 pelvis = cur
                 res += cur[1:]
             else:
-                cur = [cur[i] - pelvis[i] for i in range(len(pelvis))]
+                cur_upd = cur
+                cur_upd[:2] = [cur[i] - pelvis[i] for i in range(2)]
+                cur_upd[6:7] = [cur[i] - pelvis[i] for i in range(6,7)]
                 res += cur
 
         for joint in ["ankle_l","ankle_r","back","hip_l","hip_r","knee_l","knee_r"]:
@@ -373,7 +375,8 @@ class L2RunEnv(OsimEnv):
             res += [state_desc["muscles"][muscle]["fiber_length"]]
             res += [state_desc["muscles"][muscle]["fiber_velocity"]]
 
-        res = res + state_desc["misc"]["mass_center_pos"] + state_desc["misc"]["mass_center_vel"] + state_desc["misc"]["mass_center_acc"]
+        cm_pos = [state_desc["misc"]["mass_center_pos"][i] - pelvis[i] for i in range(2)]
+        res = res + cm_pos + state_desc["misc"]["mass_center_vel"] + state_desc["misc"]["mass_center_acc"]
 
         return res
 
