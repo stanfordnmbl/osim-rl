@@ -324,7 +324,18 @@ class OsimEnv(gym.Env):
 class L2RunEnv(OsimEnv):
     model_path = os.path.join(os.path.dirname(__file__), '../models/gait9dof18musc.osim')    
     time_limit = 300
-    
+
+    def is_done(self):
+        state_desc = self.get_state_desc()
+        return state_desc["body_pos"]["pelvis"][1] < 0.7
+
+    ## Values in the observation vector
+    # y, vx, vy, ax, ay, rz, vrz, arz of pelvis (8 values)
+    # x, y, vx, vy, ax, ay, rz, vrz, arz of head, torso, toes_l, toes_r, talus_l, talus_r (9*6 values)
+    # rz, vrz, arz of ankle_l, ankle_r, back, pelvis, hip_l, hip_r, knee_l, knee_r (8*3 values)
+    # activation, fiber_len, fiber_vel for all muscles (3*18)
+    # x, y, vx, vy, ax, ay ofg center of mass (6)
+    # 8 + 9*6 + 8*3 + 3*18 + 6 = 146
     def get_observation(self):
         state_desc = self.get_state_desc()
 
@@ -342,15 +353,20 @@ class L2RunEnv(OsimEnv):
             cur += state_desc["body_acc_rot"][body_part][2:]
             if body_part == "pelvis":
                 pelvis = cur
-                res += cur[6:]
+                res += cur[1:]
             else:
                 cur = [cur[i] - pelvis[i] for i in range(len(pelvis))]
                 res += cur
 
-        for joint in ["ankle_l","ankle_r","back","ground_pelvis","hip_l","hip_r","knee_l","knee_r"]:
+        for joint in ["ankle_l","ankle_r","back","hip_l","hip_r","knee_l","knee_r"]:
             res += state_desc["joint_pos"][joint]
             res += state_desc["joint_vel"][joint]
             res += state_desc["joint_acc"][joint]
+
+        # special treatment of the pelvis joint which also has X,Y which we skip
+        res += state_desc["joint_pos"]["ground_pelvis"][:1]
+        res += state_desc["joint_vel"]["ground_pelvis"][:1]
+        res += state_desc["joint_acc"]["ground_pelvis"][:1]
 
         for muscle in state_desc["muscles"].keys():
             res += [state_desc["muscles"][muscle]["activation"]]
@@ -362,19 +378,19 @@ class L2RunEnv(OsimEnv):
         return res
 
     def get_observation_space_size(self):
-        return 147
+        return 146
 
     def reward(self):
         state_desc = self.get_state_desc()
         prev_state_desc = self.get_prev_state_desc()
         if not prev_state_desc:
             return 0
-        return state_desc["joint_pos"]["ground_pelvis"][1] - prev_state_desc["joint_pos"]["ground_pelvis"][1] - (state_desc["joint_pos"]["ground_pelvis"][2] < 0.7) * 1000
+        return state_desc["joint_pos"]["ground_pelvis"][1] - prev_state_desc["joint_pos"]["ground_pelvis"][1]
 
 
 class Arm2DEnv(OsimEnv):
     model_path = os.path.join(os.path.dirname(__file__), '../models/arm2dof6musc.osim')    
-    time_limit = 50
+    time_limit = 200
     target_x = 0
     target_y = 0
 
@@ -409,8 +425,8 @@ class Arm2DEnv(OsimEnv):
         return 16 #46
 
     def generate_new_target(self):
-        theta = random.uniform(math.pi, math.pi*7/4)
-        radius = random.uniform(0.25, 0.65)
+        theta = random.uniform(math.pi*9/8, math.pi*12/8)
+        radius = random.uniform(0.5, 0.65)
         self.target_x = math.cos(theta) * radius 
         self.target_y = math.sin(theta) * radius
 
