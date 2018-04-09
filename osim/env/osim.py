@@ -32,11 +32,13 @@ class OsimModel(object):
     state_desc_istep = None
     prev_state_desc = None
     state_desc = None
+    integrator_accuracy = None
 
     maxforces = []
     curforces = []
 
-    def __init__(self, model_path, visualize):
+    def __init__(self, model_path, visualize, integrator_accuracy = 5e-5):
+        self.integrator_accuracy = integrator_accuracy
         self.model = opensim.Model(model_path)
         self.model.initSystem()
         self.brain = opensim.PrescribedController()
@@ -207,9 +209,12 @@ class OsimModel(object):
     def get_action_space_size(self):
         return self.noutput
 
+    def set_integrator_accuracy(self, integrator_accuracy):
+        self.integrator_accuracy = integrator_accuracy
+
     def reset_manager(self):
         self.manager = opensim.Manager(self.model)
-        self.manager.setIntegratorAccuracy(5e-3)
+        self.manager.setIntegratorAccuracy(self.integrator_accuracy)
         self.manager.initialize(self.state)
 
     def reset(self):
@@ -276,8 +281,8 @@ class OsimEnv(gym.Env):
     def is_done(self):
         return False
 
-    def __init__(self, visualize = True):
-        self.osim_model = OsimModel(self.model_path, visualize)
+    def __init__(self, visualize = True, integrator_accuracy = 5e-5):
+        self.osim_model = OsimModel(self.model_path, visualize, integrator_accuracy = integrator_accuracy)
 
         # Create specs, action and observation spaces mocks for compatibility with OpenAI gym
         self.spec = Spec()
