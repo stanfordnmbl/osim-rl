@@ -313,22 +313,31 @@ class OsimEnv(gym.Env):
     def get_action_space_size(self):
         return self.osim_model.get_action_space_size()
 
-    def reset(self):
+    def reset(self, project = True):
         self.osim_model.reset()
+        
+        if not project:
+            return self.get_state_desc()
         return self.get_observation()
 
-    def step(self, action):
+    def step(self, action, project = True):
         self.prev_state_desc = self.get_state_desc()        
         self.osim_model.actuate(action)
         self.osim_model.integrate()
-        return [ self.get_observation(), self.reward(), self.is_done() or (self.osim_model.istep >= self.spec.timestep_limit), {} ]
+
+        if project:
+            obs = self.get_observation()
+        else:
+            obs = self.get_state_desc()
+            
+        return [ obs, self.reward(), self.is_done() or (self.osim_model.istep >= self.spec.timestep_limit), {} ]
 
     def render(self, mode='human', close=False):
         return
 
 class L2RunEnv(OsimEnv):
     model_path = os.path.join(os.path.dirname(__file__), '../models/gait9dof18musc.osim')    
-    time_limit = 300
+    time_limit = 1000
 
     def is_done(self):
         state_desc = self.get_state_desc()
@@ -382,6 +391,70 @@ class L2RunEnv(OsimEnv):
 
     def get_observation_space_size(self):
         return 143
+
+    def reward(self):
+        state_desc = self.get_state_desc()
+        prev_state_desc = self.get_prev_state_desc()
+        if not prev_state_desc:
+            return 0
+        return state_desc["joint_pos"]["ground_pelvis"][1] - prev_state_desc["joint_pos"]["ground_pelvis"][1]
+
+class Run3DEnv(OsimEnv):
+    model_path = os.path.join(os.path.dirname(__file__), '../models/gait14dof22musc_20170320.osim')    
+    time_limit = 300
+
+    def is_done(self):
+        state_desc = self.get_state_desc()
+        return state_desc["body_pos"]["pelvis"][1] < 0.7
+
+    ## Values in the observation vector
+    # y, vx, vy, ax, ay, rz, vrz, arz of pelvis (8 values)
+    # x, y, vx, vy, ax, ay, rz, vrz, arz of head, torso, toes_l, toes_r, talus_l, talus_r (9*6 values)
+    # rz, vrz, arz of ankle_l, ankle_r, back, hip_l, hip_r, knee_l, knee_r (7*3 values)
+    # activation, fiber_len, fiber_vel for all muscles (3*18)
+    # x, y, vx, vy, ax, ay ofg center of mass (6)
+    # 8 + 9*6 + 8*3 + 3*18 + 6 = 146
+    def get_observation(self):
+        state_desc = self.get_state_desc()
+
+        # Augmented environment from the L2R challenge
+        res = []
+        pelvis = None
+
+        for body_part in ["pelvis", "head","torso","toes_l","toes_r","talus_l","talus_r"]:
+            cur = []
+            cur += state_desc["body_pos"][body_part][0:2]
+            cur += state_desc["body_vel"][body_part][0:2]
+            cur += state_desc["body_acc"][body_part][0:2]
+            cur += state_desc["body_pos_rot"][body_part][2:]
+            cur += state_desc["body_vel_rot"][body_part][2:]
+            cur += state_desc["body_acc_rot"][body_part][2:]
+            if body_part == "pelvis":
+                pelvis = cur
+                res += cur[1:]
+            else:
+                cur_upd = cur
+                cur_upd[:2] = [cur[i] - pelvis[i] for i in range(2)]
+                cur_upd[6:7] = [cur[i] - pelvis[i] for i in range(6,7)]
+                res += cur
+
+        for joint in ["ankle_l","ankle_r","back","hip_l","hip_r","knee_l","knee_r"]:
+            res += state_desc["joint_pos"][joint]
+            res += state_desc["joint_vel"][joint]
+            res += state_desc["joint_acc"][joint]
+
+        for muscle in state_desc["muscles"].keys():
+            res += [state_desc["muscles"][muscle]["activation"]]
+            res += [state_desc["muscles"][muscle]["fiber_length"]]
+            res += [state_desc["muscles"][muscle]["fiber_velocity"]]
+
+        cm_pos = [state_desc["misc"]["mass_center_pos"][i] - pelvis[i] for i in range(2)]
+        res = res + cm_pos + state_desc["misc"]["mass_center_vel"] + state_desc["misc"]["mass_center_acc"]
+
+        return res
+
+    def get_observation_space_size(self):
+        return 167
 
     def reward(self):
         state_desc = self.get_state_desc()
