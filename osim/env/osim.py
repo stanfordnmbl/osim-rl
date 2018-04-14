@@ -461,7 +461,7 @@ class Run3DEnv(OsimEnv):
         prev_state_desc = self.get_prev_state_desc()
         if not prev_state_desc:
             return 0
-        return state_desc["joint_pos"]["ground_pelvis"][1] - prev_state_desc["joint_pos"]["ground_pelvis"][1]
+        return state_desc["joint_pos"]["ground_pelvis"][3] - prev_state_desc["joint_pos"]["ground_pelvis"][3]
 
 
 class Arm2DEnv(OsimEnv):
