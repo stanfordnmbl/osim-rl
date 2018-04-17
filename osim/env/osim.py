@@ -104,6 +104,21 @@ class OsimModel(object):
             func = opensim.Constant.safeDownCast(functionSet.get(j))
             func.setValue( float(action[j]) )
 
+    """
+    Directly modifies activations in the current state.
+    """
+    def set_activations(self, activations):
+        if np.any(np.isnan(activations)):
+            raise ValueError("NaN passed in the activation vector. Values in [0,1] interval are required.")
+        for j in range(self.muscleSet.getSize()):
+            self.muscleSet.get(j).setActivation(self.state, activations[j])
+
+    """
+    Get activations in the given state.
+    """
+    def get_activations(self):
+        return [self.muscleSet.get(j).getActivation(self.state) for j in range(self.muscleSet.getSize())]
+
     def compute_state_desc(self):
         self.model.realizeAcceleration(self.state)
 
