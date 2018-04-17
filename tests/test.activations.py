@@ -12,7 +12,6 @@ class ActivationsTest(unittest.TestCase):
         
         current = np.array(env.osim_model.get_activations())
         dist = np.linalg.norm(newact - current)
-        print(dist)
         self.assertTrue(dist < 0.05)
         
         newact = np.array([1.0] * 18)
@@ -21,7 +20,6 @@ class ActivationsTest(unittest.TestCase):
         current = np.array(env.osim_model.get_activations())
         dist = np.linalg.norm(newact - current)
         self.assertTrue(dist < 0.05)
-        print(dist)
 
 if __name__ == '__main__':
     unittest.main()
