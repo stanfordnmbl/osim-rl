@@ -21,5 +21,29 @@ class ActivationsTest(unittest.TestCase):
         dist = np.linalg.norm(newact - current)
         self.assertTrue(dist < 0.05)
 
+    def test_activations_changes(self):
+        env = L2RunEnv(visualize=False)
+        allAct = np.zeros([5, 18])
+
+        # Do not set new activations
+        newAct = [0.9] * 18
+        observation = env.reset()
+        for i in range(5): 
+            allAct[i,:] = env.osim_model.get_activations()
+            observation, reward, done, info = env.step(newAct)
+        withoutAct = allAct[4,:]
+
+        # Set new activations
+        newAct = [0.1] * 18
+        observation = env.reset()
+        env.osim_model.set_activations(newAct)
+        for i in range(5): 
+            allAct[i,:] = env.osim_model.get_activations()
+            observation, reward, done, info = env.step(newAct)
+        withAct = allAct[4,:]
+
+        dist = np.linalg.norm(withAct - withoutAct)
+        self.assertTrue(dist > 1e-5,"Activations after 5 steps haven't changed (despite different initial conditions)")
+        
 if __name__ == '__main__':
     unittest.main()
