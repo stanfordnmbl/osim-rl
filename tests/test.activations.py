@@ -28,6 +28,7 @@ class ActivationsTest(unittest.TestCase):
         # Do not set new activations
         newAct = [0.9] * 18
         observation = env.reset()
+        env.osim_model.set_activations(newAct)
         for i in range(5): 
             allAct[i,:] = env.osim_model.get_activations()
             observation, reward, done, info = env.step(newAct)
