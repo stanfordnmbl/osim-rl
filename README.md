@@ -1,3 +1,5 @@
+UNDER CONSTRUCTION FOR NIPS 2018
+
 # NIPS2018: AI for prosthetics
 
 This repository contains software required for participation in the NIPS 2018 Challenge: AI for prosthetics. See more details about the challenge [here](https://www.crowdai.org/challenges/nips-2018-ai-for-prosthetics).
@@ -37,9 +39,9 @@ Note that `source activate opensim-rl` activates the anaconda virtual environmen
 
 To execute 200 iterations of the simulation enter the `python` interpreter and run the following:
 ```python
-from osim.env import RunEnv
+from osim.env import L2RunEnv
 
-env = RunEnv(visualize=True)
+env = L2RunEnv(visualize=True)
 observation = env.reset(difficulty = 0)
 for i in range(200):
     observation, reward, done, info = env.step(env.action_space.sample())
