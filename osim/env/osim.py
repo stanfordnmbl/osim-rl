@@ -112,6 +112,7 @@ class OsimModel(object):
             raise ValueError("NaN passed in the activation vector. Values in [0,1] interval are required.")
         for j in range(self.muscleSet.getSize()):
             self.muscleSet.get(j).setActivation(self.state, activations[j])
+        self.reset_manager()
 
     """
     Get activations in the given state.
