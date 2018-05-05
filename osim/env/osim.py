@@ -241,7 +241,7 @@ class OsimModel(object):
         self.reset_manager()
 
     def get_state(self):
-        return self.state
+        return opensim.State(self.state)
 
     def set_state(self, state):
         self.state = state
