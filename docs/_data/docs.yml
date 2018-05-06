@@ -1,0 +1,17 @@
+- title: Getting Started
+  docs:
+  - home
+  - quickstart
+
+- title: 'Learning to Run'
+  docs:
+  - evaluation
+  - training
+  - interface
+  - physics
+
+- title: 'Meta'
+  docs:
+  - faq
+  - resources
+  - credits
