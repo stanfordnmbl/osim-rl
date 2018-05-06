@@ -2,8 +2,6 @@
 title: Soultions
 ---
 
-## NNAISENSE (1st place)
-
 <div style="width: 100%; padding-bottom: 75%; position: relative;">
 <video style="position: absolute; top: 0;	left: 0;	width: 100%;	height: 100%;" controls="controls">
   <source src="https://s3.amazonaws.com/osim-rl/videos/01-nnaisense.mp4">
