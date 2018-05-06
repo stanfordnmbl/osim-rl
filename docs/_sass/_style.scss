@@ -12,10 +12,10 @@
 
 body {
   font: 300 21px Lato, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  color: #ddd;
-  background-color: #333;
-  @include box-shadow(inset 0 3px 30px rgba(0,0,0,.3));
-  text-shadow: 0 1px 3px rgba(0,0,0,.5);
+  color: #000;
+  background-color: #f9f6ef;
+  @include box-shadow(inset 0 3px 30px rgba(0,0,0,.7));
+  text-shadow: 0 1px 3px rgba(0,0,0,.3);
   -webkit-font-feature-settings: "kern" 1;
   -moz-font-feature-settings: "kern" 1;
   -o-font-feature-settings: "kern" 1;
@@ -50,7 +50,7 @@ footer {
 
 header {
   padding: 15px;
-  background: darken(#333, 3%);
+  background: #B1040E; //darken(#333, 3%);
 
   h1,
   nav { display: inline-block; }
@@ -64,6 +64,7 @@ header {
 
   .logo {
     display: block;
+    color: #fff;
     img { margin-top: -7px }
   }
 
@@ -100,6 +101,7 @@ nav, .meta {
       text-shadow: none;
       text-transform: uppercase;
       @include transition(all .25s);
+      color: #fff;
 
       &:hover {
         background-color: #252525;
@@ -202,10 +204,10 @@ h6:hover .header-link {
 /* Footer */
 
 footer {
-  background-color: #212121;
+  background-color: #8c1515;
   font-size: 16px;
   padding-bottom: 5px;
-  color: #c0c0c0;
+  color: #fff;
   margin-top: 40px;
 
   a {
@@ -260,7 +262,7 @@ footer {
 /* Quickstart */
 
 .quickstart {
-  background-color: #3F1F1F;
+  background-color: #175e54;
   color: #fff;
   margin: 60px 0;
   @include box-shadow(inset 0 3px 10px rgba(0,0,0,.4));
@@ -426,7 +428,7 @@ footer {
 
 
 article {
-  background-color: #444;
+  background-color: #fefdfb;
   @include border-radius(10px);
   padding: 20px;
   margin: 0 10px;
@@ -480,7 +482,7 @@ aside {
 
     &.current a:before {
       content: "";
-      border-color: transparent transparent transparent #444;
+      border-color: transparent transparent transparent #fefdfb;
       border-style: solid;
       border-width: 10px;
       width: 0;
@@ -490,7 +492,7 @@ aside {
       left: -30px;
     }
     &.current a {
-        color: #f90;
+        color: #8c1515;
     }
   }
 }
@@ -523,12 +525,12 @@ aside {
     @include border-radius(5px);
     /*border: 1px solid #333;*/
     @include box-shadow(0 1px 3px rgba(0,0,0,.3), inset 0 1px 1px rgba(255,255,255,.5));
-    background-color: #767676;
+    background-color: #007c92;
   }
 
   a:hover {
     color: #fff;
-    background-color: #888;
+    background-color: #928b81;
   }
 
   .next,
@@ -570,7 +572,7 @@ aside {
   padding-top: 25px;
   font-size: 16px;
   a {
-    color: #999;
+    color: #4d4f53;
   }
 }
 
@@ -698,15 +700,15 @@ li > code,
 li> pre,
 h5 > code,
 .note > code {
-  background-color: #2b2b2b;
-  color: #fff;
+  background-color:     #F9F6EF;
+  color:     #2F2424;
   max-width: 100%;
   overflow-x: auto;
   vertical-align: middle;
   @include border-radius(5px);
-  @include box-shadow(inset 0 1px 10px rgba(0,0,0,.3),
-    0 1px 0 rgba(255,255,255,.1),
-    0 -1px 0 rgba(0,0,0,.5));
+  @include box-shadow(inset 0 1px 10px rgba(0,0,0,.1),
+    0 1px 0 rgba(255,255,255,.3),
+    0 -1px 0 rgba(0,0,0,.1));
 }
 
 .note code {
@@ -740,11 +742,11 @@ pre.highlight { padding: 10px 0.5em; }
 h1, h2, h3, h4, h5, h6 { margin: 0; }
 
 a {
-  color: #fc0;
+  color: #006CB8;
   text-decoration: none;
   @include transition(all .25s);
 
-  &:hover { color: #f90; }
+  &:hover { color: #00548f; }
 }
 
 strong { font-weight: 700; }
@@ -948,7 +950,7 @@ code.output {
 
   &:after {
     content: '\2605';
-    color: #fc0;
+    color: #eaab00;
     position: absolute;
     top: 14px;
     left: 14px;
@@ -1010,7 +1012,7 @@ code.output {
 
 .warning:after {
   content: '\203C';
-  color: #fc0;
+  color: #eaab00;
   position: absolute;
   top: 15px;
   left: 15px;
@@ -1037,7 +1039,7 @@ code.output {
   padding: 0.2em;
   font-size: .75em;
   font-weight: 400;
-  background-color: #fc0;
+  background-color: #eaab00;
   color: #222;
   text-shadow: none;
   vertical-align: middle;
