@@ -530,7 +530,7 @@ class Arm2DEnv(OsimEnv):
         self.target_joint.getCoordinate(2).setLocked(state, False)
         self.target_joint.getCoordinate(2).setValue(state, self.target_y, False)
         self.target_joint.getCoordinate(2).setLocked(state, True)
-        
+        self.osim_model.set_state(state)
         
     def reset(self):
         obs = super(Arm2DEnv, self).reset()
