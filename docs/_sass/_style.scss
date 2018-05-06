@@ -663,17 +663,20 @@ article h2:first-child { margin-top: 0; }
   padding: 5px 0;
   color: #c0c0c0;
   font-weight: 600;
-  text-shadow: 0 -1px 0 #000;
+//  text-shadow: 0 -1px 0 #000;
 }
 
 .post-date,
 .post-author { margin-left: 10px; }
 
+.post-date { color:     #00505c }
+.post-category { color:     #ffffff }
+
 .news article + article {
   margin-top: -10px;
   @include border-radius(0 0 10px 10px);
-  border-top: 1px solid #555;
-  @include box-shadow(0 -1px 0 #2f2f2f);
+  border-top: 1px solid            #F4F4F4;
+  @include box-shadow(0 -1px 0         #F4F4F4);
 }
 
 /* Code Highlighting */
@@ -747,6 +750,14 @@ a {
   @include transition(all .25s);
 
   &:hover { color: #00548f; }
+}
+
+a.logo {
+  color: #fff;
+  text-decoration: none;
+  @include transition(all .25s);
+
+  &:hover { color:     #eaab00; }
 }
 
 strong { font-weight: 700; }
