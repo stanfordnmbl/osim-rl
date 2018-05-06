@@ -4,9 +4,9 @@ title: Interface
 
 In order to create an environment, use:
 ```python
-    from osim.env import RunEnv
+from osim.env import RunEnv
 
-    env = RunEnv(visualize = True)
+env = RunEnv(visualize = True)
 ```
 Parameters:
 

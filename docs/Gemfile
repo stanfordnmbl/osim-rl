@@ -3,6 +3,8 @@ gem 'jekyll'
 
 group :jekyll_plugins do
   gem "jekyll-paginate"
+  gem "jekyll-avatar"
+  gem "jekyll-picture-tag"
   gem "pygments.rb"
 end
 

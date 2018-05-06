@@ -2,7 +2,7 @@
 title: Quickstart
 ---
 
-You need **Anaconda** to run `osim-rl` simulations. Anaconda will create a virtual environment with all the necessary libraries, to avoid conflicts with libraries in your operating system. You can get anaconda from here https://www.continuum.io/downloads. In the following instructions we assume that Anaconda is successfully installed.
+You need **Anaconda** to run `osim-rl` simulations. Anaconda will create a virtual environment with all the necessary libraries, to avoid conflicts with libraries in your operating system. You can get anaconda from [the anaconda website](https://www.continuum.io/downloads). In the following instructions we assume that Anaconda is successfully installed.
 
 We support Windows, Linux, and Mac OSX (all in 64-bit). To install our simulator, you first need to create a conda environment with the OpenSim package.
 
