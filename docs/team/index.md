@@ -78,7 +78,7 @@ font-size: 0.8em;
 {% endif %}
 {% endfor %}
 
-<h3>Other contributors and notable users</h3>
+<h3>Other notable contributors and users</h3>
 
 {% for person in page.contributors %}
 {% assign loopindex = forloop.index0 | modulo: 5 %}
