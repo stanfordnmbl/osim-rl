@@ -19,7 +19,7 @@ https://github.com/kidzik/osim-rl-grader. Find more details here [OpenAI http cl
 
 **Do you have a docker container?**
 
-Yes, you can use https://hub.docker.com/r/stanfordnmbl/opensim-rl/
+Yes, you can use [an unofficial container](https://hub.docker.com/r/stanfordnmbl/opensim-rl/)
 Note, that connecting a display to a docker can be tricky and it's system dependent. Nevertheless, for training your models the display is not necessary -- the docker container can be handy for using multiple machines.
 
 **Some libraries are missing. What is required to run the environment?**
@@ -32,24 +32,24 @@ Please, try to find equivalent libraries for your OS and let us know -- we will 
 
 **Why there are no energy constraints?**
 
-Please refer to the issue https://github.com/stanfordnmbl/osim-rl/issues/34.
+Please refer to the [issue #34](https://github.com/stanfordnmbl/osim-rl/issues/34).
 
 **I have some memory leaks, what can I do?**
 
 Please refer to
-https://github.com/stanfordnmbl/osim-rl/issues/10
+[issue #10](https://github.com/stanfordnmbl/osim-rl/issues/10)
 and to
-https://github.com/stanfordnmbl/osim-rl/issues/58
+[issue #58](https://github.com/stanfordnmbl/osim-rl/issues/58)
 
 **I see only python3 environment for Linux. How to install Windows environment?**
 
 Please refer to
-https://github.com/stanfordnmbl/osim-rl/issues/29
+[issue #29](https://github.com/stanfordnmbl/osim-rl/issues/29)
 
 **How to visualize observations when running simulations on the server?**
 
 Please refer to
-https://github.com/stanfordnmbl/osim-rl/issues/59
+[issue #59](https://github.com/stanfordnmbl/osim-rl/issues/59)
 
 **I still have more questions, how can I contact you?**
 
