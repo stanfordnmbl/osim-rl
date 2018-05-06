@@ -35,3 +35,5 @@ exclude:
 - CNAME
 - icomoon-selection.json
 - readme.md
+plugins:
+- jekyll-avatar
