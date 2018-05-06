@@ -13,7 +13,7 @@ coreteam:
     task: OpenSim modeling
   - github: chrisdembia
     name: Christopher Dembia
-    task: OpenSim support
+    task: OpenSim integration
   - github: jenhicks
     name: Jen Hicks
     task: Biomechanics advisor
