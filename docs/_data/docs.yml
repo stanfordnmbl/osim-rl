@@ -3,12 +3,18 @@
   - home
   - quickstart
 
-- title: 'Learning to Run'
+- title: 'NIPS 2018: AI for prosthetics'
   docs:
+  - nips2018
+
+- title: 'NIPS 2018: Learning to&nbsp;Run'
+  docs:
+  - nips2017
   - evaluation
   - training
   - interface
   - physics
+  - solutions
 
 - title: 'Meta'
   docs:
