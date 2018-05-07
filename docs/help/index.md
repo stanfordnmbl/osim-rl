@@ -27,4 +27,4 @@ Ask questions specific to the physics simulator OpenSim.
 
 ### [GitHub issues](https://github.com/stanfordnmbl/osim-rl/issues)
 
-Fire issues or go through the outstanding ones.
+Create an issue or go through the outstanding ones.
