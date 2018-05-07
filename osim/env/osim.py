@@ -88,7 +88,6 @@ class OsimModel(object):
         print("\nMARKERS")
         for i in range(self.markerSet.getSize()):
             print(i,self.markerSet.get(i).getName())
-        print("")
 
     def actuate(self, action):
         if np.any(np.isnan(action)):
