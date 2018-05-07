@@ -15,7 +15,7 @@ Try `conda install libgcc`.
 **Can I use languages other than python?**
 
 Yes, you just need to set up your own python grader and interact with it
-https://github.com/kidzik/osim-rl-grader. Find more details here [OpenAI http client](https://github.com/openai/gym-http-api)
+[https://github.com/kidzik/osim-rl-grader](https://github.com/kidzik/osim-rl-grader). Find more details here [OpenAI http client](https://github.com/openai/gym-http-api)
 
 **Do you have a docker container?**
 

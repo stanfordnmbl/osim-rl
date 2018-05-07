@@ -2,20 +2,30 @@
   docs:
   - home
   - quickstart
+  - training
 
 - title: 'NIPS 2018: AI for prosthetics'
   docs:
   - nips2018
+  - nips2018/evaluation
+  - nips2018/interface
+  - nips2018/submission
 
 - title: 'NIPS 2017: Learning to&nbsp;Run'
   docs:
   - nips2017
-  - evaluation
-  - training
-  - interface
-  - physics
-  - solutions
+  - nips2017/evaluation
+  - nips2017/interface
+  - nips2017/physics
+  - nips2017/solutions
 
+# - title: 'Models'
+#   docs:
+#   - Arm2D
+#   - Arm3D
+#   - L2RunEnv
+#   - WalkEnv
+  
 - title: 'Meta'
   docs:
   - faq

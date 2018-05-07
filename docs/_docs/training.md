@@ -2,6 +2,24 @@
 title: Training your first model
 ---
 
+Your goal is to construct a controller, i.e. a function from the state space (current positions, velocities and accelerations of joints) to action space (muscle excitations), that will enable to model to perform a certain task like walking, reaching, throwing a ball, et. Suppose you trained a neural network mapping observations (the current state of the model) to actions (muscle excitations), i.e. you have a function `action = my_controller(observation)`, then
+```python
+# ...
+total_reward = 0.0
+for i in range(200):
+    # make a step given by the controller and record the state and the reward
+    observation, reward, done, info = env.step(my_controller(observation))
+    total_reward += reward
+    if done:
+        break
+
+# Your reward is
+print("Total reward %f" % total_reward)
+```
+There are many ways to construct the function `my_controller(observation)`. We will show how to do it with a DDPG (Deep Deterministic Policy Gradients) algorithm, using `keras-rl`. 
+
+## Your first controller
+
 Below we present how to train a basic controller using [keras-rl](https://github.com/matthiasplappert/keras-rl). First you need to install extra packages:
 
     conda install keras -c conda-forge
@@ -18,11 +36,11 @@ There are two scripts:
 * `example.py` for training (and testing) an agent using the DDPG algorithm.
 * `submit.py` for submitting the result to [crowdAI.org](https://www.crowdai.org/challenges/nips-2017-learning-to-run)
 
-## Training
+### Training
 
     python example.py --visualize --train --model sample
 
-## Testing
+### Testing
 
 and for the gait example (walk as far as possible):
 

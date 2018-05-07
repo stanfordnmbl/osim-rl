@@ -8,7 +8,10 @@ The trial ends either if the pelvis of the model goes below `0.65` meters or if 
 
 After each iteration you get a reward equal to the change of the `x` axis of pelvis during this iteration minus the magnitude of the ligament forces used in that iteration.
 
-You can test your model on your local machine. For submission, you will need to interact with the remote environment: [crowdAI](https://www.crowdai.org/challenges/nips-2017-learning-to-run) sends you the current `observation` and you need to send back the action you take in the given state. You will be evaluated at three different levels of difficulty. For details, please refer to [Details of the environment](#details-of-the-environment).
+You can test your model on your local machine. For submission, you will need to interact with the remote environment: [crowdAI](https://www.crowdai.org/challenges/nips-2017-learning-to-run) sends you the current `observation` and you need to send back the action you take in the given state. You will be evaluated at three different levels of difficulty.
+
+<!--
+For details, please refer to [Details of the environment](#details-of-the-environment).
 
 ## Submission
 
@@ -53,3 +56,4 @@ In order to avoid overfitting to the training environment, the top participants 
 Additional rules:
 * You are not allowed to use external datasets (e.g., kinematics of people walking)
 * Organizers reserve the right to modify challenge rules as required.
+-->

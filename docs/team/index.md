@@ -14,6 +14,10 @@ coreteam:
   - github: chrisdembia
     name: Christopher Dembia
     task: OpenSim integration
+  - name: Joy Ku
+    task: Promotion
+    image: https://cap.stanford.edu/profiles/viewImage?profileId=25840&type=square&ts=1509507382023
+    link: http://nmbl.stanford.edu/people/joy-ku/
   - github: jenhicks
     name: Jen Hicks
     task: Biomechanics advisor

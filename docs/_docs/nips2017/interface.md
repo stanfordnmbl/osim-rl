@@ -4,15 +4,15 @@ title: Interface
 
 In order to create an environment, use:
 ```python
-from osim.env import RunEnv
+from osim.env import L2RunEnv
 
-env = RunEnv(visualize = True)
+env = L2RunEnv(visualize = True)
 ```
 Parameters:
 
 * `visualize` - turn the visualizer on and off
 
-### Methods of `RunEnv`
+### Methods of `L2RunEnv`
 
 #### `reset(difficulty = 2, seed = None)`
 

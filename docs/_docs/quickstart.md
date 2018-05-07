@@ -32,26 +32,12 @@ To execute 200 iterations of the simulation enter the `python` interpreter and r
 from osim.env import L2RunEnv
 
 env = L2RunEnv(visualize=True)
-observation = env.reset(difficulty = 0)
+observation = env.reset()
 for i in range(200):
     observation, reward, done, info = env.step(env.action_space.sample())
 ```
 ![Random walk](https://raw.githubusercontent.com/stanfordnmbl/osim-rl/1679344e509e29bdcc2ee368ddf83e868d93bf61/demo/random.gif)
 
-The function `env.action_space.sample()` returns a random vector for muscle activations, so, in this example, muscles are activated randomly (red indicates an active muscle and blue an inactive muscle).  Clearly with this technique we won't go too far.
+The function `env.action_space.sample()` returns a random vector for muscle activations, so, in this example, muscles are activated randomly (red indicates an active muscle and blue an inactive muscle).
 
-Your goal is to construct a controller, i.e. a function from the state space (current positions, velocities and accelerations of joints) to action space (muscle excitations), that will enable to model to travel as far as possible in a fixed amount of time. Suppose you trained a neural network mapping observations (the current state of the model) to actions (muscle excitations), i.e. you have a function `action = my_controller(observation)`, then
-```python
-# ...
-total_reward = 0.0
-for i in range(200):
-    # make a step given by the controller and record the state and the reward
-    observation, reward, done, info = env.step(my_controller(observation))
-    total_reward += reward
-    if done:
-        break
-
-# Your reward is
-print("Total reward %f" % total_reward)
-```
-There are many ways to construct the function `my_controller(observation)`. We will show how to do it with a DDPG (Deep Deterministic Policy Gradients) algorithm, using `keras-rl`. If you already have experience with training reinforcement learning models, you can skip the next section and go to [evaluation](#evaluation).
+Clearly with this technique we won't go too far. See the next section to learn how to control human body!

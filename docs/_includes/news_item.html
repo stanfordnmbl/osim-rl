@@ -15,6 +15,7 @@
     </span>
     {% assign author = post.author %}
     <a href="https://github.com/{{ author }}" class="post-author">
+      {% avatar user=author size=24 %}
       {{ author }}
     </a>
   </div>

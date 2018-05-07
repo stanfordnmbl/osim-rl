@@ -777,7 +777,7 @@ article {
 
   h2, h3, h4, h5, h6 { margin: 1em 0; }
 
-  h4 { color: #fff; }
+  h4 { color: #555; }
 
   ul li {
 
@@ -812,7 +812,7 @@ blockquote {
 
 table {
   width: 100%;
-  background-color: #555;
+  background-color: #f9f6ef;
   margin: .5em 0;
   @include border-radius(5px);
   @include box-shadow(0 1px 3px rgba(0,0,0,.3));
