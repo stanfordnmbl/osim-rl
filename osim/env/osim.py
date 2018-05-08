@@ -531,9 +531,10 @@ class Arm2DEnv(OsimEnv):
         self.target_joint.getCoordinate(2).setLocked(state, True)
         self.osim_model.set_state(state)
         
-    def reset(self):
+    def reset(self, random_target = True):
         obs = super(Arm2DEnv, self).reset()
-        self.generate_new_target()
+        if random_target:
+            self.generate_new_target()
         self.osim_model.reset_manager()
         return obs
 
