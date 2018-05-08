@@ -5,6 +5,7 @@ from .utils.mygym import convert_to_gym
 import gym
 import opensim
 import random
+from gym.utils import seeding
 
 ## OpenSim interface
 # The amin purpose of this class is to provide wrap all 
