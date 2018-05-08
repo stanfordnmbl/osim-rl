@@ -12,7 +12,7 @@ Formally, you build a function \\(a:S \rightarrow A\\) from the state space \\(S
 
 The trial ends either if the pelvis of the model goes below \\(5\\) meters or if you reach \\(1000\\) iterations (corresponding to \\(10\\) seconds in the virtual environment). Your total reward is the sum of 
 
-$$ \sum_{t=1}^{1000} \|v(s_t) - R_t\|, $$
+$$ -\sum_{t=1}^{1000} \|v(s_t) - R_t\|, $$
 
 where \\(s_t\\) is the state of the model at time \\(t\\), \\(v(s)\\) is the velocity vector of the pelvis in the state \\(s\\), and \\(s_t = M(s_{t-1}, a(s_{t_1}))\\), i.e. states follow the simulation given by model \\(M\\). The process \\(R_t\\) for the final environment is unknown but we will provide a distribution from which it is drawn.
 
