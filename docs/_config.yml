@@ -5,6 +5,8 @@ description: Reinforcement learning environments with musculoskeletal models
 url: https://osim-rl.kidzinski.com/
 repository: https://github.com/stanfordnmbl/osim-rl
 timezone: America/Los_Angeles
+google_analytics_id: UA-118917873-1
+google_site_verification: onQcXpAvtHBrUI5LlroHNE_FP0b2qvFyPq7VZw36iEY
 twitter:
   username: kidzik
 collections:
