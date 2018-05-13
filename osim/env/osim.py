@@ -5,6 +5,7 @@ from .utils.mygym import convert_to_gym
 import gym
 import opensim
 import random
+from gym.utils import seeding
 
 ## OpenSim interface
 # The amin purpose of this class is to provide wrap all 
@@ -298,7 +299,8 @@ class OsimEnv(gym.Env):
 
     def __init__(self, visualize = True, integrator_accuracy = 5e-5):
         self.osim_model = OsimModel(self.model_path, visualize, integrator_accuracy = integrator_accuracy)
-
+ 
+        self.seed()
         # Create specs, action and observation spaces mocks for compatibility with OpenAI gym
         self.spec = Spec()
         self.spec.timestep_limit = self.time_limit
@@ -311,6 +313,10 @@ class OsimEnv(gym.Env):
         self.action_space = convert_to_gym(self.action_space)
         self.observation_space = convert_to_gym(self.observation_space)
 
+    def seed(self, seed=None):
+        self.np_random, seed = seeding.np_random(seed)
+        return [seed]
+    
     def get_state_desc(self):
         return self.osim_model.get_state_desc()
 
