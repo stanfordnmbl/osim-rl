@@ -297,17 +297,24 @@ class OsimEnv(gym.Env):
         return False
 
     def __init__(self, visualize = True, integrator_accuracy = 5e-5):
-        self.osim_model = OsimModel(self.model_path, visualize, integrator_accuracy = integrator_accuracy)
+        self.visualize = visualize
+        self.integrator_accuracy = integrator_accuracy
+        self.load_model()
+
+    def load_model(self, model_path = None):
+        if model_path:
+            self.model_path = model_path
+            
+        self.osim_model = OsimModel(self.model_path, self.visualize, integrator_accuracy = self.integrator_accuracy)
 
         # Create specs, action and observation spaces mocks for compatibility with OpenAI gym
         self.spec = Spec()
         self.spec.timestep_limit = self.time_limit
 
-        if not self.action_space:
-            self.action_space = ( [0.0] * self.osim_model.get_action_space_size(), [1.0] * self.osim_model.get_action_space_size() )
-        if not self.observation_space:
-#            self.observation_space = ( [-math.pi*100] * self.get_observation_space_size(), [math.pi*100] * self.get_observation_space_s
-            self.observation_space = ( [0] * self.get_observation_space_size(), [0] * self.get_observation_space_size() )
+        self.action_space = ( [0.0] * self.osim_model.get_action_space_size(), [1.0] * self.osim_model.get_action_space_size() )
+#        self.observation_space = ( [-math.pi*100] * self.get_observation_space_size(), [math.pi*100] * self.get_observation_space_s
+        self.observation_space = ( [0] * self.get_observation_space_size(), [0] * self.get_observation_space_size() )
+        
         self.action_space = convert_to_gym(self.action_space)
         self.observation_space = convert_to_gym(self.observation_space)
 
@@ -414,10 +421,28 @@ class L2RunEnv(OsimEnv):
             return 0
         return state_desc["joint_pos"]["ground_pelvis"][1] - prev_state_desc["joint_pos"]["ground_pelvis"][1]
 
-class Run3DEnv(OsimEnv):
-    model_path = os.path.join(os.path.dirname(__file__), '../models/gait14dof22musc_20170320.osim')    
+class ProstheticsEnv(OsimEnv):
+    prosthetic = True
+    model = "3D"
+    def get_model_key(self):
+        return self.model + ("_pros" if self.prosthetic else "")
+
     time_limit = 300
 
+    def __init__(self, visualize = True, integrator_accuracy = 5e-5):
+        self.model_paths = {}
+        self.model_paths["3D_pros"] = os.path.join(os.path.dirname(__file__), '../models/gait14dof22musc_pros_20180507.osim')    
+        self.model_paths["3D"] = os.path.join(os.path.dirname(__file__), '../models/gait14dof22musc_20170320.osim')    
+        self.model_paths["2D_pros"] = os.path.join(os.path.dirname(__file__), '../models/gait14dof22musc_planar_pros_20180507.osim')    
+        self.model_paths["2D"] = os.path.join(os.path.dirname(__file__), '../models/gait14dof22musc_planar_20170320.osim')
+        self.model_path = self.model_paths[self.get_model_key()]
+        super(ProstheticsEnv, self).__init__()
+
+    def change_model(self, model='3D', prosthetic=True, difficulty=2, seed=None):
+        if (self.model, self.prosthetic) != (model, prosthetic):
+            self.model, self.prosthetic = model, prosthetic
+            self.load_model(self.model_paths[self.get_model_key()])
+    
     def is_done(self):
         state_desc = self.get_state_desc()
         return state_desc["body_pos"]["pelvis"][1] < 0.7
@@ -437,6 +462,9 @@ class Run3DEnv(OsimEnv):
         pelvis = None
 
         for body_part in ["pelvis", "head","torso","toes_l","toes_r","talus_l","talus_r"]:
+            if self.prosthetic and body_part in ["toes_r","talus_r"]:
+                res += [0] * 9
+                continue
             cur = []
             cur += state_desc["body_pos"][body_part][0:2]
             cur += state_desc["body_vel"][body_part][0:2]
