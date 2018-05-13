@@ -5,12 +5,12 @@ coreteam:
   - github: kidzik
     name: Łukasz Kidziński
     task: Project initiator & lead
-  - github: spMohanty
-    name: Sharada P. Mohanty
-    task: crowdAI integration
   - github: carmichaelong
     name: Carmichael Ong
     task: OpenSim modeling
+  - github: spMohanty
+    name: Sharada P. Mohanty
+    task: crowdAI integration
   - github: chrisdembia
     name: Christopher Dembia
     task: OpenSim integration
