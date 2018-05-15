@@ -19,12 +19,12 @@
   - nips2017/physics
   - nips2017/solutions
 
-# - title: 'Models'
-#   docs:
+- title: 'Models'
+  docs:
 #   - Arm2D
-#   - Arm3D
-#   - L2RunEnv
-#   - WalkEnv
+  - models
+  - models/interface
+  - models/advanced
   
 - title: 'Meta'
   docs:

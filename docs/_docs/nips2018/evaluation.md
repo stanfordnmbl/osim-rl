@@ -16,6 +16,11 @@ $$ -\sum_{t=1}^{1000} \|v(s_t) - R_t\|, $$
 
 where \\(s_t\\) is the state of the model at time \\(t\\), \\(v(s)\\) is the velocity vector of the pelvis in the state \\(s\\), and \\(s_t = M(s_{t-1}, a(s_{t_1}))\\), i.e. states follow the simulation given by model \\(M\\). The process \\(R_t\\) for the final environment is unknown but we will provide a distribution from which it is drawn.
 
+<div class="note unreleased">
+  <h5>Unreleased</h5>
+  <p>This is not the final reward function. The final objective function for the NIPS 2018 challenge will be released when the competition starts.</p>
+</div>
+
 You can test your model on your local machine. For submission, you will need to interact with the remote environment: [crowdAI](https://www.crowdai.org/challenges/nips-2017-learning-to-run) sends you the current state \\(s\\) and you need to send back the action you take in the given state. You will be evaluated at three different levels of difficulty. 
 
 ## Rules

@@ -32,16 +32,15 @@ Go to the `scripts` subdirectory from this repository
 
     cd osim-rl/scripts
 
-There are two scripts:
-* `example.py` for training (and testing) an agent using the DDPG algorithm.
-* `submit.py` for submitting the result to [crowdAI.org](https://www.crowdai.org/challenges/nips-2017-learning-to-run)
+To train the model using DDPG algorithm you can simply run the scirpt
+`ddpg.keras-rl.py` as follows:
 
 ### Training
 
-    python example.py --visualize --train --model sample
+    python ddpg.keras-rl.py --visualize --train --model sample
 
 ### Testing
 
 and for the gait example (walk as far as possible):
 
-    python example.py --visualize --test --model sample
+    python ddpg.keras-rl.py --visualize --test --model sample

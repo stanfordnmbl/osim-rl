@@ -17,11 +17,6 @@ Try `conda install libgcc`.
 Yes, you just need to set up your own python grader and interact with it
 [https://github.com/kidzik/osim-rl-grader](https://github.com/kidzik/osim-rl-grader). Find more details here [OpenAI http client](https://github.com/openai/gym-http-api)
 
-**Do you have a docker container?**
-
-Yes, you can use [an unofficial container](https://hub.docker.com/r/stanfordnmbl/opensim-rl/)
-Note, that connecting a display to a docker can be tricky and it's system dependent. Nevertheless, for training your models the display is not necessary -- the docker container can be handy for using multiple machines.
-
 **Some libraries are missing. What is required to run the environment?**
 
 Most of the libraries by default exist in major distributions of operating systems or are automatically downloaded by the conda environment. Yet, sometimes things are still missing. The minimal set of dependencies under Linux can be installed with
