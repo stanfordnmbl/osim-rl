@@ -1,5 +1,5 @@
 ---
-title: Soultions
+title: Solutions
 ---
 
 <table>
