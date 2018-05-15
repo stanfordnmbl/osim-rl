@@ -22,7 +22,7 @@ List names of model elements including: joints, bodies, muscles, forces, and mar
 
 Get an element by name. To better understand what can you do with these entities, please refer to [OpenSim documentation](http://myosin.sourceforge.net/2189/). You can find list of all function under the given class, for example, for muscles please refer to [this file](http://myosin.sourceforge.net/2189/classOpenSim_1_1Muscle.html).
 
-#### `actuatie(action)`
+#### `actuate(action)`
 
 Set muscle excitations.
 
