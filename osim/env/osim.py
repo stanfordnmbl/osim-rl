@@ -414,7 +414,7 @@ class ProstheticsEnv(OsimEnv):
         self.model_paths["2D_pros"] = os.path.join(os.path.dirname(__file__), '../models/gait14dof22musc_planar_pros_20180507.osim')    
         self.model_paths["2D"] = os.path.join(os.path.dirname(__file__), '../models/gait14dof22musc_planar_20170320.osim')
         self.model_path = self.model_paths[self.get_model_key()]
-        super(ProstheticsEnv, self).__init__()
+        super(ProstheticsEnv, self).__init__(visualize = visualize, integrator_accuracy = integrator_accuracy)
 
     def change_model(self, model='3D', prosthetic=True, difficulty=2, seed=None):
         if (self.model, self.prosthetic) != (model, prosthetic):
