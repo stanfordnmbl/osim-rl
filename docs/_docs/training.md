@@ -23,14 +23,13 @@ There are many ways to construct the function `my_controller(observation)`. We w
 Below we present how to train a basic controller using [keras-rl](https://github.com/matthiasplappert/keras-rl). First you need to install extra packages:
 
     conda install keras -c conda-forge
-    pip install git+https://github.com/matthiasplappert/keras-rl.git
+    pip install tensorflow git+https://github.com/matthiasplappert/keras-rl.git
     git clone http://github.com/stanfordnmbl/osim-rl.git
 
 `keras-rl` is an excellent package compatible with [OpenAI](http://openai.com/), which allows you to quickly build your first models!
 
-Go to the `scripts` subdirectory from this repository
 
-    cd osim-rl/scripts
+    cd osim-rl/examples
 
 To train the model using DDPG algorithm you can simply run the scirpt
 `ddpg.keras-rl.py` as follows:
