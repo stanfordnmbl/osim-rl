@@ -15,6 +15,11 @@ Simple 2D arm environment with 2 degrees of freedom and 6 muscles. The objective
 
 ![3D arm environment](https://s3.amazonaws.com/osim-rl/videos/arm2d.gif)
 
+<div class="note info">
+  <h5>Toy model</h5>
+  <p>Note that this model is simplified and not physiologically accurate. We suggest using it only for testing purposes.</p>
+</div>
+
 ### L2RunEnv
 
 NIPS 2017 challenge model, where you are asked to build a controler to make a musculoskeletal model run as quickly as possible. Read more in the documents on the [NIPS 2017 challenge](/docs/nips2017/).
