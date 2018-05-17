@@ -20,15 +20,15 @@ Parameters:
 
 ### Methods
 
-#### `reset()`
+#### `reset(project = True)`
 
 Restart the enivironment to the initial state. Note that extra parameters can be available depending on the [environment](/docs/models/).
 
 The function returns:
 
-* `observation` - a dictionary describing the state of muscles, joints, and bodies in the biomechanical system.
+* `observation` - a vector (if `project = True`) or a dictionary describing the state of muscles, joints, and bodies in the biomechanical system.
 
-#### `step(action)`
+#### `step(action, project = True)`
 
 Make one iteration of the simulation.
 
@@ -36,7 +36,7 @@ Make one iteration of the simulation.
 
 The function returns:
 
-* `observation` - a dictionary describing the state of muscles, joints, and bodies in the biomechanical system.
+* `observation` - a vector (if `project = True`) or a dictionary describing the state of muscles, joints, and bodies in the biomechanical system.
 
 * `reward` - reward gained in the last iteration.
 
