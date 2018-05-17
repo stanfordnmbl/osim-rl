@@ -4,6 +4,13 @@
   - quickstart
   - training
 
+- title: 'Models'
+  docs:
+#   - Arm2D
+  - models
+  - models/interface
+  - models/advanced
+
 - title: 'NIPS 2018: AI for prosthetics'
   docs:
   - nips2018
@@ -18,13 +25,6 @@
   - nips2017/interface
   - nips2017/physics
   - nips2017/solutions
-
-- title: 'Models'
-  docs:
-#   - Arm2D
-  - models
-  - models/interface
-  - models/advanced
   
 - title: 'Meta'
   docs:
