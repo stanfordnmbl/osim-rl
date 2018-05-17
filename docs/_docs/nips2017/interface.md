@@ -35,7 +35,7 @@ Make one iteration of the simulation.
 
 The function returns:
 
-* `observation` - a vector (if `project = True`) or a dictionary describing the state of muscles, joints, and bodies in the biomechanical system.
+* `observation` - a vector (if `project = True`) or a dictionary describing the state of muscles, joints, and bodies in the biomechanical system. Note that only `project = True` is consistent with the actual NIPS 2017 challenge.
 
 * `reward` - reward gained in the last iteration. The reward is computed as a change in position of the pelvis along the x axis minus the penalty for the use of ligaments. See the "Physics of the model" section for details.
 
