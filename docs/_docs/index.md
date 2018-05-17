@@ -9,10 +9,10 @@ redirect_from: /docs/index.html
 ![HUMAN environment](https://s3.amazonaws.com/osim-rl/videos/running.gif)
 
 Our objectives are to:
-* use Reinforcement Learning (RL) to solve problems in healthcare,
-* promote open-source tools in RL research ([the physics simulator](http://opensim.stanford.edu), [the RL environment](https://github.com/stanfordnmbl/osim-rl), and the [competition platform](http://crowdai.org/) on which we run challenges are all open-source),
-* encourage RL research in computationally complex environments, with stochasticity and highly-dimensional action spaces, relevant to real-life applications,
-* bridge biomechanics, neuroscience, and computer science communities.
+* Use Reinforcement Learning (RL) to solve problems in healthcare
+* Promote open-source tools in RL research ([the physics simulator](http://opensim.stanford.edu), [the RL environment](https://github.com/stanfordnmbl/osim-rl), and the [competition platform](http://crowdai.org/) on which we run challenges are all open-source)
+* Encourage RL research in computationally complex environments, with stochasticity and highly-dimensional action spaces, relevant to real-life applications
+* Bridge Biomechanics, Neuroscience and Computer Science communities.
 
 <!--
 ## What can I find here?
