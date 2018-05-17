@@ -14,7 +14,7 @@ Parameters:
 
 ### Methods of `ProstheticsEnv`
 
-#### `reset(model='3D', prosthetic=True, difficulty=2, seed=None)`
+#### `reset(model='3D', prosthetic=True, difficulty=2, seed=None, project = True)`
 
 Restart the enivironment with a given `difficulty` level and a `seed`.
 
@@ -23,7 +23,11 @@ Restart the enivironment with a given `difficulty` level and a `seed`.
 
 Your solution will be graded in the environment with `difficulty = 2`, yet it might be easier to train your model with `difficulty = 0` first and then retrain with a higher difficulty
 
-#### `step(action)`
+Returns:
+
+* `observation` - a vector (if `project = True`) or a dictionary describing the state of muscles, joints, and bodies in the biomechanical system.
+
+#### `step(action, project = True)`
 
 Make one iteration of the simulation.
 
@@ -31,7 +35,7 @@ Make one iteration of the simulation.
 
 The function returns:
 
-* `observation` - dictionary describing the current state.
+* `observation` - a vector (if `project = True`) or a dictionary describing the state of muscles, joints, and bodies in the biomechanical system.
 
 * `reward` - reward gained in the last iteration.
 
