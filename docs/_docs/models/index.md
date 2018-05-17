@@ -6,7 +6,7 @@ redirect_from: /docs/models/index.html
 
 ### Arm2DEnv
 
-Simple 2D arm environment with 2 muscles and 6 degrees of freedom. The objective is to grab a ball randomly appearing in the space every 3 seconds.
+Simple 2D arm environment with 2 degrees of freedom and 6 muscles. The objective is to grab a ball randomly appearing in the space every 3 seconds.
 
 | ---:| --- |
 | **# of muscles** | 2 |
