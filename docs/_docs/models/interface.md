@@ -2,7 +2,7 @@
 title: Basic interface
 ---
 
-[All environments](/docs/models/) share two fundamental functions `reset()` and `step(action)`. `reset` restarts the environment to the initial state. `step` sends muscle excitations and runs the simulation for one step. This two functions are the minimal requirement for most of the reinforcement learning algorithms.
+[All environments](/docs/models/) share two fundamental functions `reset()` and `step(action)`. `reset` restarts the environment to the initial state. `step` sends muscle excitations and runs the simulation for one step. These two functions are the minimal requirement for most of the reinforcement learning algorithms.
 
 ### Initialization
 
