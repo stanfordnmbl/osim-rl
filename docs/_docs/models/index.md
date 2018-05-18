@@ -22,7 +22,7 @@ Simple 2D arm environment with 2 degrees of freedom and 6 muscles. The objective
 
 ### L2RunEnv
 
-NIPS 2017 challenge model, where you are asked to build a controler to make a musculoskeletal model run as quickly as possible. Read more in the documents on the [NIPS 2017 challenge](/docs/nips2017/).
+NIPS 2017 challenge model, where you are asked to build a controller to make a musculoskeletal model run as quickly as possible. Read more in the documents on the [NIPS 2017 challenge](/docs/nips2017/).
 
 | ---:| --- |
 | **# of muscles** | 18 |
@@ -33,7 +33,7 @@ NIPS 2017 challenge model, where you are asked to build a controler to make a mu
 
 ### ProstheticEnv
 
-NIPS 2018 challenge model, where you are asked to build a controler to make a musculoskeletal model with a prosthetic leg. Read more in the documents on the [NIPS 2018 challenge](/docs/nips2018/).
+NIPS 2018 challenge model, where you are asked to build a controller to make a musculoskeletal model with a prosthetic leg. Read more in the documents on the [NIPS 2018 challenge](/docs/nips2018/).
 
 | ---:| --- |
 | **# of muscles** | 22 |
