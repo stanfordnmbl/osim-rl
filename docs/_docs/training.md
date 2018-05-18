@@ -2,7 +2,7 @@
 title: Training your first model
 ---
 
-Your goal is to construct a controller, i.e. a function from the state space (current positions, velocities and accelerations of joints) to action space (muscle excitations), that will enable to model to perform a certain task like walking, reaching, throwing a ball, et. Suppose you trained a neural network mapping observations (the current state of the model) to actions (muscle excitations), i.e. you have a function `action = my_controller(observation)`, then
+Your goal is to construct a controller, i.e. a function from the state space (current positions, velocities and accelerations of joints) to action space (muscle excitations), that will enable the model to perform a certain task like walking, reaching, throwing a ball, etc. Suppose you trained a neural network mapping observations (the current state of the model) to actions (muscle excitations), i.e. you have a function `action = my_controller(observation)`, then
 ```python
 # ...
 total_reward = 0.0
