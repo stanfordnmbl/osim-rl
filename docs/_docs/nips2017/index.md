@@ -18,9 +18,3 @@ Human movement results from the intricate coordination of muscles, tendons, join
 
 Competitiors tackle three major challenges: 1) a high-dimensional action space, 2) complexity of a biological system, including delayed actuation and complex muscle-tendon interactions, and 3) developing a flexible controller for an unseen environment. We advance and popularize an important class of reinforcement learning problems with a large set of output parameters (human muscles) and comparatively small dimensionality of the input (state of a dynamic system). Algorithms developed in the complex biomechanical environment will also generalize to other reinforcement learning settings with highly-dimensional decisions, such as robotics, multivariate decision making (corporate decisions, drug quantities), stock exchange, etc.
 
-Watch this great presentation from Jack M. Wang (@ SIGGRAPH 2012) to better understand the problem we are trying to solve
-
-<div style="width: 100%; padding-bottom: 52%; position: relative;">
-   <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" src="https://www.youtube.com/embed/NlnJz-jJAAY" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen="allowfullscreen">No video</iframe>
-/iframe>
-</div>
