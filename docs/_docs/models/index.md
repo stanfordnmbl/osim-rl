@@ -33,7 +33,7 @@ NIPS 2017 challenge model, where you are asked to build a controller to make a m
 
 ### ProstheticEnv
 
-NIPS 2018 challenge model, where you are asked to build a controller to make a musculoskeletal model with a prosthetic leg. Read more in the documents on the [NIPS 2018 challenge](/docs/nips2018/).
+NIPS 2018 challenge model, where you are asked to build a controller to make a musculoskeletal model with a prosthetic leg follow desired velocity vector changing in time. Read more in the documents on the [NIPS 2018 challenge](/docs/nips2018/).
 
 | ---:| --- |
 | **# of muscles** | 22 |
