@@ -25,7 +25,7 @@ We identified multiple strategies shared across teams.
 * *Frameskip:* instead of sending signals every 1/100 of a second, keep the same control for, for example, 5 frames.
 * *Symmetry:* assume that given a mirrored environment you should take a mirrored action.
 * *Binary actions:* excitations 0 or 1 instead of values in the interval [0,1].
-* *Sample efficiency:* most teams used learning algorithms laveraging history, such as [Deep Deterministic Policy Gradient](https://arxiv.org/pdf/1509.02971.pdf).
+* *Sample efficiency:* most teams used learning algorithms leveraging history, such as [Deep Deterministic Policy Gradient](https://arxiv.org/pdf/1509.02971.pdf).
 
 #### Leveraging the model
 * *Ground reaction forces:* these were not given in the environment so users tried to estimate them.
