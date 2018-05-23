@@ -22,7 +22,7 @@ Parameters:
 
 #### `reset(project = True)`
 
-Restart the enivironment to the initial state. Note that extra parameters can be available depending on the [environment](/docs/models/).
+Restart the environment to the initial state. Note that extra parameters can be available depending on the [environment](/docs/models/).
 
 The function returns:
 
