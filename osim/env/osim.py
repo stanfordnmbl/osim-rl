@@ -464,7 +464,7 @@ class ProstheticsEnv(OsimEnv):
             res += state_desc["joint_vel"][joint]
             res += state_desc["joint_acc"][joint]
 
-        for muscle in state_desc["muscles"].keys():
+        for muscle in sorted(state_desc["muscles"].keys()):
             res += [state_desc["muscles"][muscle]["activation"]]
             res += [state_desc["muscles"][muscle]["fiber_length"]]
             res += [state_desc["muscles"][muscle]["fiber_velocity"]]
@@ -511,7 +511,7 @@ class Arm2DEnv(OsimEnv):
             res += state_desc["joint_vel"][joint]
             res += state_desc["joint_acc"][joint]
 
-        for muscle in state_desc["muscles"].keys():
+        for muscle in sorted(state_desc["muscles"].keys()):
             res += [state_desc["muscles"][muscle]["activation"]]
             # res += [state_desc["muscles"][muscle]["fiber_length"]]
             # res += [state_desc["muscles"][muscle]["fiber_velocity"]]
