@@ -484,7 +484,7 @@ class ProstheticsEnv(OsimEnv):
         prev_state_desc = self.get_prev_state_desc()
         if not prev_state_desc:
             return 0
-        return (state_desc["body_vel"]["pelvis"][0] - 3.0)**2
+        return -(state_desc["body_vel"]["pelvis"][0] - 3.0)**2
 
 
 class Arm2DEnv(OsimEnv):
