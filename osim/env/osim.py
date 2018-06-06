@@ -416,7 +416,7 @@ class ProstheticsEnv(OsimEnv):
         self.model_path = self.model_paths[self.get_model_key()]
         super(ProstheticsEnv, self).__init__(visualize = visualize, integrator_accuracy = integrator_accuracy)
 
-    def change_model(self, model='3D', prosthetic=True, difficulty=2, seed=None):
+    def change_model(self, model='3D', prosthetic=True, difficulty=0, seed=None):
         if (self.model, self.prosthetic) != (model, prosthetic):
             self.model, self.prosthetic = model, prosthetic
             self.load_model(self.model_paths[self.get_model_key()])
@@ -484,7 +484,7 @@ class ProstheticsEnv(OsimEnv):
         prev_state_desc = self.get_prev_state_desc()
         if not prev_state_desc:
             return 0
-        return state_desc["joint_pos"]["ground_pelvis"][3] - prev_state_desc["joint_pos"]["ground_pelvis"][3]
+        return (state_desc["body_vel"]["pelvis"][0] - 3.0)**2
 
 
 class Arm2DEnv(OsimEnv):
