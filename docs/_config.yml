@@ -1,7 +1,7 @@
 ---
 version: 1.5
-name: osim-rl • Reinforcement learning environments with musculoskeletal models
-description: Reinforcement learning environments with musculoskeletal models
+name: 'osim-rl • OpenSim RL: Reinforcement learning environments with musculoskeletal models'
+description: 'OpenSim RL: Reinforcement learning environments with musculoskeletal models'
 url: https://osim-rl.kidzinski.com/
 repository: https://github.com/stanfordnmbl/osim-rl
 timezone: America/Los_Angeles
