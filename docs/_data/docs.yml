@@ -1,0 +1,33 @@
+- title: Getting Started
+  docs:
+  - home
+  - quickstart
+  - training
+
+- title: 'Models'
+  docs:
+#   - Arm2D
+  - models
+  - models/interface
+  - models/advanced
+
+- title: 'NIPS 2018: AI for prosthetics'
+  docs:
+  - nips2018
+  - nips2018/evaluation
+  - nips2018/interface
+  - nips2018/submission
+
+- title: 'NIPS 2017: Learning to&nbsp;Run'
+  docs:
+  - nips2017
+  - nips2017/evaluation
+  - nips2017/interface
+  - nips2017/physics
+  - nips2017/solutions
+  
+- title: 'Meta'
+  docs:
+  - faq
+  - resources
+  - credits

@@ -6,3 +6,6 @@ build/
 *.log
 *#
 *.pyc
+_site
+*.lock
+.sass-cache
