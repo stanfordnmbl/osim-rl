@@ -3,7 +3,6 @@ from osim.http.client import Client
 from osim.env import ProstheticsEnv
 import numpy as np
 import argparse
-from pprint import pprint
 
 # Settings
 remote_base = 'http://grader.crowdai.org:1729'
@@ -20,7 +19,6 @@ observation = client.env_create(args.token, env_id="ProstheticsEnv")
 env = ProstheticsEnv()
 
 # Run a single step
-#
 # The grader runs 3 simulations of at most 1000 steps each. We stop after the last one
 while True:
     print(observation)
@@ -29,5 +27,5 @@ while True:
         observation = client.env_reset()
         if not observation:
             break
-
+            
 client.submit()
