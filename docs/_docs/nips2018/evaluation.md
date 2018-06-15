@@ -8,7 +8,7 @@ title: Evaluation
 
 Your task is to build a controller, i.e. a function from the state of the biomechanical model to action, such that the velocity of the controller matches the requested velocity as precisely as possible. 
 
-Formally, you build a function \\(a:S \rightarrow A\\) from the state space \\(S\\) to the action space \\(A\\). Each element \\(s\\) of the state space is represented as a dictionary structure that includes current positions, velocities, accelerations of joints and body parts, muscles activity, etc. The action space \\([0,1]^{22}\\) represents muscle activations. Your objective is to find such a function \\(a\\) that reward throughout the episode is maximized. The challenge has two rounds, for now we provide the objective function of the first round.
+Formally, you build a function \\(a:S \rightarrow A\\) from the state space \\(S\\) to the action space \\(A\\). Each element \\(s\\) of the state space is represented as a dictionary structure that includes current positions, velocities, accelerations of joints and body parts, muscles activity, etc. The action space \\([0,1]^{19}\\) represents muscle activations. Your objective is to find such a function \\(a\\) that reward throughout the episode is maximized. The challenge has two rounds, for now we provide the objective function of the first round.
 
 ## Round 1
 
