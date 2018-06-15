@@ -14,9 +14,9 @@ Formally, you build a function \\(a:S \rightarrow A\\) from the state space \\(S
 
 The trial ends in the step \\(T\\) when the pelvis of the model goes below \\(0.65\\) meters or when it reaches \\(1000\\) iterations (corresponding to \\(10\\) seconds in the virtual environment). Your total reward is the sum of 
 
-$$ \sum_{t=1}^{T} 9 - \|v(s_t) - R_t\|^2, $$
+$$ \sum_{t=1}^{T} 9 - \|v_x(s_t) - 3\|^2, $$
 
-where \\(s_t\\) is the state of the model at time \\(t\\), \\(v(s)\\) is the velocity vector of the pelvis in the state \\(s\\), and \\(s_t = M(s_{t-1}, a(s_{t_1}))\\), i.e. states follow the simulation given by model \\(M\\). In the first round the process \\(R_t=(3,0,0)\\). In the second round we will choose another \\(R_t\\).
+where \\(s_t\\) is the state of the model at time \\(t\\), \\(v_x(s)\\) is the horizontal velocity vector of the pelvis in the state \\(s\\), and \\(s_t = M(s_{t-1}, a(s_{t_1}))\\), i.e. states follow the simulation given by model \\(M\\).
 
 ## Submission
 
