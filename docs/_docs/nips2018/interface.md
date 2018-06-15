@@ -38,7 +38,7 @@ The function returns:
 
 * `info` - for compatibility with OpenAI, currently not used.
 
-#### `change_model(model='3D', prosthetic=True, difficulty=2,seed=None)`
+#### `change_model(model='3D', prosthetic=True, difficulty=0,seed=None)`
 
 Change model parameters. Your solution will be graded in the environment with `difficulty = 2, prosthetic = True` and `model = 3D`, yet it might be easier to train a simplified model first (where `model = 2D`, difficulty = 0, prosthetic = False` is the simplest).
 
