@@ -24,7 +24,7 @@ You can test your model on your local machine. For submission, you will need to 
 
 ## Rules
 
-In order to avoid overfitting to the training environment, the top participants (those who obtained 15.0 points or more) will be asked to resubmit their solutions in the second round of the challenge. Each participant will have a limit of **3 submissions**. The final ranking will be based on the results from the second round.
+In order to avoid overfitting to the training environment, the top participants will be asked to resubmit their solutions in the second round of the challenge. The final ranking will be based on the results from the second round.
 
 Additional rules:
 * Organizers reserve the right to modify challenge rules as required.
