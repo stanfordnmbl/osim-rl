@@ -10,7 +10,7 @@ coreteam:
     task: OpenSim modeling
   - github: spMohanty
     name: Sharada P. Mohanty
-    task: baselines & crowdAI integration
+    task: Baselines & crowdAI integration
   - github: chrisdembia
     name: Christopher Dembia
     task: OpenSim integration
