@@ -16,7 +16,7 @@ The trial ends in the step \\(T\\) when the pelvis of the model goes below \\(0.
 
 $$ \sum_{t=1}^{T} 9 - \|v(s_t) - R_t\|^2, $$
 
-where \\(s_t\\) is the state of the model at time \\(t\\), \\(v(s)\\) is the velocity vector of the pelvis in the state \\(s\\), and \\(s_t = M(s_{t-1}, a(s_{t_1}))\\), i.e. states follow the simulation given by model \\(M\\). The process \\(R_t\\) for the final environment is unknown but we will provide a distribution from which it is drawn.
+where \\(s_t\\) is the state of the model at time \\(t\\), \\(v(s)\\) is the velocity vector of the pelvis in the state \\(s\\), and \\(s_t = M(s_{t-1}, a(s_{t_1}))\\), i.e. states follow the simulation given by model \\(M\\). In the first round the process \\(R_t=(3,0,0)\\). In the second round we will choose another \\(R_t\\).
 
 ## Submission
 
