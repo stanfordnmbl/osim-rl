@@ -62,7 +62,6 @@ for i in range(200):
 # Your reward is
 print("Total reward %f" % total_reward)
 ```
-There are many ways to construct the function `my_controller(observation)`. We will show how to do it with a DDPG (Deep Deterministic Policy Gradients) algorithm, using `keras-rl`. If you already have experience with training reinforcement learning models, you can skip the next section and go to [evaluation](#evaluation).
 
 ## Evaluation
 
