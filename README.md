@@ -135,10 +135,10 @@ Note that during the submission, the environment will get restarted. Since the e
 
 ### Rules
 
-In order to avoid overfitting to the training environment, the top participants (those who obtained 15.0 points or more) will be asked to resubmit their solutions in the second round of the challenge. Environments in the second round will have the same structure but **10 obstacles** and different seeds. In each submission, there will be **10 simulation**. Each participant will have a limit of **3 submissions**. The final ranking will be based on the results from the second round.
+In order to avoid overfitting to the training environment, the top participants will be asked to resubmit their solutions in the second round of the challenge. The final ranking will be based on the results from the second round.
 
 Additional rules:
-* You are not allowed to use external datasets (e.g., kinematics of people walking)
+
 * Organizers reserve the right to modify challenge rules as required.
 
 ## Details of the environment
