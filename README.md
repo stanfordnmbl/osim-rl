@@ -158,30 +158,59 @@ Parameters:
 
 ### Methods of `ProstheticsEnv`
 
-#### `reset(difficulty = 2, seed = None)`
+---
+title: Interface
+---
 
-Restart the enivironment with a given `difficulty` level and a `seed`.
+In order to create an environment, use:
+```python
+from osim.env import ProstheticsEnv
 
-* `difficulty` - `0` - no obstacles, `1` - 3 randomly positioned obstacles (balls fixed in the ground), `2` - same as `1` but also strength of the psoas muscles (the muscles that help bend the hip joint in the model) varies. The muscle strength is set to z * 100%, where z is a normal variable with the mean 1 and the standard deviation 0.1
-* `seed` - starting seed for the random number generator. If the seed is `None`, generation from the previous seed is continued.
+env = ProstheticsEnv(visualize=True)
+```
+Parameters:
 
-Your solution will be graded in the environment with `difficulty = 2`, yet it might be easier to train your model with `difficulty = 0` first and then retrain with a higher difficulty
+* `visualize` - turn the visualizer on and off
 
-#### `step(action)`
+### Methods of `ProstheticsEnv`
 
-Make one iteration of the simulation.
+#### `reset(project = True)`
 
-* `action` - a list of length `18` of continuous values in `[0,1]` corresponding to excitation of muscles.
+Restart the enivironment.
 
 The function returns:
 
-* `observation` - a list of length `41` of real values corresponding to the current state of the model. Variables are explained in the section "Physics of the model".
+* `observation` - a vector (if `project = True`) or a dictionary describing the state of muscles, joints, and bodies in the biomechanical system.
 
-* `reward` - reward gained in the last iteration. The reward is computed as a change in position of the pelvis along the x axis minus the penalty for the use of ligaments. See the "Physics of the model" section for details.
+#### `step(action, project = True)`
 
-* `done` - indicates if the move was the last step of the environment. This happens if either `1000` iterations were reached or the pelvis height is below `0.65` meters.
+Make one iteration of the simulation.
+
+* `action` - a list of length `22` of continuous values in `[0,1]` corresponding to excitation of muscles.
+
+The function returns:
+
+* `observation` - a vector (if `project = True`) or a dictionary describing the state of muscles, joints, and bodies in the biomechanical system.
+
+* `reward` - reward gained in the last iteration.
+
+* `done` - indicates if the move was the last step of the environment. This happens if either `10000` iterations were reached or the pelvis height is below `0.5` meters.
 
 * `info` - for compatibility with OpenAI, currently not used.
+
+#### `change_model(model='3D', prosthetic=True, difficulty=0,seed=None)`
+
+Change model parameters. Your solution will be graded in the environment with `difficulty = 2, prosthetic = True` and `model = 3D`, yet it might be easier to train a simplified model first (where `model = 2D`, difficulty = 0, prosthetic = False` is the simplest).
+
+* `model` - `3D` model can move in all directions, `2D` one dimension is fixed, i.e. the model cannot fall to the left or right.
+
+* `prosthetic` - if `True` the right leg of the model is a prosthesis.
+
+* `difficulty` - For the 3D model: `0` - go forward with sinusoidal change of speed, `1` - sinusoidal change of speed and direction `2` - as in `1` but with stochasticity. For the 2D model the generated vector is projected on the plane in which the model travels (i.e. the Z coordinate is ignored).
+
+* `seed` - starting seed for the random number generator. If the seed is `None`, generation from the previous seed is continued.
+
+This function does not return any value. `reset()` must be run after changing the model.
 
 ### Physics and biomechanics of the model
 
@@ -195,7 +224,7 @@ To summarize briefly, the agent is a musculoskeletal model that include body seg
 * computes velocities and positions of joints and bodies,
 * generates a new state based on forces, velocities, and positions of joints.
 
-In each action, the following 18 muscles are actuated (9 per leg):
+In each action, the following 22 muscles are actuated (11 per leg):
 * hamstrings,
 * biceps femoris,
 * gluteus maximus,
@@ -205,18 +234,9 @@ In each action, the following 18 muscles are actuated (9 per leg):
 * gastrocnemius,
 * soleus,
 * tibialis anterior.
-The action vector corresponds to these muscles in the same order (9 muscles of the right leg first, then 9 muscles of the left leg).
+The action vector corresponds to these muscles in the same order (11 muscles of the right leg first, then 11 muscles of the left leg).
 
-The observation contains 41 values:
-* position of the pelvis (rotation, x, y)
-* velocity of the pelvis (rotation, x, y)
-* rotation of each ankle, knee and hip (6 values)
-* angular velocity of each ankle, knee and hip (6 values)
-* position of the center of mass (2 values)
-* velocity of the center of mass (2 values)
-* positions (x, y) of head, pelvis, torso, left and right toes, left and right talus (14 values)
-* strength of left and right psoas: 1 for `difficulty < 2`, otherwise a random normal variable with mean 1 and standard deviation 0.1 fixed for the entire simulation
-* next obstacle: x distance from the pelvis, y position of the center relative to the the ground, radius.
+The observation contains a dictionary describing the state.
 
 For more details on the simulation framework, please refer to [1]. For more specific information about the muscles model we use, please refer to [2] or to [OpenSim documentation](ysimtk-confluence.stanford.edu:8080/display/OpenSim/Muscle+Model+Theory+and+Publications).
 
