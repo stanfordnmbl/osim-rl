@@ -31,12 +31,7 @@ while True:
 client.submit()
 ```
 
-In the place of `[YOUR_CROWD_AI_TOKEN_HERE]` put your token from the profile page from [crowdai.org](http://crowdai.org/) website.
-
-<div class="note unreleased">
-  <h5>Unreleased</h5>
-  <p>This page describes the submission interface, however the feature is not yet released.</p>
-</div>
+In the place of `[YOUR_CROWD_AI_TOKEN_HERE]` put your token from the profile page from [crowdai.org](http://crowdai.org/) website. You can also use [this script](https://github.com/stanfordnmbl/osim-rl/blob/master/examples/submit.py).
 
 Note that during the submission, the environment will get restarted. Since the environment is stochastic, you will need to submit three trials -- this way we make sure that your model is robust.
 

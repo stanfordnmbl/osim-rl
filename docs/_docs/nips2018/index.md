@@ -6,10 +6,10 @@ redirect_from: /docs/nips2018/index.html
 
 This repository contains software required for participation in the NIPS 2018 Challenge: AI for prosthetics. See more details about the challenge [**here**](https://www.crowdai.org/challenges/nips-2018-ai-for-prosthetics-challenge).
 
-<div class="note unreleased">
+<!--div class="note unreleased">
   <h5>Experimental</h5>
   <p>Current version of the NIPS 2018 challenge environment is experimental.</p>
-</div>
+</div-->
 
 In this competition, you are tasked with developing a controller to enable a physiologically based human model with a prosthetic leg to walk in requested many directions with varying speeds. You are provided with a human musculoskeletal model and a physics-based simulation environment where you can synthesize physically and physiologically accurate motion.
 
