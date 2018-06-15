@@ -1,12 +1,10 @@
-UNDER CONSTRUCTION FOR NIPS 2018
-
 # NIPS2018: AI for prosthetics
 
 This repository contains software required for participation in the NIPS 2018 Challenge: AI for prosthetics. See more details about the challenge [here](https://www.crowdai.org/challenges/nips-2018-ai-for-prosthetics).
 
 In this competition, you are tasked with developing a controller to enable a physiologically-based human model to navigate a complex obstacle course as quickly as possible. You are provided with a human musculoskeletal model and a physics-based simulation environment where you can synthesize physically and physiologically accurate motion. Potential obstacles include external obstacles like steps, or a slippery floor, along with internal obstacles like muscle weakness or motor noise. You are scored based on the distance you travel through the obstacle course in a set amount of time.
 
-![HUMAN environment](https://raw.githubusercontent.com/stanfordnmbl/osim-rl/1679344e509e29bdcc2ee368ddf83e868d93bf61/demo/training.gif)
+![HUMAN environment](https://s3.amazonaws.com/osim-rl/videos/running.gif)
 
 To model physics and biomechanics we use [OpenSim](https://github.com/opensim-org/opensim-core) - a biomechanical physics environment for musculoskeletal simulations.
 
@@ -39,9 +37,9 @@ Note that `source activate opensim-rl` activates the anaconda virtual environmen
 
 To execute 200 iterations of the simulation enter the `python` interpreter and run the following:
 ```python
-from osim.env import L2RunEnv
+from osim.env import ProstheticsEnv
 
-env = L2RunEnv(visualize=True)
+env = ProstheticsEnv(visualize=True)
 observation = env.reset()
 for i in range(200):
     observation, reward, done, info = env.step(env.action_space.sample())
@@ -135,7 +133,7 @@ Assuming your controller is trained and is represented as a function `my_control
 ```python
 import opensim as osim
 from osim.http.client import Client
-from osim.env import RunEnv
+from osim.env import ProstheticsEnv
 
 # Settings
 remote_base = "http://grader.crowdai.org:1729"
@@ -176,15 +174,15 @@ Additional rules:
 
 In order to create an environment, use:
 ```python
-    from osim.env import RunEnv
+    from osim.env import ProstheticsEnv
 
-    env = RunEnv(visualize = True)
+    env = ProstheticsEnv(visualize = True)
 ```
 Parameters:
 
 * `visualize` - turn the visualizer on and off
 
-### Methods of `RunEnv`
+### Methods of `ProstheticsEnv`
 
 #### `reset(difficulty = 2, seed = None)`
 
@@ -269,11 +267,6 @@ Try `conda install libgcc`.
 Yes, you just need to set up your own python grader and interact with it
 https://github.com/kidzik/osim-rl-grader. Find more details here [OpenAI http client](https://github.com/openai/gym-http-api)
 
-**Do you have a docker container?**
-
-Yes, you can use https://hub.docker.com/r/stanfordnmbl/opensim-rl/
-Note, that connecting a display to a docker can be tricky and it's system dependent. Nevertheless, for training your models the display is not necessary -- the docker container can be handy for using multiple machines.
-
 **Some libraries are missing. What is required to run the environment?**
 
 Most of the libraries by default exist in major distributions of operating systems or are automatically downloaded by the conda environment. Yet, sometimes things are still missing. The minimal set of dependencies under Linux can be installed with
@@ -292,11 +285,6 @@ Please refer to
 https://github.com/stanfordnmbl/osim-rl/issues/10
 and to
 https://github.com/stanfordnmbl/osim-rl/issues/58
-
-**I see only python3 environment for Linux. How to install Windows environment?**
-
-Please refer to
-https://github.com/stanfordnmbl/osim-rl/issues/29
 
 **How to visualize observations when running simulations on the server?**
 
