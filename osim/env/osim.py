@@ -363,7 +363,7 @@ class L2RunEnv(OsimEnv):
 
     def is_done(self):
         state_desc = self.get_state_desc()
-        return state_desc["body_pos"]["pelvis"][1] < 0.7
+        return state_desc["body_pos"]["pelvis"][1] < 0.6
 
     ## Values in the observation vector
     def get_observation(self):
@@ -423,7 +423,7 @@ class ProstheticsEnv(OsimEnv):
     
     def is_done(self):
         state_desc = self.get_state_desc()
-        return state_desc["body_pos"]["pelvis"][1] < 0.7
+        return state_desc["body_pos"]["pelvis"][1] < 0.6
 
     ## Values in the observation vector
     # y, vx, vy, ax, ay, rz, vrz, arz of pelvis (8 values)
