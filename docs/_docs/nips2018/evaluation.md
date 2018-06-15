@@ -20,7 +20,7 @@ where \\(s_t\\) is the state of the model at time \\(t\\), \\(v_x(s)\\) is the h
 
 ## Submission
 
-You can test your model on your local machine. For submission, you will need to interact with the remote environment: [crowdAI](https://www.crowdai.org/challenges/nips-2017-learning-to-run) sends you the current state \\(s\\) and you need to send back the action you take in the given state. You will be evaluated at three different levels of difficulty. 
+You can test your model on your local machine. For submission, you will need to interact with the remote environment: [crowdAI](https://www.crowdai.org/challenges/nips-2018-ai-for-prosthetics-challenge) sends you the current state \\(s\\) and you need to send back the action you take in the given state. You will be evaluated at three different levels of difficulty. 
 
 ## Rules
 
