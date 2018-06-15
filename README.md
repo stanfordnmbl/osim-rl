@@ -165,7 +165,7 @@ The function returns:
 
 Make one iteration of the simulation.
 
-* `action` - a list of length `22` of continuous values in `[0,1]` corresponding to excitation of muscles.
+* `action` - a list of continuous values in `[0,1]` corresponding to excitation of muscles. The length of the vector is expected to be: `22` and `18` for `3D` and `2D` models without the prosthesis; `19` and `15` with a prosthesis.
 
 The function returns:
 
@@ -173,7 +173,7 @@ The function returns:
 
 * `reward` - reward gained in the last iteration.
 
-* `done` - indicates if the move was the last step of the environment. This happens if either `10000` iterations were reached or the pelvis height is below `0.5` meters.
+* `done` - indicates if the move was the last step of the environment. This happens if either `10000` iterations were reached or the pelvis height is below `0.6` meters.
 
 * `info` - for compatibility with OpenAI, currently not used.
 
@@ -185,7 +185,7 @@ Change model parameters. Your solution will be graded in the environment with `d
 
 * `prosthetic` - if `True` the right leg of the model is a prosthesis.
 
-* `difficulty` - For the 3D model: `0` - go forward with sinusoidal change of speed, `1` - sinusoidal change of speed and direction `2` - as in `1` but with stochasticity. For the 2D model the generated vector is projected on the plane in which the model travels (i.e. the Z coordinate is ignored).
+* `difficulty` - For the 3D model: `0` - go forward at 3 meters per second, (other values not used for now) 
 
 * `seed` - starting seed for the random number generator. If the seed is `None`, generation from the previous seed is continued.
 
