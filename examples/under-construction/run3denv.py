@@ -1,4 +1,4 @@
-from osim.env.osim import ProstheticsEnv
+from osim.env import ProstheticsEnv
 import pprint
 
 env = ProstheticsEnv()
@@ -7,6 +7,7 @@ observation = env.reset()
 for i in range(300):
     observation, reward, done, info = env.step(env.action_space.sample(), project = False)
 #    print(len(observation))
-    pprint.pprint(observation)
+#    pprint.pprint(observation)
+    print(len(env.action_space.sample()))
     if done:
         env.reset()
