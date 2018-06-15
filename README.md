@@ -156,24 +156,6 @@ Parameters:
 
 * `visualize` - turn the visualizer on and off
 
-### Methods of `ProstheticsEnv`
-
----
-title: Interface
----
-
-In order to create an environment, use:
-```python
-from osim.env import ProstheticsEnv
-
-env = ProstheticsEnv(visualize=True)
-```
-Parameters:
-
-* `visualize` - turn the visualizer on and off
-
-### Methods of `ProstheticsEnv`
-
 #### `reset(project = True)`
 
 Restart the enivironment.
