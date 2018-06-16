@@ -131,8 +131,6 @@ client.submit()
 
 In the place of `[YOUR_CROWD_AI_TOKEN_HERE]` put your token from the profile page from [crowdai.org](http://crowdai.org/) website.
 
-Note that during the submission, the environment will get restarted. Since the environment is stochastic, you will need to submit three trials -- this way we make sure that your model is robust.
-
 ### Rules
 
 In order to avoid overfitting to the training environment, the top participants will be asked to resubmit their solutions in the second round of the challenge. The final ranking will be based on the results from the second round.
@@ -153,7 +151,7 @@ Parameters:
 
 * `visualize` - turn the visualizer on and off
 
-#### `reset(project = True)`
+#### `reset(project = False)`
 
 Restart the enivironment.
 
@@ -161,7 +159,7 @@ The function returns:
 
 * `observation` - a vector (if `project = True`) or a dictionary describing the state of muscles, joints, and bodies in the biomechanical system.
 
-#### `step(action, project = True)`
+#### `step(action, project = False)`
 
 Make one iteration of the simulation.
 
@@ -177,7 +175,7 @@ The function returns:
 
 * `info` - for compatibility with OpenAI, currently not used.
 
-#### `change_model(model='3D', prosthetic=True, difficulty=0,seed=None)`
+#### `change_model(model='3D', prosthetic=True, difficulty=0, seed=None)`
 
 Change model parameters. Your solution will be graded in the environment with `difficulty = 2, prosthetic = True` and `model = 3D`, yet it might be easier to train a simplified model first (where `model = 2D`, difficulty = 0, prosthetic = False` is the simplest).
 
