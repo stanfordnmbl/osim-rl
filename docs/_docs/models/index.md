@@ -36,7 +36,7 @@ NIPS 2017 challenge model, where you are asked to build a controller to make a m
 NIPS 2018 challenge model, where you are asked to build a controller to make a musculoskeletal model with a prosthetic leg follow desired velocity vector changing in time. Read more in the documents on the [NIPS 2018 challenge](/docs/nips2018/).
 
 | ---:| --- |
-| **# of muscles** | 22 |
+| **# of muscles** | 19 |
 | **# degrees of freedom** | 14 |
 | **reward** | negative distance from requested velocity |
 
