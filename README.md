@@ -151,7 +151,7 @@ Parameters:
 
 * `visualize` - turn the visualizer on and off
 
-#### `reset(project = False)`
+#### `reset(project = True)`
 
 Restart the enivironment.
 
@@ -159,7 +159,7 @@ The function returns:
 
 * `observation` - a vector (if `project = True`) or a dictionary describing the state of muscles, joints, and bodies in the biomechanical system.
 
-#### `step(action, project = False)`
+#### `step(action, project = True)`
 
 Make one iteration of the simulation.
 
