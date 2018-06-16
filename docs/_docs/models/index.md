@@ -17,7 +17,7 @@ Simple 2D arm environment with 2 degrees of freedom and 6 muscles. The objective
 
 <div class="note info">
   <h5>Toy model</h5>
-  <p>Note that Arm2DEnv modle is simplified and not physiologically accurate. We suggest using it only for testing purposes.</p>
+  <p>Note that Arm2DEnv model is simplified and not physiologically accurate. We suggest using it only for testing purposes.</p>
 </div>
 
 ### L2RunEnv
