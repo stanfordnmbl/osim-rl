@@ -97,8 +97,8 @@ margin-bottom: 0.1em;
           <span class="command">python</span>
         </p>
         <p class="line">
-          <span class="output">from osim.env import L2RunEnv<br/>
-env = L2RunEnv(visualize=True)<br/>
+          <span class="output">from osim.env import ProstheticsEnv<br/>
+env = ProstheticsEnv(visualize=True)<br/>
 observation = env.reset(difficulty = 0)<br/>
 for i in range(200):<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;o, r, d, i = env.step(env.action_space.sample())</span>
