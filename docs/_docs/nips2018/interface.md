@@ -14,7 +14,7 @@ Parameters:
 
 ### Methods of `ProstheticsEnv`
 
-#### `reset(project = True)`
+#### `reset(project = False)`
 
 Restart the enivironment.
 
@@ -22,7 +22,7 @@ The function returns:
 
 * `observation` - a vector (if `project = True`) or a dictionary describing the state of muscles, joints, and bodies in the biomechanical system.
 
-#### `step(action, project = True)`
+#### `step(action, project = False)`
 
 Make one iteration of the simulation.
 
