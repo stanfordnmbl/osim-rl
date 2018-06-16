@@ -16,6 +16,8 @@ We took into account comments from the last challenge and there are several chan
 * We released the 3rd dimensions (the model can fall sideways)
 * We added a prosthetic leg -- the goal is to solve a medical challenge on modeling how walking will change after getting a prosthesis. Your work can speed up design, prototying, or tuning prosthetics!
 
+You haven't heard of NIPS 2017: Learning to run? [Watch this video!](https://www.youtube.com/watch?v=rhNxt0VccsE)
+
 ## Getting started
 
 **Anaconda** is required to run our simulations. Anaconda will create a virtual environment with all the necessary libraries, to avoid conflicts with libraries in your operating system. You can get anaconda from here https://www.continuum.io/downloads. In the following instructions we assume that Anaconda is successfully installed.
