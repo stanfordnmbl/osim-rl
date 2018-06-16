@@ -85,6 +85,7 @@ Tutorials & Courses on Reinforcement Learning:
 * [A comprehensive list of deep RL resources](https://github.com/dennybritz/reinforcement-learning)
 
 Frameworks and implementations of algorithms:
+* [OpenAI baselines](https://github.com/openai/baselines)
 * [RLLAB](https://github.com/openai/rllab)
 * [modular_rl](https://github.com/joschu/modular_rl)
 * [keras-rl](https://github.com/matthiasplappert/keras-rl)
