@@ -4,7 +4,7 @@ This repository contains software required for participation in the NIPS 2018 Ch
 
 In this competition, you are tasked with developing a controller to enable a physiologically-based human model with a prosthetic leg to walk and run. You are provided with a human musculoskeletal model, a physics-based simulation environment where you can synthesize physically and physiologically accurate motion, and datasets of normal gait kinematics. You are scored based on how well your agent adapts to requested velocity vector changing in real time.
 
-![HUMAN environment](https://s3.amazonaws.com/osim-rl/videos/running.gif)
+[![AI for prosthetics](https://s3-eu-west-1.amazonaws.com/kidzinski/nips-challenge/images/ai-prosthetics.jpg)](https://github.com/stanfordnmbl/osim-rl)
 
 To model physics and biomechanics we use [OpenSim](https://github.com/opensim-org/opensim-core) - a biomechanical physics environment for musculoskeletal simulations.
 
@@ -17,6 +17,8 @@ We took into account comments from the last challenge and there are several chan
 * We added a prosthetic leg -- the goal is to solve a medical challenge on modeling how walking will change after getting a prosthesis. Your work can speed up design, prototying, or tuning prosthetics!
 
 You haven't heard of NIPS 2017: Learning to run? [Watch this video!](https://www.youtube.com/watch?v=rhNxt0VccsE)
+
+![HUMAN environment](https://s3.amazonaws.com/osim-rl/videos/running.gif)
 
 ## Getting started
 
