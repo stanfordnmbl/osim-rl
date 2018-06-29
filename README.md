@@ -75,6 +75,8 @@ for i in range(200):
 print("Total reward %f" % total_reward)
 ```
 
+You can find details about the [observation object here](http://osim-rl.stanford.edu/docs/nips2018/observation/).
+
 ## Evaluation
 
 Your task is to build a function `f` which takes the current state `observation` (a dictionary describing the current state) and returns the muscle excitations `action` (19-dimensional vector) maximizing the total reward. The trial ends either if the pelvis of the model falls below `0.6` meters or if you reach `1000` iterations (corresponding to `10` seconds in the virtual environment). 
