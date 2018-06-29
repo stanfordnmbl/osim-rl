@@ -77,20 +77,6 @@ print("Total reward %f" % total_reward)
 
 You can find details about the [observation object here](http://osim-rl.stanford.edu/docs/nips2018/observation/).
 
-## Evaluation
-
-Your task is to build a function `f` which takes the current state `observation` (a dictionary describing the current state) and returns the muscle excitations `action` (19-dimensional vector) maximizing the total reward. The trial ends either if the pelvis of the model falls below `0.6` meters or if you reach `1000` iterations (corresponding to `10` seconds in the virtual environment). 
-
-### Round 1
-The objective is to run at a constant speed of 3 meters per second. The total reward is `9 * s - p * p` where `s` is the number of steps before reaching one of the stop criteria and `p` is the absolute difference between horizonal velocity and `3`.
- 
-### Round 2
-In the second round the task is also to follow a requested velocity vector. However, in this round the vector will change in time and it will be a random process. We will provide the distribution of this process in mid-July.
-
-You can test your model on your local machine. For submission, you will need to interact with the remote environment: [crowdAI](https://www.crowdai.org/challenges/nips-2017-learning-to-run) sends you the current `observation` and you need to send back the action you take in the given state. 
-
-Read more about [evaluation here](http://osim-rl.stanford.edu/docs/nips2018/evaluation/).
-
 ## Submission
 
 Assuming your controller is trained and is represented as a function `my_controller(observation)` returning an `action` you can submit it to [crowdAI](https://www.crowdai.org/challenges/nips-2017-learning-to-run) through interaction with an environment there:
@@ -125,7 +111,21 @@ client.submit()
 
 In the place of `[YOUR_CROWD_AI_TOKEN_HERE]` put your token from the profile page from [crowdai.org](http://crowdai.org/) website.
 
-### Rules
+## Evaluation
+
+Your task is to build a function `f` which takes the current state `observation` (a dictionary describing the current state) and returns the muscle excitations `action` (19-dimensional vector) maximizing the total reward. The trial ends either if the pelvis of the model falls below `0.6` meters or if you reach `1000` iterations (corresponding to `10` seconds in the virtual environment). 
+
+### Round 1
+The objective is to run at a constant speed of 3 meters per second. The total reward is `9 * s - p * p` where `s` is the number of steps before reaching one of the stop criteria and `p` is the absolute difference between horizonal velocity and `3`.
+ 
+### Round 2
+In the second round the task is also to follow a requested velocity vector. However, in this round the vector will change in time and it will be a random process. We will provide the distribution of this process in mid-July.
+
+You can test your model on your local machine. For submission, you will need to interact with the remote environment: [crowdAI](https://www.crowdai.org/challenges/nips-2017-learning-to-run) sends you the current `observation` and you need to send back the action you take in the given state. 
+
+Read more about [evaluation here](http://osim-rl.stanford.edu/docs/nips2018/evaluation/).
+
+## Rules
 
 In order to avoid overfitting to the training environment, the top participants will be asked to resubmit their solutions in the second round of the challenge. The final ranking will be based on the results from the second round.
 
@@ -133,37 +133,16 @@ Additional rules:
 
 * Organizers reserve the right to modify challenge rules as required.
 
-## Training your models
-
-We suggest you start from [reviewing solutions from the last year](http://osim-rl.stanford.edu/docs/nips2017/solutions/).
-
-You can find many tutorials, frameworks and lessons on-line. We particularly recommend:
-
-Tutorials & Courses on Reinforcement Learning:
-* [Berkeley Deep RL course by Sergey Levine](http://rll.berkeley.edu/deeprlcourse/)
-* [Intro to RL on Karpathy's blog](http://karpathy.github.io/2016/05/31/rl/)
-* [Intro to RL by Tambet Matiisen](https://www.nervanasys.com/demystifying-deep-reinforcement-learning/)
-* [Deep RL course of David Silver](https://www.youtube.com/watch?v=2pWv7GOvuf0&list=PLHOg3HfW_teiYiq8yndRVwQ95LLPVUDJe)
-* [A comprehensive list of deep RL resources](https://github.com/dennybritz/reinforcement-learning)
-
-Frameworks and implementations of algorithms:
-* [OpenAI baselines](https://github.com/openai/baselines)
-* [RLLAB](https://github.com/openai/rllab)
-* [modular_rl](https://github.com/joschu/modular_rl)
-* [keras-rl](https://github.com/matthiasplappert/keras-rl)
-
-OpenSim and Biomechanics:
-* [OpenSim Documentation](http://simtk-confluence.stanford.edu:8080/display/OpenSim/OpenSim+Documentation)
-* [Muscle models](http://simtk-confluence.stanford.edu:8080/display/OpenSim/First-Order+Activation+Dynamics)
-* [Publication describing OpenSim](http://nmbl.stanford.edu/publications/pdf/Delp2007.pdf)
-* [Publication describing Simbody (multibody dynamics engine)](http://ac.els-cdn.com/S2210983811000241/1-s2.0-S2210983811000241-main.pdf?_tid=c22ea7d2-50ba-11e7-9f69-00000aacb361&acdnat=1497415051_124f3094c7fec3c60165f5d544a184f4)
-
-This list is *by no means* exhaustive. If you find some resources particularly well-fit for this tutorial, please let us know!
-
 ## Read more in [the official documentation](http://osim-rl.stanford.edu/)
 
 * [Osim-rl interface](http://osim-rl.stanford.edu/docs/nips2018/interface/)
+* [How to train a model?](http://osim-rl.stanford.edu/docs/training/)
+* [More on training models](http://osim-rl.stanford.edu/docs/resources/)
 * [Experimental data](http://osim-rl.stanford.edu/docs/nips2018/experimental/)
 * [Physics underlying the model](http://osim-rl.stanford.edu/docs/nips2017/physics/)
 * [Frequently Asked Questions](http://osim-rl.stanford.edu/docs/faq/)
 * [Citing and credits](http://osim-rl.stanford.edu/docs/credits/)
+
+## Contributions of participants
+
+* [Understanding the Challenge](https://www.endtoend.ai/blog/ai-for-prosthetics-1) - Great materials from [@seungjaeryanlee](https://github.com/seungjaeryanlee/) on how to start
