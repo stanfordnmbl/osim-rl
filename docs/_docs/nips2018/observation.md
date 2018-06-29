@@ -58,6 +58,8 @@ Extra joints `back_0`, `mtp_l`, `subtalar_l` appear in the dictionary for consis
 
 ### Muscles
 
+(For the moment, please refer to [this](https://cdn-images-1.medium.com/max/800/1*o5o1M7__pT9lOL5ez2ehMw.png))
+
 | ---:| --- |
 | **abd_l** |  |
 | **abd_r** |  |
@@ -91,7 +93,7 @@ Each muscle element is a dictionary with 4 elements
 ### Forces
 
 | ---:| --- |
-| **AnkleLimit_l** |  |
+| **AnkleLimit_l** | Ankle limit forces |
 | **AnkleLimit_r** |  |
 | **HipAddLimit_l** |  |
 | **HipAddLimit_r** |  |
@@ -99,8 +101,8 @@ Each muscle element is a dictionary with 4 elements
 | **HipLimit_r** |  |
 | **KneeLimit_l** |  |
 | **KneeLimit_r** |  |
-| **foot_l** |  |
-| **pros_foot_r_0** |  |
+| **foot_l** | Ground reaction forces on the left foot |
+| **pros_foot_r_0** | Ground reaction forces on the prosthetic foot |
 
 Note that in the forces dictionary, forces corresponding to muscles are redundant with `fiber_force` in muscles dictionaries (they are not listed above, but the keys appear in the dictionary).
 
