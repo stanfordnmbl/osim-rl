@@ -29,7 +29,7 @@ The model has following bodies
 | **calcn_l** | Left calcaneus |
 | **talus_l** | Left talus |
 | **tibia_l** | Left tibia |
-| **toes_l** | Left teos |
+| **toes_l** | Left toes |
 | **femur_l** | Left femur |
 | **femur_r** | Right femur |
 | **head** | Head |
@@ -52,39 +52,37 @@ The model has following joints
 | **hip_l** | 3 | Hip flexion, abduction, and rotation |
 | **hip_r** | 3 | Hip flexion, abduction, and rotation |
 | **knee_l** | 1 | Left knee flexion |
-| **knee_r** | 1 |Right knee flexion |
+| **knee_r** | 1 | Right knee flexion |
 
 Extra joints `back_0`, `mtp_l`, `subtalar_l` appear in the dictionary for consistency but they cannot move.
 
 ### Muscles
 
-(For the moment, please refer to [this](https://cdn-images-1.medium.com/max/800/1*o5o1M7__pT9lOL5ez2ehMw.png))
-
-| ---:| --- |
-| **abd_l** |  |
-| **abd_r** |  |
-| **add_l** |  |
-| **add_r** |  |
-| **bifemsh_l** |  |
-| **bifemsh_r** |  |
-| **gastroc_l** |  |
-| **glut_max_l** |  |
-| **glut_max_r** |  |
-| **hamstrings_l** |  |
-| **hamstrings_r** |  |
-| **iliopsoas_l** |  |
-| **iliopsoas_r** |  |
-| **rect_fem_l** |  |
-| **rect_fem_r** |  |
-| **soleus_l** |  |
-| **tib_ant_l** |  |
-| **vastil_l** |  |
-| **vastil_r** |  |
+| *name* | *description* | *primary function(s)* |
+| **abd_l** | Hip abductors (left) | Hip abduction (away from body's vertical midline) |
+| **abd_r** | Hip abductors (right) | Hip abduction (away from body's vertical midline) |
+| **add_l** | Hip adductors (left) | Hip adduction (toward body's vertical midline) |
+| **add_r** | Hip adductors (right) | Hip adduction (toward body's vertical midline) |
+| **bifemsh_l** | Short head of the biceps femoris (left) | Knee flexion |
+| **bifemsh_r** | Short head of the biceps femoris (right) | Knee flexion |
+| **gastroc_l** | Gastrocnemius (left) | Knee flexion and ankle extension (plantarflexion) |
+| **glut_max_l** | Gluteus maximus (left) | Hip extension |
+| **glut_max_r** | Gluteus maximums (left) | Hip extension |
+| **hamstrings_l** | Biarticular hamstrings (left) | Hip extension and knee flexion |
+| **hamstrings_r** | Biarticular hamstrings (right) | Hip extension and knee flexion |
+| **iliopsoas_l** | iliopsoas (left) | Hip flexion |
+| **iliopsoas_r** | iliopsoas (right) | Hip flexion |
+| **rect_fem_l** | rectus femoris (left) | Hip flexion and knee extension |
+| **rect_fem_r** | rectus femoris (right) | Hip flexion and knee extension |
+| **soleus_l** | soleus (left) | Ankle extension (plantarflexion) |
+| **tib_ant_l** | tibialis anterior (left) | Ankle flexion (dorsiflexion) |
+| **vasti_l** | vasti (left) | Knee extension
+| **vasti_r** | vasti (right) | Knee extension
 
 Each muscle element is a dictionary with 4 elements
 
 | ---:| --- |
-| **activation** | Current activation of the given muscle |
+| **activation** | Current activation |
 | **fiber_force** | Current fiber force |
 | **fiber_length** | Current fiber length |
 | **fiber_velocity** | Current fiber velocity |
@@ -93,16 +91,16 @@ Each muscle element is a dictionary with 4 elements
 ### Forces
 
 | ---:| --- |
-| **AnkleLimit_l** | Ankle limit forces |
-| **AnkleLimit_r** |  |
-| **HipAddLimit_l** |  |
-| **HipAddLimit_r** |  |
-| **HipLimit_l** |  |
-| **HipLimit_r** |  |
-| **KneeLimit_l** |  |
-| **KneeLimit_r** |  |
-| **foot_l** | Ground reaction forces on the left foot |
-| **pros_foot_r_0** | Ground reaction forces on the prosthetic foot |
+| **AnkleLimit_l** | Ankle ligament forces (left) |
+| **AnkleLimit_r** | Ankle ligament forces (right) |
+| **HipAddLimit_l** | Hip adduction/abduction ligament forces (left) |
+| **HipAddLimit_r** | Hip adduction/abduction ligament forces (right) |
+| **HipLimit_l** | Hip flexion/extension ligament forces (left) |
+| **HipLimit_r** | Hip flexion/extension ligament forces (right) |
+| **KneeLimit_l** | Knee flexion/extension ligament forces (left) |
+| **KneeLimit_r** | Knee flexion/extension ligament forces (right) |
+| **foot_l** | Ground reaction forces on the left foot. 6 values correspond to the 3 components (x,y,z) of the force and torque applied to the `foot_l` body. |
+| **pros_foot_r_0** | Ground reaction forces on the prosthetic foot 6 values correspond to the 3 components (x,y,z) of the force and torque applied to the `pros_foot_r` body. |
 
 Note that in the forces dictionary, forces corresponding to muscles are redundant with `fiber_force` in muscles dictionaries (they are not listed above, but the keys appear in the dictionary).
 
