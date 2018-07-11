@@ -2,7 +2,7 @@
 title: Experimental data
 ---
 
-Unlike in our NIPS 2017, now you can use publicly available experimental data to bootstrap the algorithm. Example running and walking kinematics can be found in many publicly available papers. For example we refer to *Schwartz, M. et al. (2018)* (citation details below).
+Unlike in our NIPS 2017, now you can use publicly available experimental data to bootstrap the algorithm. Example running and walking kinematics can be found in many publicly available papers. For example we refer to *Schwartz, M. et al. (2008)* (citation details below).
 
 You can find there [joint angles](https://s3.amazonaws.com/osim-rl/data/schwartz2008data/joint_angles.txt) and [EMG signals](https://s3.amazonaws.com/osim-rl/data/schwartz2008data/emg.txt). Data is represented as a function of time in a gait cycle (one step) at different speeds.
 
