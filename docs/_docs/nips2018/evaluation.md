@@ -12,7 +12,7 @@ Formally, you build a function \\(a:S \rightarrow A\\) from the state space \\(S
 
 ## Round 1
 
-The trial ends in the step \\(T\\) when the pelvis of the model goes below \\(0.6\\) meters or when it reaches \\(1000\\) iterations (corresponding to \\(10\\) seconds in the virtual environment). Your total reward is the sum of 
+The trial ends in the step \\(T\\) when the pelvis of the model goes below \\(0.6\\) meters or when it reaches \\(300\\) iterations (corresponding to \\(3\\) seconds in the virtual environment). Your total reward is the sum of 
 
 $$ \sum_{t=1}^{T} 9 - |v_x(s_t) - 3|^2, $$
 
