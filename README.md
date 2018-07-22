@@ -41,7 +41,7 @@ These commands will create a virtual environment on your computer with the neces
     conda install -c conda-forge lapack git
     pip install git+https://github.com/stanfordnmbl/osim-rl.git
 
-If the command `python -c "import opensim"` runs smoothly, you are done! Otherwise, please refer to our [FAQ](#frequently-asked-questions) section.
+If the command `python -c "import opensim"` runs smoothly, you are done! Otherwise, please refer to our [FAQ](http://osim-rl.stanford.edu/docs/faq/) section.
 
 Note that `source activate opensim-rl` activates the anaconda virtual environment. You need to type it every time you open a new terminal.
 
@@ -79,7 +79,7 @@ You can find details about the [observation object here](http://osim-rl.stanford
 
 ## Submission
 
-Assuming your controller is trained and is represented as a function `my_controller(observation)` returning an `action` you can submit it to [crowdAI](https://www.crowdai.org/challenges/nips-2017-learning-to-run) through interaction with an environment there:
+Assuming your controller is trained and is represented as a function `my_controller(observation)` returning an `action` you can submit it to [crowdAI](https://www.crowdai.org/challenges/nips-2018-ai-for-prosthetics-challenge) through interaction with an environment there:
 
 ```python
 import opensim as osim
@@ -121,7 +121,7 @@ The objective is to run at a constant speed of 3 meters per second. The total re
 ### Round 2
 In the second round the task is also to follow a requested velocity vector. However, in this round the vector will change in time and it will be a random process. We will provide the distribution of this process in mid-July.
 
-You can test your model on your local machine. For submission, you will need to interact with the remote environment: [crowdAI](https://www.crowdai.org/challenges/nips-2017-learning-to-run) sends you the current `observation` and you need to send back the action you take in the given state. 
+You can test your model on your local machine. For submission, you will need to interact with the remote environment: [crowdAI](https://www.crowdai.org/challenges/nips-2018-ai-for-prosthetics-challenge) sends you the current `observation` and you need to send back the action you take in the given state. 
 
 Read more about [evaluation here](http://osim-rl.stanford.edu/docs/nips2018/evaluation/).
 
