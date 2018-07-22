@@ -48,6 +48,6 @@ Please refer to
 
 **I still have more questions, how can I contact you?**
 
-For questions related to the challenge please use [the challenge forum](https://www.crowdai.org/challenges/nips-2017-learning-to-run/topics).
+For questions related to the challenge please use [the challenge forum](https://www.crowdai.org/challenges/nips-2018-ai-for-prosthetics-challenge/topics).
 For issues and problems related to installation process or to the implementation of the simulation environment feel free to create an [issue on GitHub](https://github.com/stanfordnmbl/osim-rl/issues).
 
