@@ -26,7 +26,7 @@ Below we present how to train a basic controller using [keras-rl](https://github
     pip install tensorflow git+https://github.com/matthiasplappert/keras-rl.git
     git clone http://github.com/stanfordnmbl/osim-rl.git
 
-`keras-rl` is an excellent package compatible with [OpenAI](http://openai.com/), which allows you to quickly build your first models!
+`keras-rl` is an excellent package compatible with [OpenAI Gym](http://gym.openai.com/), which allows you to quickly build your first models!
 
 
     cd osim-rl/examples
