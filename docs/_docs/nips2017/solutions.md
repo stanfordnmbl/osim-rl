@@ -31,7 +31,16 @@ We identified multiple strategies shared across teams.
 * *Ground reaction forces:* these were not given in the environment so users tried to estimate them.
 * *Current muscle activity:* this was also not given but can be estimated following the OpenSim muscles dynamics model.
 * *Reward shaping:* modifying the reward for training in such a way that it still makes the model train faster for the actual initial reward. E.g. reward in the challenge is to run as quickly as possible; one can add an extra penalty term for falling (it seems it’s easier to first learn not to fall and then to run, rather than just learn to run).
- 	
+
+## NNAISENSE (1st place)
+
+[Github repository](https://github.com/nnaisense/2017-learning-to-run)
+
+*Authors:* <a href="https://github.com/wjaskowski" class="post-author">{% avatar wjaskowski size=30 %}</a>
+<a href="https://github.com/nnaisense" class="post-author">{% avatar nnaisense size=30 %}</a>
+
+
+
 ## PKU (2nd place)
 
 PKU team used an Actor-Critic Ensemble (ACE) method for improving the performance of Deep Deterministic Policy Gradient (DDPG) algorithm. At inference time, their method uses a critic ensemble to select the best action from proposals of multiple actors running in parallel. By having a larger candidate set, their method can avoid actions that have fatal consequences, while staying deterministic. 
