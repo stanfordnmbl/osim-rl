@@ -113,7 +113,7 @@ In the place of `[YOUR_CROWD_AI_TOKEN_HERE]` put your token from the profile pag
 
 ## Evaluation
 
-Your task is to build a function `f` which takes the current state `observation` (a dictionary describing the current state) and returns the muscle excitations `action` (19-dimensional vector) maximizing the total reward. The trial ends either if the pelvis of the model falls below `0.6` meters or if you reach `1000` iterations (corresponding to `10` seconds in the virtual environment). 
+Your task is to build a function `f` which takes the current state `observation` (a dictionary describing the current state) and returns the muscle excitations `action` (19-dimensional vector) maximizing the total reward. The trial ends either if the pelvis of the model falls below `0.6` meters or if you reach `300` iterations (corresponding to `10` seconds in the virtual environment). 
 
 ### Round 1
 The objective is to run at a constant speed of 3 meters per second. The total reward is `9 * s - p * p` where `s` is the number of steps before reaching one of the stop criteria and `p` is the absolute difference between horizonal velocity and `3`.
