@@ -34,7 +34,7 @@ The function returns:
 
 * `reward` - reward gained in the last iteration.
 
-* `done` - indicates if the move was the last step of the environment. This happens if either `10000` iterations were reached or the pelvis height is below `0.6` meters.
+* `done` - indicates if the move was the last step of the environment. This happens if either `300` iterations were reached or the pelvis height is below `0.6` meters.
 
 * `info` - for compatibility with OpenAI, currently not used.
 

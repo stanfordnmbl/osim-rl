@@ -4,7 +4,7 @@ permalink: /docs/home/
 redirect_from: /docs/index.html
 ---
 
-`osim-rl` package allows you to synthesize physiologically accurate movement by combaining biomechanical expertise embeded in [OpenSim](http://opensim.stanford.edu/) simulation software with state-of-the-art control strategies using Deep Reinforcement Learning.
+`osim-rl` package allows you to synthesize physiologically accurate movement by combining biomechanical expertise embeded in [OpenSim](http://opensim.stanford.edu/) simulation software with state-of-the-art control strategies using Deep Reinforcement Learning.
 
 ![HUMAN environment](https://s3.amazonaws.com/osim-rl/videos/running.gif)
 
