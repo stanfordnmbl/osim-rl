@@ -251,10 +251,7 @@ class OsimModel(object):
         self.istep = self.istep + 1
 
         # Integrate till the new endtime
-        try:
-            self.state = self.manager.integrate(self.stepsize * self.istep)
-        except Exception as e:
-            print (e)
+        self.state = self.manager.integrate(self.stepsize * self.istep)
 
 
 class Spec(object):
