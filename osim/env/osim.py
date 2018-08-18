@@ -257,8 +257,7 @@ class OsimModel(object):
 class Spec(object):
     def __init__(self, *args, **kwargs):
         self.id = 0
-        self.timestep_limit = 1000
-
+        self.timestep_limit = 300
 ## OpenAI interface
 # The amin purpose of this class is to provide wrap all 
 # the functions of OpenAI gym. It is still an abstract
