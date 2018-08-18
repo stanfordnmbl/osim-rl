@@ -93,7 +93,7 @@ crowdai_token = "[YOUR_CROWD_AI_TOKEN_HERE]"
 client = Client(remote_base)
 
 # Create environment
-observation = client.env_create(crowdai_token)
+observation = client.env_create(crowdai_token, env_id='ProstheticsEnv')
 
 # IMPLEMENTATION OF YOUR CONTROLLER
 # my_controller = ... (for example the one trained in keras_rl)
