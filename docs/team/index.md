@@ -44,6 +44,7 @@ contributors:
   - github: JackieTseng
   - github: seanfcarroll
   - github: gautam1858
+  - github: seungjaeryanlee
 ---
 <style>
 .person {

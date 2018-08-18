@@ -31,7 +31,7 @@ NIPS 2017 challenge model, where you are asked to build a controller to make a m
 
 ![HUMAN environment](https://s3.amazonaws.com/osim-rl/videos/running.gif)
 
-### ProstheticEnv
+### ProstheticsEnv
 
 NIPS 2018 challenge model, where you are asked to build a controller to make a musculoskeletal model with a prosthetic leg follow desired velocity vector changing in time. Read more in the documents on the [NIPS 2018 challenge](/docs/nips2018/).
 
