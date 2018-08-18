@@ -41,6 +41,7 @@ class OsimModel(object):
         self.integrator_accuracy = integrator_accuracy
         self.model = opensim.Model(model_path)
         self.model.initSystem()
+        self.model.equilibrateMuscles(self.state)
         self.brain = opensim.PrescribedController()
 
         # Enable the visualizer
@@ -234,6 +235,7 @@ class OsimModel(object):
 
     def reset(self):
         self.state = self.model.initializeState()
+        self.model.equilibrateMuscles(self.state)
         self.state.setTime(0)
         self.istep = 0
 
