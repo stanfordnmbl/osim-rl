@@ -18,3 +18,18 @@ You can use it for supervised learning for bootstrapping your models (where for 
       year={2008},
       publisher={Elsevier}
     }
+
+[Another great dataset](https://simtk.org/projects/nmbl_running) includes running data from
+
+    @article{hamner2013muscle,
+      title={Muscle contributions to fore-aft and vertical body mass center accelerations over a range of running speeds},
+      author={Hamner, Samuel R and Delp, Scott L},
+      journal={Journal of biomechanics},
+      volume={46},
+      number={4},
+      pages={780--787},
+      year={2013},
+      publisher={Elsevier}
+    }
+    
+Note that in also contains inverse dynamics (predicted muscle activations from experiments) as well as EMG signals!
