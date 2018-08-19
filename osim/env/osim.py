@@ -244,6 +244,7 @@ class OsimModel(object):
 
     def set_state(self, state):
         self.state = state
+        self.istep = int(self.state.getTime() / self.stepsize) # TODO: remove istep altogether
         self.reset_manager()
 
     def integrate(self):
