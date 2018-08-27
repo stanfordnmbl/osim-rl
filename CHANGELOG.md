@@ -1,5 +1,11 @@
 # osim-rl
 
+Install the most recent version with
+```bash
+pip install git+https://github.com/stanfordnmbl/osim-rl.git -U
+```
+in the conda environment with OpenSim.
+
 ## [2.1.0] - 2018-08-27
 - `equilibrateMuscles` called in the first step (https://github.com/stanfordnmbl/osim-rl/issues/133)
 - Added the new reward function (round 2)
