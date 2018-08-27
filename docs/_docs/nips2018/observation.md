@@ -102,7 +102,7 @@ Each muscle element is a dictionary with 4 elements
 | **foot_l** | Ground reaction forces on the left foot. 6 values correspond to the 3 components (x,y,z) of the force and torque applied to the `foot_l` body. |
 | **pros_foot_r_0** | Ground reaction forces on the prosthetic foot 6 values correspond to the 3 components (x,y,z) of the force and torque applied to the `pros_foot_r` body. |
 
-Note that in the forces dictionary, forces corresponding to muscles are redundant with `fiber_force` in muscles dictionaries (they are not listed above, but the keys appear in the dictionary).
+For the difference between muscle forces in this item and `fiber_force` in muscles please refer to [Issue #163](https://github.com/stanfordnmbl/osim-rl/issues/163)
 
 ### Misc
 

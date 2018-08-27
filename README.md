@@ -24,6 +24,8 @@ You haven't heard of NIPS 2017: Learning to run? [Watch this video!](https://www
 
 **Anaconda** is required to run our simulations. Anaconda will create a virtual environment with all the necessary libraries, to avoid conflicts with libraries in your operating system. You can get anaconda from here https://www.continuum.io/downloads. In the following instructions we assume that Anaconda is successfully installed.
 
+For the challenge we prepared [OpenSim](http://opensim.stanford.edu/) binaries as a conda environment to make the installation straightforward
+
 We support Windows, Linux, and Mac OSX (all in 64-bit). To install our simulator, you first need to create a conda environment with the OpenSim package.
 
 On **Windows**, open a command prompt and type:
@@ -93,7 +95,7 @@ crowdai_token = "[YOUR_CROWD_AI_TOKEN_HERE]"
 client = Client(remote_base)
 
 # Create environment
-observation = client.env_create(crowdai_token)
+observation = client.env_create(crowdai_token, env_id='ProstheticsEnv')
 
 # IMPLEMENTATION OF YOUR CONTROLLER
 # my_controller = ... (for example the one trained in keras_rl)
@@ -142,6 +144,7 @@ Additional rules:
 * [Physics underlying the model](http://osim-rl.stanford.edu/docs/nips2017/physics/)
 * [Frequently Asked Questions](http://osim-rl.stanford.edu/docs/faq/)
 * [Citing and credits](http://osim-rl.stanford.edu/docs/credits/)
+* [OpenSim documentation](http://opensim.stanford.edu/)
 
 ## Contributions of participants
 

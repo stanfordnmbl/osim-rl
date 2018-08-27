@@ -246,6 +246,7 @@ class OsimModel(object):
 
     def set_state(self, state):
         self.state = state
+        self.istep = int(self.state.getTime() / self.stepsize) # TODO: remove istep altogether
         self.reset_manager()
 
     def integrate(self):
@@ -259,8 +260,7 @@ class OsimModel(object):
 class Spec(object):
     def __init__(self, *args, **kwargs):
         self.id = 0
-        self.timestep_limit = 1000
-
+        self.timestep_limit = 300
 ## OpenAI interface
 # The amin purpose of this class is to provide wrap all 
 # the functions of OpenAI gym. It is still an abstract
