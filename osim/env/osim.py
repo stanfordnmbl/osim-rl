@@ -41,7 +41,6 @@ class OsimModel(object):
         self.integrator_accuracy = integrator_accuracy
         self.model = opensim.Model(model_path)
         self.model.initSystem()
-        self.model.equilibrateMuscles(self.state)
         self.brain = opensim.PrescribedController()
 
         # Enable the visualizer
@@ -261,6 +260,7 @@ class Spec(object):
     def __init__(self, *args, **kwargs):
         self.id = 0
         self.timestep_limit = 300
+
 ## OpenAI interface
 # The amin purpose of this class is to provide wrap all 
 # the functions of OpenAI gym. It is still an abstract
@@ -398,15 +398,29 @@ class L2RunEnv(OsimEnv):
             return 0
         return state_desc["joint_pos"]["ground_pelvis"][1] - prev_state_desc["joint_pos"]["ground_pelvis"][1]
 
+def rect(row):
+    r = row[0]
+    theta = row[1]
+    x = r * math.cos(theta)
+    y = 0
+    z = r * math.sin(theta)
+    return np.array([x,y,z])
+
 class ProstheticsEnv(OsimEnv):
     prosthetic = True
     model = "3D"
     def get_model_key(self):
         return self.model + ("_pros" if self.prosthetic else "")
 
-    time_limit = 300
+    def set_difficulty(self, difficulty):
+        self.difficulty = difficulty
+        if difficulty == 0:
+            self.time_limit = 300
+        if difficulty == 1:
+            self.time_limit = 1000
+        self.spec.timestep_limit = self.time_limit    
 
-    def __init__(self, visualize = True, integrator_accuracy = 5e-5):
+    def __init__(self, visualize = True, integrator_accuracy = 5e-5, difficulty=0, seed=0):
         self.model_paths = {}
         self.model_paths["3D_pros"] = os.path.join(os.path.dirname(__file__), '../models/gait14dof22musc_pros_20180507.osim')    
         self.model_paths["3D"] = os.path.join(os.path.dirname(__file__), '../models/gait14dof22musc_20170320.osim')    
@@ -414,11 +428,15 @@ class ProstheticsEnv(OsimEnv):
         self.model_paths["2D"] = os.path.join(os.path.dirname(__file__), '../models/gait14dof22musc_planar_20170320.osim')
         self.model_path = self.model_paths[self.get_model_key()]
         super(ProstheticsEnv, self).__init__(visualize = visualize, integrator_accuracy = integrator_accuracy)
+        self.set_difficulty(difficulty)
+        random.seed(seed)
 
-    def change_model(self, model='3D', prosthetic=True, difficulty=0, seed=None):
+    def change_model(self, model='3D', prosthetic=True, difficulty=0, seed=0):
         if (self.model, self.prosthetic) != (model, prosthetic):
             self.model, self.prosthetic = model, prosthetic
             self.load_model(self.model_paths[self.get_model_key()])
+        self.set_difficulty(difficulty)
+        random.seed(seed)
     
     def is_done(self):
         state_desc = self.get_state_desc()
@@ -478,12 +496,67 @@ class ProstheticsEnv(OsimEnv):
             return 158
         return 167
 
-    def reward(self):
+    def generate_new_targets(self, poisson_lambda = 300):
+        nsteps = self.time_limit + 1
+        rg = np.array(range(nsteps))
+        velocity = np.zeros(nsteps)
+        heading = np.zeros(nsteps)
+
+        velocity[0] = 1.25
+        heading[0] = 0
+
+        change = np.cumsum(np.random.poisson(poisson_lambda, 10))
+
+        for i in range(1,nsteps):
+            velocity[i] = velocity[i-1]
+            heading[i] = heading[i-1]
+
+            if i in change:
+                velocity[i] += random.choice([-1,1]) * random.uniform(-0.5,0.5)
+                heading[i] += random.choice([-1,1]) * random.uniform(-math.pi/8,math.pi/8)
+
+        trajectory_polar = np.vstack((velocity,heading)).transpose()
+        self.targets = np.apply_along_axis(rect, 1, trajectory_polar)
+        
+    def get_state_desc(self):
+        d = super(ProstheticsEnv, self).get_state_desc()
+        if self.difficulty > 0:
+            d["target_vel"] = self.targets[self.osim_model.istep,:].tolist()
+        return d
+
+    def reset(self):
+        self.generate_new_targets()
+        return super(ProstheticsEnv, self).reset()
+
+    def reward_round1(self):
         state_desc = self.get_state_desc()
         prev_state_desc = self.get_prev_state_desc()
         if not prev_state_desc:
             return 0
         return 9.0 - (state_desc["body_vel"]["pelvis"][0] - 3.0)**2
+
+    def reward_round2(self):
+        state_desc = self.get_state_desc()
+        prev_state_desc = self.get_prev_state_desc()
+        penalty = 0
+
+        # Small penalty for too much activation (cost of transport)
+        penalty += np.sum(np.array(self.osim_model.get_activations())**2) * 0.001
+
+        # Big penalty for not matching the vector on the X,Z projection.
+        # No penalty for the vertical axis
+        penalty += (state_desc["body_vel"]["pelvis"][0] - state_desc["target_vel"][0])**2
+        penalty += (state_desc["body_vel"]["pelvis"][2] - state_desc["target_vel"][2])**2
+        
+        # Reward for not falling
+        reward = 10.0
+        
+        return reward - penalty 
+
+    def reward(self):
+        if self.difficulty == 0:
+            return self.reward_round1()
+        return self.reward_round2()
 
 
 class Arm2DEnv(OsimEnv):
