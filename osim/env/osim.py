@@ -524,9 +524,9 @@ class ProstheticsEnv(OsimEnv):
             d["target_vel"] = self.targets[self.osim_model.istep,:].tolist()
         return d
 
-    def reset(self):
+    def reset(self, project = True):
         self.generate_new_targets()
-        return super(ProstheticsEnv, self).reset()
+        return super(ProstheticsEnv, self).reset(project = project)
 
     def reward_round1(self):
         state_desc = self.get_state_desc()

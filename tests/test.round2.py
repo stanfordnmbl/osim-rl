@@ -6,7 +6,13 @@ import math
 class SimulationTest(unittest.TestCase):
     def test_reset(self):
         env = ProstheticsEnv(visualize=False, difficulty=0)
-        env.reset()
+        o = env.reset()
+        self.assertEqual(type(o), list)
+        o = env.reset(project = False)
+        self.assertEqual(type(o), dict)
+        o = env.reset(project = True)
+        self.assertEqual(type(o), list)
+        
         action = env.action_space.sample()
         o,r,d,i = env.step(action, project = False)
         self.assertRaises(KeyError, lambda : o["target_vel"])
