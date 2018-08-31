@@ -429,14 +429,14 @@ class ProstheticsEnv(OsimEnv):
         self.model_path = self.model_paths[self.get_model_key()]
         super(ProstheticsEnv, self).__init__(visualize = visualize, integrator_accuracy = integrator_accuracy)
         self.set_difficulty(difficulty)
-        random.seed(seed)
+        np.random.seed(seed)
 
     def change_model(self, model='3D', prosthetic=True, difficulty=0, seed=0):
         if (self.model, self.prosthetic) != (model, prosthetic):
             self.model, self.prosthetic = model, prosthetic
             self.load_model(self.model_paths[self.get_model_key()])
         self.set_difficulty(difficulty)
-        random.seed(seed)
+        np.random.seed(seed)
     
     def is_done(self):
         state_desc = self.get_state_desc()
