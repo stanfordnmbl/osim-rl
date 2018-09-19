@@ -149,3 +149,18 @@ Additional rules:
 ## Contributions of participants
 
 * [Understanding the Challenge](https://www.endtoend.ai/blog/ai-for-prosthetics-1) - Great materials from [@seungjaeryanlee](https://github.com/seungjaeryanlee/) on how to start
+
+## Partners
+
+<div class="markdown-wrap">
+            <a target="_blank" href="https://cloud.google.com/">
+              <img class="img-logo" height="50" src="https://dnczkxd1gcfu5.cloudfront.net/images/challenge_partners/image_file/27/google-cloud-logo.png">
+</a>            <a target="_blank" href="http://deepmind.com/">
+              <img class="img-logo" height="50" src="https://dnczkxd1gcfu5.cloudfront.net/images/challenge_partners/image_file/28/Deep-Mind-Health-WTT-10.05.15.jpg">
+</a>            <a target="_blank" href="http://nvidia.com/">
+              <img class="img-logo" height="50" src="https://dnczkxd1gcfu5.cloudfront.net/images/challenge_partners/image_file/29/nvidia.png">
+</a>            <a target="_blank" href="http://opensim.stanford.edu/about/">
+              <img class="img-logo" height="50" src="https://dnczkxd1gcfu5.cloudfront.net/images/challenge_partners/image_file/36/ncsrr.png">
+</a>            <a target="_blank" href="https://www.tri.global/">
+              <img class="img-logo" height="50" src="https://dnczkxd1gcfu5.cloudfront.net/images/challenge_partners/image_file/37/tri1.png">
+</a>        </div>
