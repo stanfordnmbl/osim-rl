@@ -493,8 +493,8 @@ class ProstheticsEnv(OsimEnv):
 
     def get_observation_space_size(self):
         if self.prosthetic == True:
-            return 158
-        return 167
+            return 160
+        return 169
 
     def generate_new_targets(self, poisson_lambda = 300):
         nsteps = self.time_limit + 1
