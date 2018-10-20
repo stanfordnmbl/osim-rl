@@ -89,7 +89,7 @@ from osim.http.client import Client
 from osim.env import ProstheticsEnv
 
 # Settings
-remote_base = "http://grader.crowdai.org:1729"
+remote_base = "http://grader.crowdai.org:1730" # use port 1729 for Round 1
 crowdai_token = "[YOUR_CROWD_AI_TOKEN_HERE]"
 
 client = Client(remote_base)
