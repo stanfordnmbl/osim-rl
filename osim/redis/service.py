@@ -21,7 +21,7 @@ class OsimRlRedisService:
                     remote_port = 6379,
                     remote_db = 0,
                     remote_password = None,
-                    difficulty = 2,
+                    difficulty = 1,
                     max_obstacles = 10,
                     visualize = False,
                     report = None,
@@ -112,15 +112,17 @@ class OsimRlRedisService:
                         _redis.rpush( command_response_channel, self._error_template(_error_message))
                         return self._error_template(_error_message)
                     else:
-                        self.env = RunEnv(  visualize = self.visualize,
-                                            max_obstacles = self.max_obstacles,
-                                            report = self.report)
-                        _observation = self.env.reset(seed=self.seed_map[self.simulation_count], difficulty=self.difficulty)
+                        self.env = ProstheticsEnv(  visualize = self.visualize,
+                                                    difficulty = self.difficulty,
+                                                    seed = self.seed_map[self.simulation_count],
+                                                    report = self.report
+                        )
+                        _observation = self.env.reset(project=False)
                         self.begin_simulation = time.time()
                         self.simualation_rewards.append(0)
                         self.env_available = True
                         self.current_step = 0
-                        _observation = np.array(_observation).tolist()
+                        #_observation = np.array(_observation).tolist()
                         if self.report:
                             """
                                 In case of reporting mode, truncate to the first
@@ -128,7 +130,8 @@ class OsimRlRedisService:
                                 (The rest are extra activations which are used only for reporting
                                 and should not be available to the agent)
                             """
-                            _observation = _observation[:41]
+                            #_observation = _observation[:41]
+                            pass
 
                         _command_response = {}
                         _command_response['type'] = messages.OSIM_RL.ENV_CREATE_RESPONSE
@@ -148,11 +151,11 @@ class OsimRlRedisService:
                         self.simulation_times.append(time.time()-self.begin_simulation)
                         self.begin_simulation = time.time()
                     if self.seed_map and self.simulation_count < len(self.seed_map):
-                        _observation = self.env.reset(seed=self.seed_map[self.simulation_count], difficulty=2)
+                        _observation = self.env.reset(seed=self.seed_map[self.simulation_count], project=False)
                         self.simualation_rewards.append(0)
                         self.env_available = True
                         self.current_step = 0
-                        _observation = list(_observation)
+                        #_observation = list(_observation)
                         if self.report:
                             """
                                 In case of reporting mode, truncate to the first
@@ -160,7 +163,8 @@ class OsimRlRedisService:
                                 (The rest are extra activations which are used only for reporting
                                 and should not be available to the agent)
                             """
-                            _observation = _observation[:41]
+                            #_observation = _observation[:41]
+                            pass
 
                         _command_response = {}
                         _command_response['type'] = messages.OSIM_RL.ENV_RESET_RESPONSE
@@ -186,7 +190,7 @@ class OsimRlRedisService:
                     action = args['action']
                     action = np.array(action)
                     if self.env and self.env_available:
-                        [_observation, reward, done, info] = self.env.step(action)
+                        [_observation, reward, done, info] = self.env.step(action, project=False)
                     else:
                         if self.env:
                             raise Exception("Attempt to call `step` function after max_steps={} in a single simulation. Please reset your environment before calling the `step` function after max_step s".format(self.max_steps))
@@ -195,7 +199,7 @@ class OsimRlRedisService:
                     self.reward += reward
                     self.simualation_rewards[-1] += reward
                     self.current_step += 1
-                    _observation = np.array(_observation).tolist()
+                    #_observation = np.array(_observation).tolist()
                     if self.report:
                         """
                             In case of reporting mode, truncate to the first
@@ -203,7 +207,8 @@ class OsimRlRedisService:
                             (The rest are extra activations which are used only for reporting
                             and should not be available to the agent)
                         """
-                        _observation = _observation[:41]
+                        #_observation = _observation[:41]
+                        pass
 
                     if self.current_step >= self.max_steps:
                         _command_response = {}

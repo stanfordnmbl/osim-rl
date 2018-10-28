@@ -420,7 +420,7 @@ class ProstheticsEnv(OsimEnv):
             self.time_limit = 1000
         self.spec.timestep_limit = self.time_limit    
 
-    def __init__(self, visualize = True, integrator_accuracy = 5e-5, difficulty=0, seed=0):
+    def __init__(self, visualize = True, integrator_accuracy = 5e-5, difficulty=0, seed=0, report=None):
         self.model_paths = {}
         self.model_paths["3D_pros"] = os.path.join(os.path.dirname(__file__), '../models/gait14dof22musc_pros_20180507.osim')    
         self.model_paths["3D"] = os.path.join(os.path.dirname(__file__), '../models/gait14dof22musc_20170320.osim')    
@@ -430,6 +430,13 @@ class ProstheticsEnv(OsimEnv):
         super(ProstheticsEnv, self).__init__(visualize = visualize, integrator_accuracy = integrator_accuracy)
         self.set_difficulty(difficulty)
         random.seed(seed)
+
+        if report:
+            bufsize = 0
+            self.observations_file = open("%s-obs.csv" % (report,),"w", bufsize)
+            self.actions_file = open("%s-act.csv" % (report,),"w", bufsize)
+            self.get_headers()
+
 
     def change_model(self, model='3D', prosthetic=True, difficulty=0, seed=0):
         if (self.model, self.prosthetic) != (model, prosthetic):
@@ -524,7 +531,9 @@ class ProstheticsEnv(OsimEnv):
             d["target_vel"] = self.targets[self.osim_model.istep,:].tolist()
         return d
 
-    def reset(self, project = True):
+    def reset(self, project = True, seed = None):
+        if seed:
+            random.seed(seed)
         self.generate_new_targets()
         return super(ProstheticsEnv, self).reset(project = project)
 
