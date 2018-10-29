@@ -430,6 +430,7 @@ class ProstheticsEnv(OsimEnv):
         super(ProstheticsEnv, self).__init__(visualize = visualize, integrator_accuracy = integrator_accuracy)
         self.set_difficulty(difficulty)
         random.seed(seed)
+        np.random.seed(seed)
 
         if report:
             bufsize = 0
@@ -444,6 +445,7 @@ class ProstheticsEnv(OsimEnv):
             self.load_model(self.model_paths[self.get_model_key()])
         self.set_difficulty(difficulty)
         random.seed(seed)
+        np.random.seed(seed)
     
     def is_done(self):
         state_desc = self.get_state_desc()
@@ -534,6 +536,7 @@ class ProstheticsEnv(OsimEnv):
     def reset(self, project = True, seed = None):
         if seed:
             random.seed(seed)
+            np.random.seed(seed)
         self.generate_new_targets()
         return super(ProstheticsEnv, self).reset(project = project)
 
