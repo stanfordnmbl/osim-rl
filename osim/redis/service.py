@@ -34,6 +34,11 @@ class OsimRlRedisService:
             TODO: Expose more RunEnv related variables
         """
         print("Attempting to connect to redis server at {}:{}/{}".format(remote_host, remote_port, remote_db))
+        self.remote_host = remote_host
+        self.remote_port = remote_port
+        self.remote_db = remote_db
+        self.remote_password = remote_password
+
         self.redis_pool = redis.ConnectionPool(host=remote_host, port=remote_port, db=remote_db, password=remote_password)
         self.namespace = "osim-rl"
         self.service_id = osim_rl_redis_service_id
@@ -64,7 +69,19 @@ class OsimRlRedisService:
             self.seed_map = [np.random.randint(0,10**10)]
 
     def get_redis_connection(self):
-        return redis.Redis(connection_pool=self.redis_pool)
+        redis_conn = redis.Redis(connection_pool=self.redis_pool)
+        try:
+            redis_conn.ping()
+        except:
+            raise Exception(
+                    "Unable to connect to redis server at {}:{} ."
+                    "Are you sure there is a redis-server running at the "
+                    "specified location ?".format(
+                        self.remote_host,
+                        self.remote_port
+                        )
+                    )
+        return redis_conn
 
     def _error_template(self, payload):
         _response = {}
