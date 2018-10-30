@@ -10,6 +10,10 @@ import os
 import timeout_decorator
 import time
 
+########################################################
+# CONSTANTS
+########################################################
+PER_STEP_TIMEOUT = 20*60 # 20minutes
 
 
 class OsimRlRedisService:
@@ -68,7 +72,7 @@ class OsimRlRedisService:
         _response['payload'] = payload
         return _response
 
-    @timeout_decorator.timeout(15*60)#15*60 seconds timeout for each command
+    @timeout_decorator.timeout(PER_STEP_TIMEOUT)# timeout for each command
     def get_next_command(self, _redis):
         command = _redis.brpop(self.command_channel)[1]
         return command
