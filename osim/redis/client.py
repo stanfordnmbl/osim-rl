@@ -7,6 +7,7 @@ import numpy as np
 import hashlib
 import random
 from osim.redis import messages
+import time
 
 import logging
 logger = logging.getLogger(__name__)
@@ -136,4 +137,12 @@ class Client(object):
         _request['type'] = messages.OSIM_RL.ENV_SUBMIT
         _request['payload'] = {}
         _response = self._blocking_request(_request)
+        if os.getenv("CROWDAI_BLOCKING_SUBMIT"):
+            """
+            If the submission is supposed to happen as a blocking submit,
+            then wait indefinitely for the evaluator to decide what to 
+            do with the container.
+            """
+            while True:
+                time.sleep(10)
         return _response['payload']
