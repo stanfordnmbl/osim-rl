@@ -93,7 +93,7 @@ class OsimModel(object):
         if np.any(np.isnan(action)):
             raise ValueError("NaN passed in the activation vector. Values in [0,1] interval are required.")
 
-        # TODO: Check if actions within [0,1]
+        action = np.clip(np.array(action), 0.0, 1.0)
         self.last_action = action
             
         brain = opensim.PrescribedController.safeDownCast(self.model.getControllerSet().get(0))
