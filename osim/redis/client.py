@@ -126,7 +126,7 @@ class Client(object):
         _request['payload']['action'] = action
         _response = self._blocking_request(_request)
         _payload = _response['payload']
-        observation = np.array(_payload['observation'])
+        observation = _payload['observation']
         reward = _payload['reward']
         done = _payload['done']
         info = _payload['info']
