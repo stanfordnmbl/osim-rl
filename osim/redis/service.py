@@ -295,6 +295,7 @@ if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(description='Submit the result to crowdAI')
     parser.add_argument('--port', dest='port', action='store', required=True)
+    parser.add_argument('--service_id', dest='service_id', default='osim_rl_redis_service_id', required=False)
     parser.add_argument('--seed_map',
                         dest='seed_map',
                         default="11,22,33",
@@ -304,7 +305,7 @@ if __name__ == "__main__":
     
     seed_map = args.seed_map
     print("Seeds : ", seed_map.split(","))
-    grader = OsimRlRedisService(remote_port=int(args.port), seed_map=seed_map, max_steps=1000, verbose=True)
+    grader = OsimRlRedisService(osim_rl_redis_service_id=args.service_id, remote_port=int(args.port), seed_map=seed_map, max_steps=1000, verbose=True)
     result = grader.run()
     if result['type'] == messages.OSIM_RL.ENV_SUBMIT_RESPONSE:
         cumulative_results = result['payload']
