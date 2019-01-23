@@ -5,7 +5,7 @@ author: kidzik
 categories: [nips]
 ---
 
-[Google Cloud Platform](http://cloud.google.com/) generously offered to support our [NIPS 2018 AI for prosthetics challenge](https://www.crowdai.org/challenges/nips-2018-ai-for-prosthetics-challenge/leaderboards) with $200,000 cloud credits. Submit a solution with a positive (>0) score and get $250 credits! (Read
+[Google Cloud Platform](http://cloud.google.com/) generously offered to support our [NIPS 2018 AI for prosthetics challenge](https://www.crowdai.org/challenges/nips-2018-ai-for-prosthetics-challenge/leaderboards) with cloud credits. Submit a solution with a positive (>0) score and get $250 credits! (Read
 more details on the crowdAI platform.) 
 
 Join our [OpenSim webinar](https://simtk.webex.com/mw3300/mywebex/default.do?siteurl=simtk&service=6) on August 7th 10 am PST to hear more on reinforcement learning for musculoskeletal models. Learn how to get started with the challenge!
