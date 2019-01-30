@@ -1,5 +1,5 @@
 ---
-title: '$200k support from Google Cloud Platform'
+title: 'Support from Google Cloud Platform'
 date: 2018-07-27 12:00:00 -0500
 author: kidzik
 categories: [nips]
