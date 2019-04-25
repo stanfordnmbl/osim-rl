@@ -1,1 +1,1 @@
-from muscle_gym.envs.target.v_tgt_field import VTgtField
+from .v_tgt_field import VTgtField
