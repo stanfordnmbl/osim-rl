@@ -11,6 +11,8 @@ from scipy import interpolate
 class VTgtField(object):
     nn_get = np.array([11, 11]) # vtgt_field_local data is nn_get*nn_get = 121
 
+    # v00: constant forward velocities
+    
     # v01: consecutive sinks forward for walking
     v01_res_map = np.array([2, 2])
     v01_rng_xy0 = np.array([[-20, 20], [-20, 20]])
