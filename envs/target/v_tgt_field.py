@@ -58,6 +58,14 @@ class VTgtField(object):
         self.vtgt_obj = VTgtSink(self.rng_xy, res_map=self.res_map,
                 rng_get=self.rng_get, res_get=self.res_get) 
 
+        self.reset()
+
+# -----------------------------------------------------------------------------------------------------------------
+    def reset(self, seed=None):
+        if seed:
+            random.seed(seed)
+            np.random.seed(seed)
+
         # create first sink
         del_p_sink_r = np.random.uniform(self.rng_p_sink_r_th[0,0], self.rng_p_sink_r_th[0,1])
         del_p_sink_th = np.random.uniform(self.rng_p_sink_r_th[1,0], self.rng_p_sink_r_th[1,1])
@@ -143,7 +151,7 @@ class VTgtSink(object):
         self.vtgt_interp_y = interpolate.interp2d(self.map[0,:,0], self.map[1,0,:], self.vtgt[1].T, kind='linear')
 
 # -----------------------------------------------------------------------------------------------------------------
-    def get_vtgt(self, xy):
+    def get_vtgt(self, xy): # in the global frame
         vtgt_x = self.vtgt_interp_x(xy[0], xy[1])
         vtgt_y = self.vtgt_interp_y(xy[0], xy[1])
         return np.array([vtgt_x, vtgt_y])
