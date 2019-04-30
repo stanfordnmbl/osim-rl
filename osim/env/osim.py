@@ -574,15 +574,15 @@ class ProstheticsEnv(OsimEnv):
 class L2M2019Env(OsimEnv):
     model = '3D'
 
-    t = 0
+    MASS = 75 # !!!
+    G = 9.81 # !!!
+    LENGTH0 = 1 # leg length
 
     footstep = {}
     footstep['n'] = 0
     footstep['new'] = False
     footstep['r_contact'] = 0
     footstep['l_contact'] = 0
-
-    LENGTH0 = 1 # leg length
 
     Fmax = {}
     Fmax['HAB'] = 4460.290481  # !!!
@@ -647,8 +647,9 @@ class L2M2019Env(OsimEnv):
         self.reset(seed=seed)
 
     def reset(self, project=True, seed=None, init_state=None):
+        self.t = 0
         self.init_reward()
-        self.vtgt.reset(seed=seed)
+        self.vtgt.reset(seed=seed, version=self.difficulty)
 
         # initialize state
         self.osim_model.state = self.osim_model.model.initializeState()
@@ -657,6 +658,10 @@ class L2M2019Env(OsimEnv):
         state = self.osim_model.get_state()
         QQ = state.getQ()
         QQDot = state.getQDot()
+        QQ[3] = 0
+        QQ[5] = 0
+        QQ[1] = 0
+        QQ[2] = 0
         QQDot[3] = self.INIT_POSE[0] # forward speed
         QQ[4] = self.INIT_POSE[1] # pelvis height
         QQ[0] = self.INIT_POSE[2] # trunk lean
@@ -677,6 +682,10 @@ class L2M2019Env(OsimEnv):
         self.osim_model.istep = 0
 
         self.osim_model.reset_manager()
+
+        d = super(L2M2019Env, self).get_state_desc()
+        pose = np.array([d['body_pos']['pelvis'][0], d['body_pos']['pelvis'][2], d['joint_pos']['ground_pelvis'][2]])
+        self.v_tgt_field, self.flag_new_v_tgt_field = self.vtgt.update(pose)
         
         if not project:
             return self.get_state_desc()
@@ -686,6 +695,10 @@ class L2M2019Env(OsimEnv):
         observation, reward, done, info = super(L2M2019Env, self).step(action, project=project)
         self.t += self.osim_model.stepsize
         self.update_footstep()
+
+        d = super(L2M2019Env, self).get_state_desc()
+        self.pose = np.array([d['body_pos']['pelvis'][0], d['body_pos']['pelvis'][2], d['joint_pos']['ground_pelvis'][2]])
+        self.v_tgt_field, self.flag_new_v_tgt_field = self.vtgt.update(self.pose)
 
         return observation, reward, done, info
 
@@ -813,9 +826,7 @@ class L2M2019Env(OsimEnv):
         #state_desc['misc']
         if self.difficulty > 0:
             # v_tgt vector field in body frame ([song!!!] check below if [x, z, theta])
-            pose = np.array([d['body_pos']['pelvis'][0], d['body_pos']['pelvis'][2], d['body_pos']['pelvis'][0]])
-            v_tgt_field, _ = self.vtgt.update(pose)
-            d['v_tgt_field'] = v_tgt_field # shape: (2, 11, 11)
+            d['v_tgt_field'] = self.v_tgt_field # shape: (2, 11, 11)
         return d
 
     def init_reward(self):
@@ -889,7 +900,7 @@ class L2M2019Env(OsimEnv):
             reward += reward_footstep_0 + reward_footstep_v + reward_footstep_e
 
         # success bonus
-        if self.is_done() and self.failure_mode is 'success':
+        if self.is_done(): #and self.failure_mode is 'success':
             # retrieve reward (i.e. do not penalize for the simulation terminating in a middle of a step)
             reward_footstep_0 = self.d_reward['weight']['footstep']*self.d_reward['footstep']['del_t']
 

@@ -23,8 +23,8 @@ import numpy as np
 class LocoCtrl(object):
     DEBUG = 0
 
-    RIGHT = 0 #<- r_leg
-    LEFT = 1 #<- l_leg
+    RIGHT = 0 # r_leg
+    LEFT = 1 # l_leg
 
     # (todo) use these when handling angles
     # THETA0 = 0*np.pi/180 # trunk angle when standing straight
@@ -84,12 +84,45 @@ class LocoCtrl(object):
         'HAD_3_PG', 'HAD_3_DG', 'HAD_6_PG'
         ]
 
+    par_space = (
+        [0.0, -1.0, 0.0, 0.0, \
+        -2.0, -90/15, -1.0, 0.0, \
+        0.0, 0.0, 0.0, 0.0, 0.0, \
+        0.0, 0.0, 0.0, 0.0, 0.0, \
+        0.0, 0.0, \
+        0.0, 0.0, \
+        0.0, 0.0, 0.0, \
+        0.0, 0.0, 0.0, 0.0, 0.0, \
+        0.0, 0.0, 0.0, \
+        0.0, \
+        0.0, \
+        0.0, 0.0, \
+        0.0, 0.0, \
+        0.0, 0.0, 0.0, \
+        0.0, 0.0, 0.0],
+        [6.0, 3.0, 5.0, 3.0, \
+        3.0, 20/15, 15/10, 3.0, \
+        3.0, 3.0, 3.0, 3.0, 3.0, \
+        3.0, 3.0, 3.0, 3.0, 3.0, \
+        3.0, 3.0, \
+        3.0, 3.0, \
+        3.0, 3.0, 3.0, \
+        3.0, 3.0, 3.0, 3.0, 3.0, \
+        3.0, 3.0, 3.0, \
+        3.0, \
+        3.0, \
+        3.0, 3.0, \
+        2.0, 3.0, \
+        3.0, 3.0, 3.0, \
+        3.0, 3.0, 3.0])
+
     m_map = dict(zip(m_keys, range(len(m_keys))))
     s_b_map = dict(zip(s_b_keys, range(len(s_b_keys))))
     s_l_map = dict(zip(s_l_keys, range(len(s_l_keys))))
     cs_map = dict(zip(cs_keys, range(len(cs_keys))))
     cp_map = dict(zip(cp_keys, range(len(cp_keys))))
 
+# -----------------------------------------------------------------------------------------------------------------
     def __init__(self, TIMESTEP, control_mode=1, control_dimension=3, params=np.ones(len(cp_keys)), prosthetic=True):
         if self.DEBUG:
             print("===========================================")
@@ -109,8 +142,6 @@ class LocoCtrl(object):
             self.brain_control_on = 1
 
         self.spinal_control_phase = {}
-        # self.spinal_control_phase['r_leg'] = {}
-        # self.spinal_control_phase['r_leg'] = {}
         self.in_contact = {}
         self.brain_command = {}
         self.stim = {}
@@ -118,12 +149,12 @@ class LocoCtrl(object):
         self.n_par = len(LocoCtrl.cp_keys)
         if self.control_dimension == 2:
             self.n_par = 37
+            self.par_space = (self.par_space[0][0:37], self.par_space[1][0:37])
         self.cp = {}
-
-        self.par_space = ([0.0]*self.n_par, [5.0]*self.n_par)
 
         self.reset(params)
 
+# -----------------------------------------------------------------------------------------------------------------
     def reset(self, params=None):
         self.in_contact['r_leg'] = 1
         self.in_contact['l_leg'] = 0
@@ -158,6 +189,7 @@ class LocoCtrl(object):
         if params is not None:
             self.set_control_params(params)
 
+# -----------------------------------------------------------------------------------------------------------------
     def set_control_params(self, params):
         if len(params) == self.n_par:
             self.set_control_params_RL('r_leg', params)
@@ -168,6 +200,7 @@ class LocoCtrl(object):
         else:
             raise Exception('error in the number of params!!')
 
+# -----------------------------------------------------------------------------------------------------------------
     def set_control_params_RL(self, s_leg, params):
         cp = {}
         cp_map = self.cp_map
@@ -237,6 +270,7 @@ class LocoCtrl(object):
 
         self.cp[s_leg] = cp
 
+# -----------------------------------------------------------------------------------------------------------------
     def update(self, sensor_data):
         self.sensor_data = sensor_data
 
@@ -261,6 +295,7 @@ class LocoCtrl(object):
         # todo: self._flaten(self.stim)
         return stim
 
+# -----------------------------------------------------------------------------------------------------------------
     def _brain_control(self, sensor_data=0):
         s_b = sensor_data['body']
         cp = self.cp
@@ -299,11 +334,13 @@ class LocoCtrl(object):
             else:
                 self.brain_command['l_leg']['swing_init'] = 1
     
+# -----------------------------------------------------------------------------------------------------------------
     def _spinal_control(self, sensor_data):
         for s_leg in ['r_leg', 'l_leg']:
             self._update_spinal_control_phase(s_leg, sensor_data)
             self.stim[s_leg] = self.spinal_control_leg(s_leg, sensor_data)
 
+# -----------------------------------------------------------------------------------------------------------------
     def _update_spinal_control_phase(self, s_leg, sensor_data):
         s_l = sensor_data[s_leg]
 
@@ -364,6 +401,7 @@ class LocoCtrl(object):
 
         self.in_contact[s_leg] = s_l['contact_ipsi']
 
+# -----------------------------------------------------------------------------------------------------------------
     def spinal_control_leg(self, s_leg, sensor_data):
         s_l = sensor_data[s_leg]
         s_b = sensor_data['body']
