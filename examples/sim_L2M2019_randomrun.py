@@ -7,7 +7,5 @@ observation = env.reset(project=False)
 for i in range(300):
     observation, reward, done, info = env.step(env.action_space.sample(), project = True)
     obs_dict = env.get_observation_dict()
-    #import pdb; pdb.set_trace()
     if done:
-        env.reset(seed=10)
         break
