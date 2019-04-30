@@ -38,9 +38,11 @@ class OsimReflexCtrl(object):
         self.ctrl = LocoCtrl(self.dt, control_dimension=control_dimension, params=np.ones(self.n_par), prosthetic=self.prosthetic)
         self.par_space = self.ctrl.par_space
 
+# -----------------------------------------------------------------------------------------------------------------
     def reset(self):
         self.ctrl.reset()
 
+# -----------------------------------------------------------------------------------------------------------------
     def update(self, obs):
         self.t += self.dt
         self.ctrl.update(self._obs2reflexobs(obs))
@@ -52,12 +54,15 @@ class OsimReflexCtrl(object):
         #    print(str_control_phase)
         return self._reflexstim2stim()
 
+# -----------------------------------------------------------------------------------------------------------------
     def set_control_params(self, params):
         self.ctrl.set_control_params(params)
 
+# -----------------------------------------------------------------------------------------------------------------
     def set_control_params_RL(self, s_leg, params):
         self.ctrl.set_control_params_RL(s_leg, params)
 
+# -----------------------------------------------------------------------------------------------------------------
     def _obs2reflexobs(self, obs):
         # refer to LocoCtrl.s_b_keys and LocoCtrl.s_l_keys
         # osim coordinate
@@ -128,6 +133,7 @@ class OsimReflexCtrl(object):
 
         return sensor_data
 
+# -----------------------------------------------------------------------------------------------------------------
     def _reflexstim2stim(self):
         stim = [self.ctrl.stim['r_leg']['HAM'], # (hamstring_r)
                 self.ctrl.stim['r_leg']['BFSH'], # (bifemsh_r)
