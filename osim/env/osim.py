@@ -610,10 +610,9 @@ class L2M2019Env(OsimEnv):
     lopt['SOL'] = 0.044
     lopt['TA'] = 0.068
 
-
-    INIT_POSE = np.array([1.0, .93, -10*np.pi/180, \
-                    3*np.pi/180, 30*np.pi/180, -10*np.pi/180, -10*np.pi/180, \
-                    3*np.pi/180, -5*np.pi/180, -40*np.pi/180, 0*np.pi/180])
+    INIT_POSE = np.array([1.5, .9, -10*np.pi/180, # forward speed, pelvis height, trunk lean
+                    3*np.pi/180, 30*np.pi/180, -10*np.pi/180, -10*np.pi/180, # [right] hip adduct, hip flex, knee extend, ankle flex
+                    3*np.pi/180, -5*np.pi/180, -40*np.pi/180, 0*np.pi/180]) # [left] hip adduct, hip flex, knee extend, ankle flex
 
     def get_model_key(self):
         return self.model
@@ -628,7 +627,7 @@ class L2M2019Env(OsimEnv):
             self.time_limit = 1000
         self.spec.timestep_limit = self.time_limit    
 
-    def __init__(self, visualize = True, integrator_accuracy = 5e-5, difficulty=0, seed=0, report=None):
+    def __init__(self, visualize=True, integrator_accuracy=5e-5, difficulty=0, seed=0, report=None):
         self.model_paths = {}
         self.model_paths['3D'] = os.path.join(os.path.dirname(__file__), '../models/gait14dof22musc_20170320.osim')
         self.model_paths['2D'] = os.path.join(os.path.dirname(__file__), '../models/gait14dof22musc_planar_20170320.osim')
@@ -645,10 +644,45 @@ class L2M2019Env(OsimEnv):
         # create target velocity field
         from envs.target import VTgtField
         self.vtgt = VTgtField(version=self.difficulty, pose_agent=np.array([0, 0, 0]), dt=self.osim_model.stepsize)
-        self.reset()
+        self.reset(seed=seed)
 
+    def reset(self, project=True, seed=None, init_state=None):
+        self.init_reward()
+        self.vtgt.reset(seed=seed)
 
-    def step(self, action, project = True):
+        # initialize state
+        self.osim_model.state = self.osim_model.model.initializeState()
+        if not init_state:
+            init_state = self.INIT_POSE
+        state = self.osim_model.get_state()
+        QQ = state.getQ()
+        QQDot = state.getQDot()
+        QQDot[3] = self.INIT_POSE[0] # forward speed
+        QQ[4] = self.INIT_POSE[1] # pelvis height
+        QQ[0] = self.INIT_POSE[2] # trunk lean
+        QQ[7] = self.INIT_POSE[3] # right hip adduct
+        QQ[6] = self.INIT_POSE[4] # right hip flex
+        QQ[13] = self.INIT_POSE[5] # right knee extend
+        QQ[15] = self.INIT_POSE[6] # right ankle flex
+        QQ[10] = self.INIT_POSE[7] # left hip adduct
+        QQ[9] = self.INIT_POSE[8] # left hip flex
+        QQ[14] = self.INIT_POSE[9] # left knee extend
+        QQ[16] = self.INIT_POSE[10] # left ankle flex
+        state.setQ(QQ)
+        state.setU(QQDot)
+        self.osim_model.set_state(state)
+
+        self.osim_model.model.equilibrateMuscles(self.osim_model.state)
+        self.osim_model.state.setTime(0)
+        self.osim_model.istep = 0
+
+        self.osim_model.reset_manager()
+        
+        if not project:
+            return self.get_state_desc()
+        return self.get_observation()
+
+    def step(self, action, project=True):
         observation, reward, done, info = super(L2M2019Env, self).step(action, project=project)
         self.t += self.osim_model.stepsize
         self.update_footstep()
@@ -682,19 +716,6 @@ class L2M2019Env(OsimEnv):
 
     def get_observation_dict(self):
         state_desc = self.get_state_desc()
-        #state_desc['joint_pos']
-        #state_desc['joint_vel']
-        #state_desc['joint_acc']
-        #state_desc['body_pos']
-        #state_desc['body_vel']
-        #state_desc['body_acc']
-        #state_desc['body_pos_rot']
-        #state_desc['body_vel_rot']
-        #state_desc['body_acc_rot']
-        #state_desc['forces']
-        #state_desc['muscles']
-        #state_desc['markers']
-        #state_desc['misc']
 
         obs_dict = {}
 
@@ -717,34 +738,30 @@ class L2M2019Env(OsimEnv):
             obs_dict[leg]['ground_reaction_forces'] = state_desc['forces']['foot_{}'.format(side)] # !!!
             # joint angles
             obs_dict[leg]['joint'] = {}
-            obs_dict[leg]['joint']['hip_roll'] = state_desc['joint_pos']['hip_{}'.format(side)][1] + .5*np.pi
-            obs_dict[leg]['joint']['hip'] = -state_desc['joint_pos']['hip_{}'.format(side)][0] + np.pi
-            obs_dict[leg]['joint']['knee'] = state_desc['joint_pos']['knee_{}'.format(side)][0] + np.pi
-            obs_dict[leg]['joint']['ankle'] = -state_desc['joint_pos']['ankle_{}'.format(side)][0] + .5*np.pi
+            obs_dict[leg]['joint']['hip_roll'] = state_desc['joint_pos']['hip_{}'.format(side)][1]
+            obs_dict[leg]['joint']['hip'] =-state_desc['joint_pos']['hip_{}'.format(side)][0]
+            obs_dict[leg]['joint']['knee'] = state_desc['joint_pos']['knee_{}'.format(side)][0]
+            obs_dict[leg]['joint']['ankle'] = state_desc['joint_pos']['ankle_{}'.format(side)][0]
             # joint angular velocities
             obs_dict[leg]['d_joint'] = {}
             obs_dict[leg]['d_joint']['hip_roll'] = state_desc['joint_vel']['hip_{}'.format(side)][1]
-            obs_dict[leg]['d_joint']['hip'] = -state_desc['joint_vel']['hip_{}'.format(side)][0]
+            obs_dict[leg]['d_joint']['hip'] = state_desc['joint_vel']['hip_{}'.format(side)][0]
             obs_dict[leg]['d_joint']['knee'] = state_desc['joint_vel']['knee_{}'.format(side)][0]
-            obs_dict[leg]['d_joint']['ankle'] = -state_desc['joint_vel']['ankle_{}'.format(side)][0]
+            obs_dict[leg]['d_joint']['ankle'] = state_desc['joint_vel']['ankle_{}'.format(side)][0]
             # muscles
             for MUS, muscle in zip( ['HAB', 'HAD', 'HFL', 'GLU', 'HAM', 'RF', 'VAS', 'BFSH', 'GAS', 'SOL', 'TA'],
                                     ['abd', 'add', 'iliopsoas', 'glut_max', 'hamstrings', 'rect_fem', 'vasti', 'bifemsh', 'gastroc', 'soleus', 'tib_ant']):
                 obs_dict[leg][MUS] = {}
-                obs_dict[leg][MUS]['f'] = state_desc['muscles']['{}_{}'.format(muscle,side)]['fiber_force']/self.Fmax[MUS]  # !!!
-                obs_dict[leg][MUS]['l'] = state_desc['muscles']['{}_{}'.format(muscle,side)]['fiber_length']/self.lopt[MUS]  # !!!
-                obs_dict[leg][MUS]['v'] = state_desc['muscles']['{}_{}'.format(muscle,side)]['fiber_velocity']/self.lopt[MUS]  # !!!
+                obs_dict[leg][MUS]['f'] = state_desc['muscles']['{}_{}'.format(muscle,side)]['fiber_force']/self.Fmax[MUS]
+                obs_dict[leg][MUS]['l'] = state_desc['muscles']['{}_{}'.format(muscle,side)]['fiber_length']/self.lopt[MUS]
+                obs_dict[leg][MUS]['v'] = state_desc['muscles']['{}_{}'.format(muscle,side)]['fiber_velocity']/self.lopt[MUS]
 
         return obs_dict
 
     ## Values in the observation vector [song!!!] update
     # vtgt_field in body frame (2*11*11 values)
-    # y, vx, vy, ax, ay, rz, vrz, arz of pelvis (8 values)
-    # x, y, vx, vy, ax, ay, rz, vrz, arz of head, torso, toes_l, toes_r, talus_l, talus_r (9*6 values)
-    # rz, vrz, arz of ankle_l, ankle_r, back, hip_l, hip_r, knee_l, knee_r (7*3 values)
-    # activation, fiber_len, fiber_vel for all muscles (3*18)
-    # x, y, vx, vy, ax, ay ofg center of mass (6)
-    # 8 + 9*6 + 8*3 + 3*18 + 6 = 146
+    # ...
+    # 242 + ... = ...
     def get_observation(self):
         obs_dict = self.get_observation_dict()
 
@@ -777,52 +794,29 @@ class L2M2019Env(OsimEnv):
         return res
 
     def get_observation_space_size(self):
-        return 169
+        return 169 # [song!!!] update
         
     def get_state_desc(self):
         d = super(L2M2019Env, self).get_state_desc()
+        #state_desc['joint_pos']
+        #state_desc['joint_vel']
+        #state_desc['joint_acc']
+        #state_desc['body_pos']
+        #state_desc['body_vel']
+        #state_desc['body_acc']
+        #state_desc['body_pos_rot']
+        #state_desc['body_vel_rot']
+        #state_desc['body_acc_rot']
+        #state_desc['forces']
+        #state_desc['muscles']
+        #state_desc['markers']
+        #state_desc['misc']
         if self.difficulty > 0:
             # v_tgt vector field in body frame ([song!!!] check below if [x, z, theta])
             pose = np.array([d['body_pos']['pelvis'][0], d['body_pos']['pelvis'][2], d['body_pos']['pelvis'][0]])
             v_tgt_field, _ = self.vtgt.update(pose)
             d['v_tgt_field'] = v_tgt_field # shape: (2, 11, 11)
         return d
-
-    def reset(self, project=True, seed=None, init_state=None):
-        self.init_reward()
-        self.vtgt.reset(seed=seed)
-
-        # initialize state
-        self.osim_model.state = self.osim_model.model.initializeState()
-        if not init_state:
-            init_state = self.INIT_POSE
-        state = self.osim_model.get_state()
-        QQ = state.getQ()
-        QQDot = state.getQDot()
-        QQDot[3] = self.INIT_POSE[0] # forward speed
-        QQ[4] = self.INIT_POSE[1] # pelvis height
-        QQ[0] = self.INIT_POSE[2] # right hip adduct
-        QQ[7] = self.INIT_POSE[3] # right hip adduct
-        QQ[6] = self.INIT_POSE[4] # right hip flex
-        QQ[13] = self.INIT_POSE[5] # right knee extend
-        QQ[15] = self.INIT_POSE[6] # right ankle flex
-        QQ[10] = self.INIT_POSE[7] # left hip adduct
-        QQ[9] = self.INIT_POSE[8] # left hip flex
-        QQ[14] = self.INIT_POSE[9] # left knee extend
-        QQ[16] = self.INIT_POSE[10] # left ankle flex
-        state.setQ(QQ)
-        state.setU(QQDot)
-        self.osim_model.set_state(state)
-
-        self.osim_model.model.equilibrateMuscles(self.osim_model.state)
-        self.osim_model.state.setTime(0)
-        self.osim_model.istep = 0
-
-        self.osim_model.reset_manager()
-        
-        if not project:
-            return self.get_state_desc()
-        return self.get_observation()
 
     def init_reward(self):
         self.init_reward_1()
@@ -902,6 +896,39 @@ class L2M2019Env(OsimEnv):
             reward += reward_footstep_0 + 100
 
         return reward
+
+
+class L2M2019CtrlEnv(L2M2019Env):
+    def __init__(self, visualize=True, integrator_accuracy=5e-5, difficulty=0, seed=0, report=None, locoCtrl=None):
+        self.locoCtrl = locoCtrl
+        super(L2M2019CtrlEnv, self).__init__(visualize=visualize, integrator_accuracy=integrator_accuracy, difficulty=difficulty, seed=seed, report=report)
+        if locoCtrl:
+            self.action_space = self.locoCtrl.par_space
+            self.action_space = convert_to_gym(self.action_space)
+            self.reset(seed=seed)
+
+    def change_model(self, model='3D', difficulty=0, seed=0):
+        super(L2M2019CtrlEnv, self).change_model(model=model, difficulty=difficulty, seed=seed)
+        if self.locoCtrl:
+            self.action_space = self.locoCtrl.par_space
+            self.action_space = convert_to_gym(self.action_space)
+            self.reset(seed=seed)
+
+    def step(self, action, project=True):
+        if self.locoCtrl is None:
+            return super(L2M2019CtrlEnv, self).step(action, project=project)
+
+        self.locoCtrl.set_control_params(action)
+        state_desc = self.get_state_desc()
+        stim = self.locoCtrl.update(state_desc)
+        return super(L2M2019CtrlEnv, self).step(stim, project=project)
+
+    def reset(self, project=True, seed=None, init_state=None):
+        if self.locoCtrl is None:
+            return super(L2M2019CtrlEnv, self).reset(project=project, seed=seed, init_state=init_state)
+
+        super(L2M2019CtrlEnv, self).reset(project=project, seed=seed, init_state=init_state)
+        self.locoCtrl.reset()
 
 
 class Arm2DEnv(OsimEnv):

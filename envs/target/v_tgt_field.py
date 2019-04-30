@@ -63,7 +63,6 @@ class VTgtField(object):
 # -----------------------------------------------------------------------------------------------------------------
     def reset(self, seed=None):
         if seed:
-            random.seed(seed)
             np.random.seed(seed)
 
         # create first sink
