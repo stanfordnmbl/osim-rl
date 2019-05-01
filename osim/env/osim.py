@@ -686,7 +686,7 @@ class L2M2019Env(OsimEnv):
         d = super(L2M2019Env, self).get_state_desc()
         pose = np.array([d['body_pos']['pelvis'][0], d['body_pos']['pelvis'][2], d['joint_pos']['ground_pelvis'][2]])
         self.v_tgt_field, self.flag_new_v_tgt_field = self.vtgt.update(pose)
-        
+
         if not project:
             return self.get_state_desc()
         return self.get_observation()
@@ -824,7 +824,7 @@ class L2M2019Env(OsimEnv):
         #state_desc['muscles']
         #state_desc['markers']
         #state_desc['misc']
-        if self.difficulty > 0:
+        if self.difficulty in [0, 1, 2]:
             # v_tgt vector field in body frame ([song!!!] check below if [x, z, theta])
             d['v_tgt_field'] = self.v_tgt_field # shape: (2, 11, 11)
         return d

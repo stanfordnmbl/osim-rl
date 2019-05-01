@@ -3,11 +3,12 @@ from osim.control.osim_loco_reflex_song2019 import OsimReflexCtrl
 import numpy as np
 
 mode = '2D'
-
+difficulty = 0
 seed=None
+
 locoCtrl = OsimReflexCtrl(mode=mode)
-env = L2M2019CtrlEnv(locoCtrl=locoCtrl, seed=seed, difficulty=2)
-env.change_model(model=mode, difficulty=2, seed=seed)
+env = L2M2019CtrlEnv(locoCtrl=locoCtrl, seed=seed, difficulty=difficulty)
+env.change_model(model=mode, difficulty=difficulty, seed=seed)
 observation = env.reset(project=True, seed=seed)
 
 # visualize v_tgt --------------------------------------------------------------

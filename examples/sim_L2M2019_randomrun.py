@@ -1,9 +1,12 @@
 from osim.env import L2M2019Env
 import numpy as np
 
+mode = '3D'
+difficulty = 0
 seed=None
-env = L2M2019Env(seed=seed, difficulty=2)
-env.change_model(model='3D', difficulty=2, seed=seed)
+
+env = L2M2019Env(seed=seed, difficulty=difficulty)
+env.change_model(model=mode, difficulty=difficulty, seed=seed)
 observation = env.reset(project=False, seed=seed)
 
 # visualize v_tgt --------------------------------------------------------------
