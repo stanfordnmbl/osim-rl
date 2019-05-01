@@ -5,11 +5,17 @@ import numpy as np
 mode = '2D'
 difficulty = 0
 seed=None
+sim_dt = 0.01
+sim_t = 20
+timstep_limit = int(round(sim_t/sim_dt))
 
-locoCtrl = OsimReflexCtrl(mode=mode)
+locoCtrl = OsimReflexCtrl(mode=mode, dt=sim_dt)
 env = L2M2019CtrlEnv(locoCtrl=locoCtrl, seed=seed, difficulty=difficulty)
 env.change_model(model=mode, difficulty=difficulty, seed=seed)
 observation = env.reset(project=True, seed=seed)
+env.spec.timestep_limit = timstep_limit+100
+
+params = np.loadtxt('./data/cma/trial_190501_L2M2019CtrlEnv_2D_best_.txt')
 
 # visualize v_tgt --------------------------------------------------------------
 import matplotlib.pyplot as plt
@@ -26,9 +32,14 @@ if flag_visualize_vtgt:
     axes[0].axis('equal')
 # visualize v_tgt --------------------------------------------------------------
 
-for i in range(300):
+total_reward = 0
+t = 0
+for i in range(timstep_limit):
+    t += sim_dt
     #import pdb; pdb.set_trace()
-    observation, reward, done, info = env.step(np.ones(locoCtrl.n_par), project = True)
+    #observation, reward, done, info = env.step(np.ones(locCtrl.n_par), project = True)
+    observation, reward, done, info = env.step(params, project = True)
+    total_reward += reward
     obs_dict = env.get_observation_dict()
     if done:
         break
@@ -59,5 +70,10 @@ for i in range(300):
         
         plt.pause(0.0001)
 # visualize v_tgt --------------------------------------------------------------
+
+print('    score={} time={}sec'.format(total_reward, t))
+
+# visualize v_tgt --------------------------------------------------------------
 if flag_visualize_vtgt:
     plt.show()
+# visualize v_tgt --------------------------------------------------------------
