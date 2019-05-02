@@ -2,9 +2,9 @@ from osim.env import L2M2019CtrlEnv
 from osim.control.osim_loco_reflex_song2019 import OsimReflexCtrl
 import numpy as np
 
-mode = '2D'
+mode = '3D'
 difficulty = 0
-seed=None
+seed=1
 sim_dt = 0.01
 sim_t = 20
 timstep_limit = int(round(sim_t/sim_dt))
@@ -15,7 +15,8 @@ env.change_model(model=mode, difficulty=difficulty, seed=seed)
 observation = env.reset(project=True, seed=seed)
 env.spec.timestep_limit = timstep_limit+100
 
-params = np.loadtxt('./data/cma/trial_190501_L2M2019CtrlEnv_2D_best_.txt')
+#params = np.loadtxt('./data/cma/trial_190501_L2M2019CtrlEnv_2D_best_.txt')
+params = np.ones(45)
 
 # visualize v_tgt --------------------------------------------------------------
 import matplotlib.pyplot as plt

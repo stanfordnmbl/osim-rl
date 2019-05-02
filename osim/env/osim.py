@@ -584,31 +584,17 @@ class L2M2019Env(OsimEnv):
     footstep['r_contact'] = 0
     footstep['l_contact'] = 0
 
-    Fmax = {}
-    Fmax['HAB'] = 4460.290481  # !!!
-    Fmax['HAD'] = 3931.8
-    Fmax['HFL'] = 2697.344262
-    Fmax['GLU'] = 3337.583607
-    Fmax['HAM'] = 4105.465574
-    Fmax['RF'] = 2191.74098360656
-    Fmax['VAS'] = 9593.95082
-    Fmax['BFSH'] = 557.11475409836
-    Fmax['GAS'] = 4690.57377
-    Fmax['SOL'] = 7924.996721
-    Fmax['TA'] = 2116.818162
-
-    lopt = {}
-    lopt['HAB'] = 0.0845  # !!!
-    lopt['HAD'] = 0.087
-    lopt['HFL'] = 0.117
-    lopt['GLU'] = 0.157
-    lopt['HAM'] = 0.069
-    lopt['RF'] = 0.076
-    lopt['VAS'] = 0.099
-    lopt['BFSH'] = 0.11
-    lopt['GAS'] = 0.051
-    lopt['SOL'] = 0.044
-    lopt['TA'] = 0.068
+    dict_muscle = { 'abd': 'HAB',
+                    'add': 'HAD',
+                    'iliopsoas': 'HFL',
+                    'glut_max': 'GLU',
+                    'hamstrings': 'HAM',
+                    'rect_fem': 'RF',
+                    'vasti': 'VAS',
+                    'bifemsh': 'BFSH',
+                    'gastroc': 'GAS',
+                    'soleus': 'SOL',
+                    'tib_ant': 'TA'}
 
     INIT_POSE = np.array([1.5, .9, -10*np.pi/180, # forward speed, pelvis height, trunk lean
                     3*np.pi/180, 30*np.pi/180, -10*np.pi/180, -10*np.pi/180, # [right] hip adduct, hip flex, knee extend, ankle flex
@@ -633,6 +619,20 @@ class L2M2019Env(OsimEnv):
         self.model_paths['2D'] = os.path.join(os.path.dirname(__file__), '../models/gait14dof22musc_planar_20170320.osim')
         self.model_path = self.model_paths[self.get_model_key()]
         super(L2M2019Env, self).__init__(visualize=visualize, integrator_accuracy=integrator_accuracy)
+
+        self.Fmax = {}
+        self.lopt = {}
+        for leg, side in zip(['r_leg', 'l_leg'], ['r', 'l']):
+            self.Fmax[leg] = {}
+            self.lopt[leg] = {}
+            for MUS, mus in zip(    ['HAB', 'HAD', 'HFL', 'GLU', 'HAM', 'RF', 'VAS', 'BFSH', 'GAS', 'SOL', 'TA'],
+                                    ['abd', 'add', 'iliopsoas', 'glut_max', 'hamstrings', 'rect_fem', 'vasti', 'bifemsh', 'gastroc', 'soleus', 'tib_ant']):
+                muscle = self.osim_model.muscleSet.get('{}_{}'.format(mus,side))
+                Fmax = muscle.getMaxIsometricForce()
+                lopt = muscle.getOptimalFiberLength()
+                self.Fmax[leg][MUS] = muscle.getMaxIsometricForce()
+                self.lopt[leg][MUS] = muscle.getOptimalFiberLength()
+
         self.set_difficulty(difficulty)
 
         if report:
@@ -644,6 +644,7 @@ class L2M2019Env(OsimEnv):
         # create target velocity field
         from envs.target import VTgtField
         self.vtgt = VTgtField(version=self.difficulty, pose_agent=np.array([0, 0, 0]), dt=self.osim_model.stepsize)
+
         self.reset(seed=seed)
 
     def reset(self, project=True, seed=None, init_state=None):
@@ -658,13 +659,14 @@ class L2M2019Env(OsimEnv):
         state = self.osim_model.get_state()
         QQ = state.getQ()
         QQDot = state.getQDot()
-        QQ[3] = 0
-        QQ[5] = 0
-        QQ[1] = 0
-        QQ[2] = 0
+        QQ[3] = 0 # x: (+) forward
+        QQ[5] = 0 # z: (+) right
+        QQDot[5] = 0 # z: (+) right
+        QQ[1] = 0 # roll
+        QQ[2] = 0 # yaw
         QQDot[3] = self.INIT_POSE[0] # forward speed
         QQ[4] = self.INIT_POSE[1] # pelvis height
-        QQ[0] = self.INIT_POSE[2] # trunk lean
+        QQ[0] = self.INIT_POSE[2] # trunk lean: (+) backward
         QQ[7] = self.INIT_POSE[3] # right hip adduct
         QQ[6] = self.INIT_POSE[4] # right hip flex
         QQ[13] = self.INIT_POSE[5] # right knee extend
@@ -673,18 +675,19 @@ class L2M2019Env(OsimEnv):
         QQ[9] = self.INIT_POSE[8] # left hip flex
         QQ[14] = self.INIT_POSE[9] # left knee extend
         QQ[16] = self.INIT_POSE[10] # left ankle flex
+
         state.setQ(QQ)
         state.setU(QQDot)
         self.osim_model.set_state(state)
-
         self.osim_model.model.equilibrateMuscles(self.osim_model.state)
+
         self.osim_model.state.setTime(0)
         self.osim_model.istep = 0
 
         self.osim_model.reset_manager()
 
         d = super(L2M2019Env, self).get_state_desc()
-        pose = np.array([d['body_pos']['pelvis'][0], d['body_pos']['pelvis'][2], d['joint_pos']['ground_pelvis'][2]])
+        pose = np.array([d['body_pos']['pelvis'][0], -d['body_pos']['pelvis'][2], d['joint_pos']['ground_pelvis'][2]])
         self.v_tgt_field, self.flag_new_v_tgt_field = self.vtgt.update(pose)
 
         if not project:
@@ -697,8 +700,9 @@ class L2M2019Env(OsimEnv):
         self.update_footstep()
 
         d = super(L2M2019Env, self).get_state_desc()
-        self.pose = np.array([d['body_pos']['pelvis'][0], d['body_pos']['pelvis'][2], d['joint_pos']['ground_pelvis'][2]])
+        self.pose = np.array([d['body_pos']['pelvis'][0], -d['body_pos']['pelvis'][2], d['joint_pos']['ground_pelvis'][2]])
         self.v_tgt_field, self.flag_new_v_tgt_field = self.vtgt.update(self.pose)
+        import pdb; pdb.set_trace()
 
         return observation, reward, done, info
 
@@ -716,8 +720,8 @@ class L2M2019Env(OsimEnv):
         state_desc = self.get_state_desc()
 
         # update contact
-        r_contact = True if state_desc['forces']['foot_r'][1] > 0 else False #[song!!!] more consertive criterion?
-        l_contact = True if state_desc['forces']['foot_l'][1] > 0 else False
+        r_contact = True if state_desc['forces']['foot_r'][1] < 0 else False #[song!!!] more consertive criterion?
+        l_contact = True if state_desc['forces']['foot_l'][1] < 0 else False
 
         self.footstep['new'] = False
         if (not self.footstep['r_contact'] and r_contact) or (not self.footstep['l_contact'] and l_contact):
@@ -734,40 +738,54 @@ class L2M2019Env(OsimEnv):
 
         obs_dict['v_tgt_field'] = state_desc['v_tgt_field']
 
-#  [song!!!] check coordinate
         # pelvis state (in local frame)
         obs_dict['pelvis'] = {}
         obs_dict['pelvis']['height'] = state_desc['body_pos']['pelvis'][1]
-        obs_dict['pelvis']['pitch'] = -state_desc['joint_pos']['ground_pelvis'][0] # positive: pitching forward
-        obs_dict['pelvis']['roll'] = state_desc['joint_pos']['ground_pelvis'][1], # positive: rolling around the forward axis
-#  [song!!!] use obs['joint_pos']['ground_pelvis'][2] to convert obs['body_vel']['pelvis'][0] and obs['body_vel']['pelvis'][2]
-        obs_dict['pelvis']['vel'] = [   state_desc['body_vel']['pelvis'][0], # positive: forward
-                                        state_desc['body_vel']['pelvis'][2], # positive: leftward
-                                        state_desc['body_vel']['pelvis'][1] ] # positive: upward
+        obs_dict['pelvis']['pitch'] = -state_desc['joint_pos']['ground_pelvis'][0] # (+) pitching forward
+        obs_dict['pelvis']['roll'] = state_desc['joint_pos']['ground_pelvis'][1] # (+) rolling around the forward axis (to the right)
+        yaw = state_desc['joint_pos']['ground_pelvis'][2]
+        dx_local, dy_local = rotate_frame(  state_desc['body_vel']['pelvis'][0],
+                                            state_desc['body_vel']['pelvis'][2],
+                                            yaw)
+        obs_dict['pelvis']['vel'] = [   dx_local, # (+) forward
+                                        -dy_local, # (+) leftward
+                                        state_desc['body_vel']['pelvis'][1] ] # (+) upward
 
         # leg state
         for leg, side in zip(['r_leg', 'l_leg'], ['r', 'l']):
             obs_dict[leg] = {}
-            obs_dict[leg]['ground_reaction_forces'] = state_desc['forces']['foot_{}'.format(side)] # !!!
+            grf = state_desc['forces']['foot_{}'.format(side)][0:3]
+            grm = state_desc['forces']['foot_{}'.format(side)][3:6]
+            grfx_local, grfy_local = rotate_frame(-grf[0], -grf[2], yaw)
+            if leg == 'r_leg':
+                obs_dict[leg]['ground_reaction_forces'] = [ grfx_local, # (+) forward
+                                                            grfy_local, # (+) lateral (rightward)
+                                                            -grf[1]] # (+) upward
+            if leg == 'l_leg':
+                obs_dict[leg]['ground_reaction_forces'] = [ grfx_local, # (+) forward
+                                                            -grfy_local, # (+) lateral (leftward)
+                                                            -grf[1]] # (+) upward
+
             # joint angles
             obs_dict[leg]['joint'] = {}
-            obs_dict[leg]['joint']['hip_roll'] = state_desc['joint_pos']['hip_{}'.format(side)][1]
-            obs_dict[leg]['joint']['hip'] =-state_desc['joint_pos']['hip_{}'.format(side)][0]
-            obs_dict[leg]['joint']['knee'] = state_desc['joint_pos']['knee_{}'.format(side)][0]
-            obs_dict[leg]['joint']['ankle'] = state_desc['joint_pos']['ankle_{}'.format(side)][0]
+            obs_dict[leg]['joint']['hip_abd'] = -state_desc['joint_pos']['hip_{}'.format(side)][1] # (+) hip abduction
+            obs_dict[leg]['joint']['hip'] = -state_desc['joint_pos']['hip_{}'.format(side)][0] # (+) extension
+            obs_dict[leg]['joint']['knee'] = state_desc['joint_pos']['knee_{}'.format(side)][0] # (+) extension
+            obs_dict[leg]['joint']['ankle'] = -state_desc['joint_pos']['ankle_{}'.format(side)][0] # (+) extension
             # joint angular velocities
             obs_dict[leg]['d_joint'] = {}
-            obs_dict[leg]['d_joint']['hip_roll'] = state_desc['joint_vel']['hip_{}'.format(side)][1]
-            obs_dict[leg]['d_joint']['hip'] = state_desc['joint_vel']['hip_{}'.format(side)][0]
-            obs_dict[leg]['d_joint']['knee'] = state_desc['joint_vel']['knee_{}'.format(side)][0]
-            obs_dict[leg]['d_joint']['ankle'] = state_desc['joint_vel']['ankle_{}'.format(side)][0]
+            obs_dict[leg]['d_joint']['hip_abd'] = -state_desc['joint_vel']['hip_{}'.format(side)][1] # (+) hip abduction
+            obs_dict[leg]['d_joint']['hip'] = -state_desc['joint_vel']['hip_{}'.format(side)][0] # (+) extension
+            obs_dict[leg]['d_joint']['knee'] = state_desc['joint_vel']['knee_{}'.format(side)][0] # (+) extension
+            obs_dict[leg]['d_joint']['ankle'] = -state_desc['joint_vel']['ankle_{}'.format(side)][0] # (+) extension
+
             # muscles
-            for MUS, muscle in zip( ['HAB', 'HAD', 'HFL', 'GLU', 'HAM', 'RF', 'VAS', 'BFSH', 'GAS', 'SOL', 'TA'],
+            for MUS, mus in zip(    ['HAB', 'HAD', 'HFL', 'GLU', 'HAM', 'RF', 'VAS', 'BFSH', 'GAS', 'SOL', 'TA'],
                                     ['abd', 'add', 'iliopsoas', 'glut_max', 'hamstrings', 'rect_fem', 'vasti', 'bifemsh', 'gastroc', 'soleus', 'tib_ant']):
                 obs_dict[leg][MUS] = {}
-                obs_dict[leg][MUS]['f'] = state_desc['muscles']['{}_{}'.format(muscle,side)]['fiber_force']/self.Fmax[MUS]
-                obs_dict[leg][MUS]['l'] = state_desc['muscles']['{}_{}'.format(muscle,side)]['fiber_length']/self.lopt[MUS]
-                obs_dict[leg][MUS]['v'] = state_desc['muscles']['{}_{}'.format(muscle,side)]['fiber_velocity']/self.lopt[MUS]
+                obs_dict[leg][MUS]['f'] = state_desc['muscles']['{}_{}'.format(mus,side)]['fiber_force']/self.Fmax[leg][MUS]
+                obs_dict[leg][MUS]['l'] = state_desc['muscles']['{}_{}'.format(mus,side)]['fiber_length']/self.lopt[leg][MUS]
+                obs_dict[leg][MUS]['v'] = state_desc['muscles']['{}_{}'.format(mus,side)]['fiber_velocity']/self.lopt[leg][MUS]
 
         return obs_dict
 
@@ -792,16 +810,16 @@ class L2M2019Env(OsimEnv):
 
         for leg in ['r_leg', 'l_leg']:
             res += obs_dict[leg]['ground_reaction_forces']
-            res.append(obs_dict[leg]['joint']['hip_roll'])
+            res.append(obs_dict[leg]['joint']['hip_abd'])
             res.append(obs_dict[leg]['joint']['hip'])
             res.append(obs_dict[leg]['joint']['knee'])
             res.append(obs_dict[leg]['joint']['ankle'])
-            res.append(obs_dict[leg]['d_joint']['hip_roll'])
+            res.append(obs_dict[leg]['d_joint']['hip_abd'])
             res.append(obs_dict[leg]['d_joint']['hip'])
             res.append(obs_dict[leg]['d_joint']['knee'])
             res.append(obs_dict[leg]['d_joint']['ankle'])
             for MUS in ['HAB', 'HAD', 'HFL', 'GLU', 'HAM', 'RF', 'VAS', 'BFSH', 'GAS', 'SOL', 'TA']:
-                res.append(obs_dict[leg][MUS]['f'])
+                res.append(obs_dict[leg][MUS]['f']) # !!! normalize
                 res.append(obs_dict[leg][MUS]['l'])
                 res.append(obs_dict[leg][MUS]['v'])
         return res
@@ -1027,3 +1045,9 @@ class Arm2DEnv(OsimEnv):
         # print(state_desc["markers"]["r_radius_styloid"]["pos"])
         # print((self.target_x, self.target_y))
         return 1.-penalty
+
+def rotate_frame(x, y, theta):
+    x_rot = np.cos(theta)*x - np.sin(theta)*y
+    y_rot = np.sin(theta)*x + np.cos(theta)*y
+    return x_rot, y_rot
+
