@@ -75,7 +75,7 @@ class CMATrainPar(object):
                 self.best_total_reward  = total_reward
                 np.savetxt(filename, params)
 
-        return -v_total_reward
+        return [-r for r in v_total_reward]
 
 if __name__ == '__main__':
     prob = CMATrainPar()
