@@ -7,11 +7,13 @@ import numpy as np
 
 trial_name = 'trial_190505_L2M2019CtrlEnv_2D_d0_'
 
-N_POP = 16
+params = np.ones(37)
+#params = np.loadtxt('./optim_data/cma/trial_181029_walk_3D_noStand_8_best.txt')
+N_POP = 16 # 8 = 4 + floor(3*log(37))
 N_PROC = 2
 TIMEOUT = 10*60
         
-def f_ind(n_gen, i_worker, params, best_total_reward):
+def f_ind(n_gen, i_worker, params):
     flag_model = '2D'
     flag_ctrl_mode = '2D' # use 2D
     seed = None
@@ -46,35 +48,34 @@ def f_ind(n_gen, i_worker, params, best_total_reward):
 
     print('    par#={} gen#={}: score={} time={}sec #step={}'.format(i_worker, n_gen, total_reward, t, env.footstep['n']))
 
-    if best_total_reward < total_reward:
-        filename = "./optim_data/cma/" + trial_name + "best_w" + str(i_worker).zfill(2) + ".txt"
-        print("")
-        print("----")
-        print("update the best score!!!!")
-        print("\tprev = %.8f" % best_total_reward)
-        print("\tcurr = %.8f" % total_reward)
-        print("\tsave to [%s]" % filename)
-        print("----")
-        print("")
-        best_total_reward = total_reward
-        np.savetxt(filename, params)
-
-    return -total_reward  # minimization
+    return total_reward  # minimization
 
 
 class CMATrainPar(object):
     def __init__(self, ):
         self.n_gen = 0
-        self.best_reward_par = -np.inf*np.ones(N_POP)
+        self.best_total_reward = -np.inf
 
     def f(self, v_params):
         self.n_gen += 1
-        v_cost = Parallel(n_jobs=N_PROC, timeout=TIMEOUT)\
-        (delayed(f_ind)(self.n_gen, i, p, self.best_reward_par[i]) for i, p in enumerate(v_params))
-        return v_cost
+        v_total_reward = Parallel(n_jobs=N_PROC, timeout=TIMEOUT)\
+        (delayed(f_ind)(self.n_gen, i, p) for i, p in enumerate(v_params))
 
-params = np.ones(37)
-#params = np.loadtxt('./optim_data/cma/trial_181029_walk_3D_noStand_8_best.txt')
+        for total_reward in v_total_reward:
+            if self.best_total_reward  < total_reward:
+                filename = "./optim_data/cma/" + trial_name + "best_w.txt"
+                print("")
+                print("----")
+                print("update the best score!!!!")
+                print("\tprev = %.8f" % self.best_total_reward )
+                print("\tcurr = %.8f" % total_reward)
+                print("\tsave to [%s]" % filename)
+                print("----")
+                print("")
+                self.best_total_reward  = total_reward
+                np.savetxt(filename, params)
+
+        return -v_total_reward
 
 if __name__ == '__main__':
     prob = CMATrainPar()
@@ -82,7 +83,7 @@ if __name__ == '__main__':
     from cmaes.solver_cma import CMASolverPar
     solver = CMASolverPar(prob)
 
-    solver.options.set("popsize", N_POP) # 8 = 4 + floor(3*log(37))
+    solver.options.set("popsize", N_POP)
     solver.options.set("maxiter", 400)
     solver.options.set("verb_filenameprefix", 'optim_data/cma/' + trial_name)
     solver.set_verbose(True)

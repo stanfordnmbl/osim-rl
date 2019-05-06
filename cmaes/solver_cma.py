@@ -23,9 +23,10 @@ class CMASolver(Solver):
         # for k, v in opts.iteritems():
         #     print k, v
         # exit(0)
+        self.p_dir = 'optim_data/cma/'
         opts.set('verb_disp', 1)
         opts.set('popsize', 8)
-        opts.set('verb_filenameprefix', 'data/cma/')
+        opts.set('verb_filenameprefix', self.p_dir)
         opts.set('maxiter', 2000)
         self.options = opts
         self.cen = None
@@ -41,7 +42,7 @@ class CMASolver(Solver):
     def create_directory(self):
         verbose = (self.options['verb_disp'] > 0)
         import os
-        path = self.options['verb_filenameprefix']
+        path = self.p_dir
         if verbose:
             print('cma path = ', path)
 
