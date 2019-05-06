@@ -4,9 +4,9 @@ import numpy as np
 
 mode = '3D'
 difficulty = 0
-seed=1
+seed=None
 sim_dt = 0.01
-sim_t = 20
+sim_t = 10
 timstep_limit = int(round(sim_t/sim_dt))
 
 locoCtrl = OsimReflexCtrl(mode=mode, dt=sim_dt)

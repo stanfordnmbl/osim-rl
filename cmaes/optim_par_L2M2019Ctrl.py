@@ -5,15 +5,15 @@ from joblib import Parallel, delayed
 import sys
 import numpy as np
 
-trial_name = 'trial_190505_L2M2019CtrlEnv_2D_d0_'
+trial_name = 'trial_190505_L2M2019CtrlEnv_d0_'
 
 N_POP = 16
 N_PROC = 2
 TIMEOUT = 10*60
         
 def f_ind(n_gen, i_worker, params, best_total_reward):
-    flag_model = '2D'
-    flag_ctrl_mode = '2D' # use 2D
+    flag_model = '3D'
+    flag_ctrl_mode = '3D' # use 2D
     seed = None
     difficulty = 0
     sim_dt = 0.01
@@ -73,8 +73,8 @@ class CMATrainPar(object):
         (delayed(f_ind)(self.n_gen, i, p, self.best_reward_par[i]) for i, p in enumerate(v_params))
         return v_cost
 
-params = np.ones(37)
-#params = np.loadtxt('./optim_data/cma/trial_181029_walk_3D_noStand_8_best.txt')
+params = np.ones(45)
+#params = np.loadtxt('./opti_data/cma/trial_181029_walk_3D_noStand_8_best.txt')
 
 if __name__ == '__main__':
     prob = CMATrainPar()

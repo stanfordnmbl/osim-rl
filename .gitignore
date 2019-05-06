@@ -2,6 +2,8 @@ dist/
 osim_rl.egg-info/
 scripts/keras-rl/rl
 build/
+sandbox/
+optim_data/
 *~
 *.log
 *#

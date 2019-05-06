@@ -702,7 +702,6 @@ class L2M2019Env(OsimEnv):
         d = super(L2M2019Env, self).get_state_desc()
         self.pose = np.array([d['body_pos']['pelvis'][0], -d['body_pos']['pelvis'][2], d['joint_pos']['ground_pelvis'][2]])
         self.v_tgt_field, self.flag_new_v_tgt_field = self.vtgt.update(self.pose)
-        import pdb; pdb.set_trace()
 
         return observation, reward, done, info
 
