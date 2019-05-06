@@ -46,7 +46,7 @@ def f_ind(n_gen, i_worker, params):
         if done:
             break
 
-    print('    par#={} gen#={}: score={} time={}sec #step={}'.format(i_worker, n_gen, total_reward, t, env.footstep['n']))
+    print('    gen#={} sim#={}: score={} time={}sec #step={}'.format(n_gen, i_worker, total_reward, t, env.footstep['n']))
 
     return total_reward  # minimization
 
@@ -75,7 +75,7 @@ class CMATrainPar(object):
                 self.best_total_reward  = total_reward
                 np.savetxt(filename, params)
 
-        return -v_total_reward
+        return [-r for r in v_total_reward]
 
 if __name__ == '__main__':
     prob = CMATrainPar()
