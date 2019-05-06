@@ -22,16 +22,20 @@ def f_ind(n_gen, i_worker, params):
     sim_t = 20
     timstep_limit = int(round(sim_t/sim_dt))
 
-    try:
-        locoCtrl = OsimReflexCtrl(mode=flag_ctrl_mode, dt=sim_dt)
-        env = L2M2019CtrlEnv(locoCtrl=locoCtrl, seed=seed, difficulty=difficulty, visualize=False)
-        env.change_model(model=flag_model, difficulty=difficulty, seed=seed)
-        observation = env.reset(project=True, seed=seed)
-    except Exception as e_msg:
-        print("simulation error!!!")
-        print(e_msg)
-        #import pdb; pdb.set_trace()
-        return 0
+    init_error = True
+    error_count = 0
+    while init_error:
+        try:
+            locoCtrl = OsimReflexCtrl(mode=flag_ctrl_mode, dt=sim_dt)
+            env = L2M2019CtrlEnv(locoCtrl=locoCtrl, seed=seed, difficulty=difficulty, visualize=False)
+            env.change_model(model=flag_model, difficulty=difficulty, seed=seed)
+            observation = env.reset(project=True, seed=seed)
+            init_error = False
+        except Exception as e_msg:
+            error_count += 1
+            print('initialization error (x{})!!!'.format(error_count))
+            #print(e_msg)
+            #import pdb; pdb.set_trace()
     env.spec.timestep_limit = timstep_limit+100
 
     total_reward = 0
@@ -58,8 +62,17 @@ class CMATrainPar(object):
 
     def f(self, v_params):
         self.n_gen += 1
-        v_total_reward = Parallel(n_jobs=N_PROC, timeout=TIMEOUT)\
-        (delayed(f_ind)(self.n_gen, i, p) for i, p in enumerate(v_params))
+        timeout_error = True
+        error_count = 0
+        while timeout_error:
+            try:
+                v_total_reward = Parallel(n_jobs=N_PROC, timeout=TIMEOUT)\
+                (delayed(f_ind)(self.n_gen, i, p) for i, p in enumerate(v_params))
+                timeout_error = False
+            except Exception as e_msg:
+                error_count += 1
+                print('timeout error (x{})!!!'.format(error_count))
+                #print(e_msg)
 
         for total_reward in v_total_reward:
             if self.best_total_reward  < total_reward:
