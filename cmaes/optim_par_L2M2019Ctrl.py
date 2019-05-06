@@ -46,7 +46,7 @@ def f_ind(n_gen, i_worker, params):
         if done:
             break
 
-    print('    par#={} gen#={}: score={} time={}sec #step={}'.format(i_worker, n_gen, total_reward, t, env.footstep['n']))
+    print('    gen#={} sim#={}: score={} time={}sec #step={}'.format(n_gen, i_worker, total_reward, t, env.footstep['n']))
 
     return total_reward  # minimization
 
