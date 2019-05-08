@@ -659,9 +659,10 @@ class L2M2019Env(OsimEnv):
         state = self.osim_model.get_state()
         QQ = state.getQ()
         QQDot = state.getQDot()
+        for i in range(17):
+            QQDot[i] = 0
         QQ[3] = 0 # x: (+) forward
         QQ[5] = 0 # z: (+) right
-        QQDot[5] = 0 # z: (+) right
         QQ[1] = 0 # roll
         QQ[2] = 0 # yaw
         QQDot[3] = self.INIT_POSE[0] # forward speed
@@ -746,8 +747,10 @@ class L2M2019Env(OsimEnv):
         dx_local, dy_local = rotate_frame(  state_desc['body_vel']['pelvis'][0],
                                             state_desc['body_vel']['pelvis'][2],
                                             yaw)
+        dz_local = state_desc['body_vel']['pelvis'][1]
         obs_dict['pelvis']['vel'] = [   dx_local, # (+) forward
                                         -dy_local, # (+) leftward
+                                        dz_local, # (+) upward
                                         state_desc['body_vel']['pelvis'][1] ] # (+) upward
 
         # leg state
@@ -890,8 +893,10 @@ class L2M2019Env(OsimEnv):
         self.d_reward['footstep']['del_t'] += dt
 
         # reward from velocity (penalize from deviating from v_tgt)
-        v_body = state_desc['body_vel']['pelvis'][0:2]
-        v_tgt = self.vtgt.get_vtgt(state_desc['body_pos']['pelvis'][0:2]).T
+
+        p_body = [state_desc['body_pos']['pelvis'][0], -state_desc['body_pos']['pelvis'][2]]
+        v_body = [state_desc['body_vel']['pelvis'][0], -state_desc['body_vel']['pelvis'][2]]
+        v_tgt = self.vtgt.get_vtgt(p_body).T
 
         self.d_reward['footstep']['del_v'] += (v_body - v_tgt)*dt
 
@@ -920,7 +925,6 @@ class L2M2019Env(OsimEnv):
         if not self.is_done() and (self.osim_model.istep >= self.spec.timestep_limit): #and self.failure_mode is 'success':
             # retrieve reward (i.e. do not penalize for the simulation terminating in a middle of a step)
             reward_footstep_0 = self.d_reward['weight']['footstep']*self.d_reward['footstep']['del_t']
-
             reward += reward_footstep_0 + 100
 
         return reward

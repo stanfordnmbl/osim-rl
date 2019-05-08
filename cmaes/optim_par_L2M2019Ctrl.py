@@ -33,7 +33,7 @@ def f_ind(n_gen, i_worker, params):
             init_error = False
         except Exception as e_msg:
             error_count += 1
-            print('initialization error (x{})!!!'.format(error_count))
+            print('\ninitialization error (x{})!!!'.format(error_count))
             #print(e_msg)
             #import pdb; pdb.set_trace()
     env.spec.timestep_limit = timstep_limit+100
@@ -50,7 +50,7 @@ def f_ind(n_gen, i_worker, params):
         if done:
             break
 
-    print('    gen#={} sim#={}: score={} time={}sec #step={}'.format(n_gen, i_worker, total_reward, t, env.footstep['n']))
+    print('\n    gen#={} sim#={}: score={} time={}sec #step={}'.format(n_gen, i_worker, total_reward, t, env.footstep['n']))
 
     return total_reward  # minimization
 
@@ -71,13 +71,13 @@ class CMATrainPar(object):
                 timeout_error = False
             except Exception as e_msg:
                 error_count += 1
-                print('timeout error (x{})!!!'.format(error_count))
+                print('\ntimeout error (x{})!!!'.format(error_count))
                 #print(e_msg)
 
         for total_reward in v_total_reward:
             if self.best_total_reward  < total_reward:
                 filename = "./optim_data/cma/" + trial_name + "best_w.txt"
-                print("")
+                print("\n")
                 print("----")
                 print("update the best score!!!!")
                 print("\tprev = %.8f" % self.best_total_reward )
