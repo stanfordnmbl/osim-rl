@@ -74,17 +74,16 @@ class OsimReflexCtrl(object):
         # !!! todo:
         # !!! need to check angle in frontal plane
         sensor_data['body']['theta'] = [obs['joint_pos']['ground_pelvis'][1],
-                                        -obs['joint_pos']['ground_pelvis'][0],
-                                        obs['joint_pos']['ground_pelvis'][2] ]
-            # theta[0]: around local x axis (pointing anterior)
-            # theta[1]: around local y axis (pointing leftward)
-            # theta[2]: around local z axis (pointing upward)
+                                        -obs['joint_pos']['ground_pelvis'][0]]
+                                        #obs['joint_pos']['ground_pelvis'][2] ] # theta[2]: around local z axis (+) upward
+            # theta[0]: around local x axis (+) forward
+            # theta[1]: around local y axis (+) leftward
         sensor_data['body']['d_pos'] = [obs['joint_vel']['ground_pelvis'][3],
-                                        obs['joint_vel']['ground_pelvis'][4],
-                                        obs['joint_vel']['ground_pelvis'][5] ]
-            # pos[0]: local x
-            # pos[1]: local y
-            # pos[2]: local z
+                                        -obs['joint_vel']['ground_pelvis'][5],
+                                        obs['joint_vel']['ground_pelvis'][4] ]
+            # pos[0]: local x (+) forward
+            # pos[1]: local y (+) leftward
+            # pos[2]: local z (+) upward
         sensor_data['body']['dtheta'] = [obs['joint_vel']['ground_pelvis'][1],
                                         -obs['joint_vel']['ground_pelvis'][0],
                                         obs['joint_vel']['ground_pelvis'][2] ]
