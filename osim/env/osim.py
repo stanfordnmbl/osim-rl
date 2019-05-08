@@ -663,8 +663,8 @@ class L2M2019Env(OsimEnv):
             QQDot[i] = 0
         QQ[3] = 0 # x: (+) forward
         QQ[5] = 0 # z: (+) right
-        QQ[1] = 0 # roll
-        QQ[2] = 0 # yaw
+        QQ[1] = 0*np.pi/180 # roll
+        QQ[2] = 0*np.pi/180 # yaw
         QQDot[3] = self.INIT_POSE[0] # forward speed
         QQ[4] = self.INIT_POSE[1] # pelvis height
         QQ[0] = self.INIT_POSE[2] # trunk lean: (+) backward
