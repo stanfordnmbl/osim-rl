@@ -2,7 +2,7 @@ from osim.env import L2M2019CtrlEnv
 from osim.control.osim_loco_reflex_song2019 import OsimReflexCtrl
 import numpy as np
 
-mode = '2D'
+mode = '3D'
 difficulty = 0
 seed=None
 sim_dt = 0.01
@@ -19,16 +19,20 @@ if mode is '2D':
     #params = np.loadtxt('./optim_data/cma/trial_190505_L2M2019CtrlEnv_2D_d0_best_w.txt')
     xrecentbest = open("./optim_data/cma/trial_190505_L2M2019CtrlEnv_2D_d0_xrecentbest.dat", "r")
     #params = np.ones(37)
+
+    #params_3 = np.append(params, [1, 1, 1, 1, 1, 1, 1, 1])
+    #np.savetxt('params_3D.txt', params_3)
 elif mode is '3D':
     #params = np.loadtxt('./optim_data/cma/trial_190505_L2M2019CtrlEnv_d0_best_w.txt')
-    xrecentbest = open("./optim_data/cma/trial_190505_L2M2019CtrlEnv_d0_xrecentbest.dat", "r")
+    params = np.loadtxt('./optim_data/params_3D_init.txt')
+    #xrecentbest = open("./optim_data/cma/trial_190505_L2M2019CtrlEnv_d0_xrecentbest.dat", "r")
     #params = np.ones(45)
 
 try:
     for line in xrecentbest:
         pass
     last = np.fromstring(line, sep=' ')
-    params = last[5:]
+    params = np.array(last[5:])
 except:
     pass
 

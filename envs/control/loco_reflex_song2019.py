@@ -257,7 +257,7 @@ class LocoCtrl(object):
                 raise Exception('error in the number of params!!')
             cp['theta_tgt_f'] = 0.0
             cp['c0_f'] = params[cp_map['c0_f']] *20*np.pi/180 + 70*np.pi/180
-            cp['cv_f'] = params[cp_map['cv_f']] *5*np.pi/180
+            cp['cv_f'] = params[cp_map['cv_f']] *10*np.pi/180
             cp['HAB_3_PG'] = params[cp_map['HAB_3_PG']] *2.0
             cp['HAB_3_DG'] = params[cp_map['HAB_3_DG']] *0.3
             cp['HAB_6_PG'] = params[cp_map['HAB_6_PG']] *2.0
