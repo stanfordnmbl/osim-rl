@@ -2,7 +2,7 @@ from osim.env import L2M2019CtrlEnv
 from osim.control.osim_loco_reflex_song2019 import OsimReflexCtrl
 import numpy as np
 
-mode = '3D'
+mode = '2D'
 difficulty = 0
 seed=None
 sim_dt = 0.01
@@ -15,8 +15,22 @@ env.change_model(model=mode, difficulty=difficulty, seed=seed)
 observation = env.reset(project=True, seed=seed)
 env.spec.timestep_limit = timstep_limit+100
 
-#params = np.loadtxt('./data/cma/trial_190501_L2M2019CtrlEnv_2D_best_.txt')
-params = np.ones(45)
+if mode is '2D':
+    #params = np.loadtxt('./optim_data/cma/trial_190505_L2M2019CtrlEnv_2D_d0_best_w.txt')
+    xrecentbest = open("./optim_data/cma/trial_190505_L2M2019CtrlEnv_2D_d0_xrecentbest.dat", "r")
+    #params = np.ones(37)
+elif mode is '3D':
+    #params = np.loadtxt('./optim_data/cma/trial_190505_L2M2019CtrlEnv_d0_best_w.txt')
+    xrecentbest = open("./optim_data/cma/trial_190505_L2M2019CtrlEnv_d0_xrecentbest.dat", "r")
+    #params = np.ones(45)
+
+try:
+    for line in xrecentbest:
+        pass
+    last = np.fromstring(line, sep=' ')
+    params = last[5:]
+except:
+    pass
 
 # visualize v_tgt --------------------------------------------------------------
 import matplotlib.pyplot as plt
@@ -35,7 +49,9 @@ if flag_visualize_vtgt:
 
 total_reward = 0
 t = 0
-for i in range(timstep_limit):
+i = 0
+while True:
+    i += 1
     t += sim_dt
     #import pdb; pdb.set_trace()
     #observation, reward, done, info = env.step(np.ones(locCtrl.n_par), project = True)
@@ -46,7 +62,7 @@ for i in range(timstep_limit):
         break
 
 # visualize v_tgt --------------------------------------------------------------
-    if flag_visualize_vtgt and i%20==0:
+    if flag_visualize_vtgt and i%50==0:
         if env.flag_new_v_tgt_field:
             q0.remove()
             X = vtgt_obj.map[0]
