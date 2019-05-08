@@ -71,8 +71,6 @@ class OsimReflexCtrl(object):
         #   [2] z: rightward
 
         sensor_data = {'body':{}, 'r_leg':{}, 'l_leg':{}}
-        # !!! todo:
-        # !!! need to check angle in frontal plane
         sensor_data['body']['theta'] = [obs['joint_pos']['ground_pelvis'][1],
                                         -obs['joint_pos']['ground_pelvis'][0]]
                                         #obs['joint_pos']['ground_pelvis'][2] ] # theta[2]: around local z axis (+) upward
@@ -87,17 +85,7 @@ class OsimReflexCtrl(object):
         sensor_data['body']['dtheta'] = [obs['joint_vel']['ground_pelvis'][1],
                                         -obs['joint_vel']['ground_pelvis'][0],
                                         obs['joint_vel']['ground_pelvis'][2] ]
-
-        #!!! check grf...
-        #!!! len(obs['forces']['pros_foot_r_0']) == 18
-        #!!! len(obs['forces']['pros_foot_r_0']) == 24
-        #temp_list = list(obs['forces']['pros_foot_r_0'][i] for i in [1, 7, 13])
-        #temp_list = list(obs['forces']['foot_r'][i] for i in [1, 7, 13, 19])
-        #print(temp_list)
-        #temp_list = list(obs['forces']['foot_l'][i] for i in [1, 7, 13, 19])
-        #print(temp_list)
-        # !!!hack!!! should calculate GRF correctly
-        #!!! scale grf...
+        
         if self.prosthetic is True:
             sensor_data['r_leg']['load_ipsi'] = -obs['forces']['pros_foot_r_0'][1]/(self.mass*self.g)
         else:
@@ -121,7 +109,6 @@ class OsimReflexCtrl(object):
             dphi_hip = obs['joint_vel']['hip_{}'.format(s_l)][2]
             sensor_data[s_leg]['dalpha'] = dphi_hip - .5*sensor_data[s_leg]['dphi_knee']
             sensor_data[s_leg]['alpha_f'] = obs['joint_pos']['hip_{}'.format(s_l)][1] + .5*np.pi
-            # !!! need to check alpha_f (left and right)
 
             sensor_data[s_leg]['F_RF'] = obs['muscles']['rect_fem_{}'.format(s_l)]['fiber_force']/self.Fmax_RF
             sensor_data[s_leg]['F_VAS'] = obs['muscles']['vasti_{}'.format(s_l)]['fiber_force']/self.Fmax_VAS
