@@ -574,8 +574,10 @@ class ProstheticsEnv(OsimEnv):
 class L2M2019Env(OsimEnv):
     model = '3D'
 
-    MASS = 75 # !!!
-    G = 9.81 # !!!
+    # from gait14dof22musc_20170320.osim
+    MASS = 75.16460000000001 # 11.777 + 2*(9.3014 + 3.7075 + 0.1 + 1.25 + 0.2166) + 34.2366
+    G = 9.80665 # from gait1dof22muscle
+
     LENGTH0 = 1 # leg length
 
     footstep = {}
@@ -614,6 +616,8 @@ class L2M2019Env(OsimEnv):
         self.spec.timestep_limit = self.time_limit    
 
     def __init__(self, visualize=True, integrator_accuracy=5e-5, difficulty=0, seed=0, report=None):
+        if difficulty not in [0, 1, 2]:
+            raise ValueError("difficulty level should be in [0, 1, 2].")
         self.model_paths = {}
         self.model_paths['3D'] = os.path.join(os.path.dirname(__file__), '../models/gait14dof22musc_20170320.osim')
         self.model_paths['2D'] = os.path.join(os.path.dirname(__file__), '../models/gait14dof22musc_planar_20170320.osim')
@@ -720,7 +724,7 @@ class L2M2019Env(OsimEnv):
         state_desc = self.get_state_desc()
 
         # update contact
-        r_contact = True if state_desc['forces']['foot_r'][1] < 0 else False #[song!!!] more consertive criterion?
+        r_contact = True if state_desc['forces']['foot_r'][1] < 0 else False
         l_contact = True if state_desc['forces']['foot_l'][1] < 0 else False
 
         self.footstep['new'] = False
@@ -751,8 +755,10 @@ class L2M2019Env(OsimEnv):
         obs_dict['pelvis']['vel'] = [   dx_local, # (+) forward
                                         -dy_local, # (+) leftward
                                         dz_local, # (+) upward
-                                        state_desc['body_vel']['pelvis'][1] ] # (+) upward
-
+                                        -state_desc['joint_pos']['ground_pelvis'][0], # (+) pitch angular velocity
+                                        state_desc['joint_pos']['ground_pelvis'][1], # (+) roll angular velocity
+                                        state_desc['joint_pos']['ground_pelvis'][2]] # (+) yaw angular velocity
+                                        
         # leg state
         for leg, side in zip(['r_leg', 'l_leg'], ['r', 'l']):
             obs_dict[leg] = {}
@@ -791,10 +797,16 @@ class L2M2019Env(OsimEnv):
 
         return obs_dict
 
-    ## Values in the observation vector [song!!!] update
-    # vtgt_field in body frame (2*11*11 values)
-    # ...
-    # 242 + ... = ...
+    ## Values in the observation vector
+    # 'vtgt_field': vtgt vectors in body frame (2*11*11 = 242 values)
+    # 'pelvis': height, pitch, roll, 6 vel (9 values)
+    # for each 'r_leg' and 'l_leg' (*2)
+    #   'ground_reaction_forces' (3 values)
+    #   'joint' (4 values)
+    #   'd_joint' (4 values)
+    #   for each of the eleven muscles (*11)
+    #       normalized 'f', 'l', 'v' (3 values)
+    # 242 + 9 + 2*(3 + 4 + 4 + 11*3) = 339
     def get_observation(self):
         obs_dict = self.get_observation_dict()
 
@@ -808,7 +820,12 @@ class L2M2019Env(OsimEnv):
         res.append(obs_dict['pelvis']['height'])
         res.append(obs_dict['pelvis']['pitch'])
         res.append(obs_dict['pelvis']['roll'])
-        res.append([i/self.LENGTH0 for i in obs_dict['pelvis']['vel']])
+        res.append(obs_dict['pelvis']['vel'][0]/self.LENGTH0)
+        res.append(obs_dict['pelvis']['vel'][1]/self.LENGTH0)
+        res.append(obs_dict['pelvis']['vel'][2]/self.LENGTH0)
+        res.append(obs_dict['pelvis']['vel'][3])
+        res.append(obs_dict['pelvis']['vel'][4])
+        res.append(obs_dict['pelvis']['vel'][5])
 
         for leg in ['r_leg', 'l_leg']:
             res += obs_dict[leg]['ground_reaction_forces']
@@ -821,13 +838,13 @@ class L2M2019Env(OsimEnv):
             res.append(obs_dict[leg]['d_joint']['knee'])
             res.append(obs_dict[leg]['d_joint']['ankle'])
             for MUS in ['HAB', 'HAD', 'HFL', 'GLU', 'HAM', 'RF', 'VAS', 'BFSH', 'GAS', 'SOL', 'TA']:
-                res.append(obs_dict[leg][MUS]['f']) # !!! normalize
+                res.append(obs_dict[leg][MUS]['f'])
                 res.append(obs_dict[leg][MUS]['l'])
                 res.append(obs_dict[leg][MUS]['v'])
         return res
 
     def get_observation_space_size(self):
-        return 169 # [song!!!] update
+        return 339
         
     def get_state_desc(self):
         d = super(L2M2019Env, self).get_state_desc()
@@ -845,8 +862,9 @@ class L2M2019Env(OsimEnv):
         #state_desc['markers']
         #state_desc['misc']
         if self.difficulty in [0, 1, 2]:
-            # v_tgt vector field in body frame ([song!!!] check below if [x, z, theta])
             d['v_tgt_field'] = self.v_tgt_field # shape: (2, 11, 11)
+        else:
+            raise ValueError("difficulty level should be in [0, 1, 2].")
         return d
 
     def init_reward(self):

@@ -47,6 +47,8 @@ class VTgtField(object):
 
 # -----------------------------------------------------------------------------------------------------------------
     def reset(self, version=1, seed=None, pose_agent=np.array([0, 0, 0])):
+        if version not in [0, 1, 2]:
+            raise ValueError("vtgt version should be in [0, 1, 2].")
         self.ver['version'] = version
         # set parameters
         s_ver = 'ver{}'.format(str(version).rjust(2,'0'))
