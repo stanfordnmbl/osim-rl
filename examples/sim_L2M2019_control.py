@@ -2,8 +2,8 @@ from osim.env import L2M2019CtrlEnv
 from osim.control.osim_loco_reflex_song2019 import OsimReflexCtrl
 import numpy as np
 
-mode = '3D'
-difficulty = 0
+mode = '2D'
+difficulty = 2
 seed=None
 sim_dt = 0.01
 sim_t = 10
