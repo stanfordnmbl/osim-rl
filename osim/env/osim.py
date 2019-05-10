@@ -734,41 +734,7 @@ class L2M2019Env(OsimEnv):
         return reward
 
 
-class L2M2019CtrlEnv(L2M2019Env):
-    def __init__(self, visualize=True, integrator_accuracy=5e-5, difficulty=0, seed=0, report=None, locoCtrl=None):
-        self.locoCtrl = locoCtrl
-        super(L2M2019CtrlEnv, self).__init__(visualize=visualize, integrator_accuracy=integrator_accuracy, difficulty=difficulty, seed=seed, report=report)
-        if locoCtrl:
-            self.action_space = self.locoCtrl.par_space
-            self.action_space = convert_to_gym(self.action_space)
-            self.reset(seed=seed)
-
-    def change_model(self, model='3D', difficulty=0, seed=0):
-        super(L2M2019CtrlEnv, self).change_model(model=model, difficulty=difficulty, seed=seed)
-        if self.locoCtrl:
-            self.action_space = self.locoCtrl.par_space
-            self.action_space = convert_to_gym(self.action_space)
-            self.reset(seed=seed)
-
-    def step(self, action, project=True):
-        if self.locoCtrl is None:
-            return super(L2M2019CtrlEnv, self).step(action, project=project)
-
-        self.locoCtrl.set_control_params(action)
-        state_desc = self.get_state_desc()
-        stim = self.locoCtrl.update(state_desc)
-        return super(L2M2019CtrlEnv, self).step(stim, project=project)
-
-    def reset(self, project=True, seed=None, init_state=None):
-        if self.locoCtrl is None:
-            return super(L2M2019CtrlEnv, self).reset(project=project, seed=seed, init_state=init_state)
-
-        super(L2M2019CtrlEnv, self).reset(project=project, seed=seed, init_state=init_state)
-        self.locoCtrl.reset()
-
-
 def rotate_frame(x, y, theta):
     x_rot = np.cos(theta)*x - np.sin(theta)*y
     y_rot = np.sin(theta)*x + np.cos(theta)*y
     return x_rot, y_rot
-

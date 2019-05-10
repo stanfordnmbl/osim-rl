@@ -1,4 +1,4 @@
-from osim.env import L2M2019Env
+from osim.env import L2M2019CtrlEnv
 from osim.control.osim_loco_reflex_song2019 import OsimReflexCtrl
 import numpy as np
 
@@ -10,12 +10,11 @@ sim_t = 10
 timstep_limit = int(round(sim_t/sim_dt))
 
 locoCtrl = OsimReflexCtrl(mode=mode, dt=sim_dt)
-env = L2M2019Env(seed=seed, difficulty=difficulty)
+env = L2M2019CtrlEnv(locoCtrl=locoCtrl, seed=seed, difficulty=difficulty)
 env.change_model(model=mode, difficulty=difficulty, seed=seed)
 observation = env.reset(project=True, seed=seed)
 env.spec.timestep_limit = timstep_limit+100
 
-# set control parameters
 if mode is '2D':
     #params = np.loadtxt('./optim_data/cma/trial_190505_L2M2019CtrlEnv_2D_d0_best_w.txt')
     xrecentbest = open("./optim_data/cma/trial_190505_L2M2019CtrlEnv_2D_d0_xrecentbest.dat", "r")
@@ -28,6 +27,7 @@ elif mode is '3D':
     params = np.loadtxt('./optim_data/params_3D_init.txt')
     #xrecentbest = open("./optim_data/cma/trial_190505_L2M2019CtrlEnv_d0_xrecentbest.dat", "r")
     #params = np.ones(45)
+
 try:
     for line in xrecentbest:
         pass
@@ -57,16 +57,9 @@ i = 0
 while True:
     i += 1
     t += sim_dt
-
-    # chage params
-    # params = myHigherLayeyController(observation)
-
-    locoCtrl.set_control_params(params)
-    action = locoCtrl.update(env.get_state_desc())
-
     #import pdb; pdb.set_trace()
     #observation, reward, done, info = env.step(np.ones(locCtrl.n_par), project = True)
-    observation, reward, done, info = env.step(action, project = True)
+    observation, reward, done, info = env.step(params, project = True)
     total_reward += reward
     obs_dict = env.get_observation_dict()
     if done:
