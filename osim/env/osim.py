@@ -328,26 +328,34 @@ class OsimEnv(gym.Env):
         # In particular, for the gym we want a vector and not a dictionary
         return self.osim_model.get_state_desc()
 
+    def get_observation_dict(self):
+        return self.osim_model.get_state_desc()
+
     def get_observation_space_size(self):
         return 0
 
     def get_action_space_size(self):
         return self.osim_model.get_action_space_size()
 
-    def reset(self, project = True):
+    def reset(self, project = True, obs_as_dict=False):
         self.osim_model.reset()
-        
+
         if not project:
             return self.get_state_desc()
+        if obs_as_dict:
+            return get_observation_dict()
         return self.get_observation()
 
-    def step(self, action, project = True):
+    def step(self, action, project = True, obs_as_dict=False):
         self.prev_state_desc = self.get_state_desc()        
         self.osim_model.actuate(action)
         self.osim_model.integrate()
 
         if project:
-            obs = self.get_observation()
+            if obs_as_dict:
+                obs = self.get_observation_dict()
+            else:
+                obs = self.get_observation()
         else:
             obs = self.get_state_desc()
             
@@ -384,9 +392,9 @@ class L2M2019Env(OsimEnv):
                     'soleus': 'SOL',
                     'tib_ant': 'TA'}
 
-    INIT_POSE = np.array([1.5, .9, -10*np.pi/180, # forward speed, pelvis height, trunk lean
-                    3*np.pi/180, 30*np.pi/180, -10*np.pi/180, -10*np.pi/180, # [right] hip adduct, hip flex, knee extend, ankle flex
-                    3*np.pi/180, -5*np.pi/180, -40*np.pi/180, 0*np.pi/180]) # [left] hip adduct, hip flex, knee extend, ankle flex
+    INIT_POSE = np.array([0, 0.94, 0, # forward speed, pelvis height, trunk lean
+                    0*np.pi/180, 0*np.pi/180, 0*np.pi/180, 0*np.pi/180, # [right] hip adduct, hip flex, knee extend, ankle flex
+                    0*np.pi/180, 0*np.pi/180, 0*np.pi/180, 0*np.pi/180]) # [left] hip adduct, hip flex, knee extend, ankle flex
 
     def get_model_key(self):
         return self.model
@@ -437,15 +445,15 @@ class L2M2019Env(OsimEnv):
 
         self.reset(seed=seed)
 
-    def reset(self, project=True, seed=None, init_state=None):
+    def reset(self, project=True, seed=None, init_pose=None, obs_as_dict=False):
         self.t = 0
         self.init_reward()
         self.vtgt.reset(seed=seed, version=self.difficulty)
 
         # initialize state
         self.osim_model.state = self.osim_model.model.initializeState()
-        if not init_state:
-            init_state = self.INIT_POSE
+        if init_pose is None:
+            init_pose = self.INIT_POSE
         state = self.osim_model.get_state()
         QQ = state.getQ()
         QQDot = state.getQDot()
@@ -455,17 +463,17 @@ class L2M2019Env(OsimEnv):
         QQ[5] = 0 # z: (+) right
         QQ[1] = 0*np.pi/180 # roll
         QQ[2] = 0*np.pi/180 # yaw
-        QQDot[3] = self.INIT_POSE[0] # forward speed
-        QQ[4] = self.INIT_POSE[1] # pelvis height
-        QQ[0] = self.INIT_POSE[2] # trunk lean: (+) backward
-        QQ[7] = self.INIT_POSE[3] # right hip adduct
-        QQ[6] = self.INIT_POSE[4] # right hip flex
-        QQ[13] = self.INIT_POSE[5] # right knee extend
-        QQ[15] = self.INIT_POSE[6] # right ankle flex
-        QQ[10] = self.INIT_POSE[7] # left hip adduct
-        QQ[9] = self.INIT_POSE[8] # left hip flex
-        QQ[14] = self.INIT_POSE[9] # left knee extend
-        QQ[16] = self.INIT_POSE[10] # left ankle flex
+        QQDot[3] = init_pose[0] # forward speed
+        QQ[4] = init_pose[1] # pelvis height
+        QQ[0] = -init_pose[2] # trunk lean: (+) backward
+        QQ[7] = -init_pose[3] # right hip abduct
+        QQ[6] = -init_pose[4] # right hip flex
+        QQ[13] = init_pose[5] # right knee extend
+        QQ[15] = -init_pose[6] # right ankle flex
+        QQ[10] = -init_pose[7] # left hip adduct
+        QQ[9] = -init_pose[8] # left hip flex
+        QQ[14] = init_pose[9] # left knee extend
+        QQ[16] = -init_pose[10] # left ankle flex
 
         state.setQ(QQ)
         state.setU(QQDot)
@@ -480,13 +488,15 @@ class L2M2019Env(OsimEnv):
         d = super(L2M2019Env, self).get_state_desc()
         pose = np.array([d['body_pos']['pelvis'][0], -d['body_pos']['pelvis'][2], d['joint_pos']['ground_pelvis'][2]])
         self.v_tgt_field, self.flag_new_v_tgt_field = self.vtgt.update(pose)
-
+        
         if not project:
             return self.get_state_desc()
+        if obs_as_dict:
+            return self.get_observation_dict()
         return self.get_observation()
 
-    def step(self, action, project=True):
-        observation, reward, done, info = super(L2M2019Env, self).step(action, project=project)
+    def step(self, action, project=True, obs_as_dict=False):
+        observation, reward, done, info = super(L2M2019Env, self).step(action, project=project, obs_as_dict=obs_as_dict)
         self.t += self.osim_model.stepsize
         self.update_footstep()
 
