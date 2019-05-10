@@ -3,11 +3,13 @@ import numpy as np
 
 mode = '3D'
 difficulty = 0
-seed=None
+seed = None
+project = True
+obs_as_dict = True
 
 env = L2M2019Env(seed=seed, difficulty=difficulty)
 env.change_model(model=mode, difficulty=difficulty, seed=seed)
-observation = env.reset(project=False, seed=seed)
+observation = env.reset(project=project, seed=seed, obs_as_dict=obs_as_dict)
 
 # visualize v_tgt --------------------------------------------------------------
 import matplotlib.pyplot as plt
@@ -25,7 +27,7 @@ if flag_visualize_vtgt:
 # visualize v_tgt --------------------------------------------------------------
 
 for i in range(300):
-    observation, reward, done, info=env.step(env.action_space.sample(), project=True)
+    observation, reward, done, info=env.step(env.action_space.sample(), project=project, obs_as_dict=obs_as_dict)
     obs_dict = env.get_observation_dict()
     if done:
         break

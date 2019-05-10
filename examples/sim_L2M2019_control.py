@@ -9,10 +9,15 @@ sim_dt = 0.01
 sim_t = 10
 timstep_limit = int(round(sim_t/sim_dt))
 
+init_pose = np.array([1.5, .9, 10*np.pi/180, # forward speed, pelvis height, trunk lean
+                -3*np.pi/180, -30*np.pi/180, -10*np.pi/180, 10*np.pi/180, # [right] hip abduct, hip extend, knee extend, ankle extend
+                -3*np.pi/180, 5*np.pi/180, -40*np.pi/180, -0*np.pi/180]) # [left] hip abduct, hip extend, knee extend, ankle extend
+
+
 locoCtrl = OsimReflexCtrl(mode=mode, dt=sim_dt)
 env = L2M2019Env(seed=seed, difficulty=difficulty)
 env.change_model(model=mode, difficulty=difficulty, seed=seed)
-observation = env.reset(project=True, seed=seed)
+obs_dict = env.reset(project=True, seed=seed, init_pose=init_pose, obs_as_dict=True)
 env.spec.timestep_limit = timstep_limit+100
 
 # set control parameters
@@ -59,16 +64,12 @@ while True:
     t += sim_dt
 
     # chage params
-    # params = myHigherLayeyController(observation)
+    # params = myHigherLayeyController(obs_dict)
 
     locoCtrl.set_control_params(params)
     action = locoCtrl.update(env.get_state_desc())
-
-    #import pdb; pdb.set_trace()
-    #observation, reward, done, info = env.step(np.ones(locCtrl.n_par), project = True)
-    observation, reward, done, info = env.step(action, project = True)
+    obs_dict, reward, done, info = env.step(action, project = True)
     total_reward += reward
-    obs_dict = env.get_observation_dict()
     if done:
         break
 
