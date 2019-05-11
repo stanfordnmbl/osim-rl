@@ -441,14 +441,12 @@ class L2M2019Env(OsimEnv):
 
         # create target velocity field
         from envs.target import VTgtField
-        self.vtgt = VTgtField(version=self.difficulty, pose_agent=np.array([0, 0, 0]), dt=self.osim_model.stepsize)
-
-        self.reset(seed=seed)
+        self.vtgt = VTgtField(visualize=visualize, version=self.difficulty, dt=self.osim_model.stepsize)
 
     def reset(self, project=True, seed=None, init_pose=None, obs_as_dict=False):
         self.t = 0
         self.init_reward()
-        self.vtgt.reset(seed=seed, version=self.difficulty)
+        self.vtgt.reset(version=self.difficulty, seed=seed)
 
         # initialize state
         self.osim_model.state = self.osim_model.model.initializeState()
