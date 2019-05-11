@@ -41,17 +41,22 @@ class VTgtField(object):
     ver['ver02']['r_target'] = .2
 
 # -----------------------------------------------------------------------------------------------------------------
-    def __init__(self, version=1, pose_agent=np.array([0, 0, 0]), dt=.001):
+    def __init__(self, visualize=True, version=1, dt=.01, dt_visualize=0.5):
         self.dt = dt
-        self.reset(version=version, pose_agent=pose_agent)
+        self.visualize = visualize
+        self.dt_visualize = dt_visualize
+        self.di_visualize = int(dt_visualize/dt)
 
 # -----------------------------------------------------------------------------------------------------------------
     def reset(self, version=1, seed=None, pose_agent=np.array([0, 0, 0])):
+        self.t = 0
+        self.i = 0
+
         if version not in [0, 1, 2]:
             raise ValueError("vtgt version should be in [0, 1, 2].")
         self.ver['version'] = version
         # set parameters
-        s_ver = 'ver{}'.format(str(version).rjust(2,'0'))
+        s_ver = 'ver{}'.format(str(version).rjust(2,'0'))   
         self.rng_xy0 = self.ver[s_ver]['rng_xy0']
         self.v_amp_rng = self.ver[s_ver]['v_amp_rng']
         self.rng_p_sink_r_th = self.ver[s_ver]['rng_p_sink_r_th']
@@ -89,6 +94,21 @@ class VTgtField(object):
             self.p_sink = self.pose_agent[0:2] + np.array([del_p_sink_x, del_p_sink_y])
             self.create_vtgt_sink(self.v_amp_rng)
 
+        if self.visualize:
+            import matplotlib.pyplot as plt
+            self.vis = {}
+            self.vis['plt'] = plt
+            _, self.vis['axes'] = self.vis['plt'].subplots(2,1, figsize=(4, 6))
+            X = self.vtgt_obj.map[0]
+            Y = self.vtgt_obj.map[1]
+            U = self.vtgt_obj.vtgt[0]
+            V = self.vtgt_obj.vtgt[1]
+            R = np.sqrt(U**2 + V**2)
+            self.vis['q0'] = self.vis['axes'][0].quiver(X, Y, U, V, R)
+            self.vis['axes'][0].axis('equal')
+            self.vis['plt'].pause(0.0001)
+
+
 # -----------------------------------------------------------------------------------------------------------------
     def create_vtgt_const(self, v_tgt):
         self.vtgt_obj.create_vtgt_const(v_tgt)
@@ -102,6 +122,9 @@ class VTgtField(object):
 
 # -----------------------------------------------------------------------------------------------------------------
     def update(self, pose):
+        self.t += self.dt
+        self.i += 1
+
         self.pose_agent = pose
 
         if self.ver['version'] is 0:
@@ -126,7 +149,33 @@ class VTgtField(object):
                 self.t_target = 0
                 flag_new_target = 1
 
-        return self.vtgt_obj.get_vtgt_field_local(pose), flag_new_target
+        v_tgt_field = self.vtgt_obj.get_vtgt_field_local(pose)
+        if self.visualize and (self.i%self.di_visualize==1 or self.t == self.dt):
+            if flag_new_target:
+                self.vis['q0'].remove()
+                X = self.vtgt_obj.map[0]
+                Y = self.vtgt_obj.map[1]
+                U = self.vtgt_obj.vtgt[0]
+                V = self.vtgt_obj.vtgt[1]
+                R = np.sqrt(U**2 + V**2)
+                self.vis['q0'] = self.vis['axes'][0].quiver(X, Y, U, V, R)
+                self.vis['axes'][0].axis('equal')
+
+            self.vis['axes'][0].plot(pose[0], pose[1], 'k.')
+            
+            X, Y = self.vtgt_obj._generate_grid(self.vtgt_obj.rng_get, self.vtgt_obj.res_get)
+            U = v_tgt_field[0]
+            V = v_tgt_field[1]
+            R = np.sqrt(U**2 + V**2)
+            self.vis['axes'][1].clear()
+            self.vis['axes'][1].quiver(X, Y, U, V, R)
+            self.vis['axes'][1].plot(0, 0, 'k.')
+            self.vis['axes'][1].axis('equal')
+            
+            self.vis['plt'].pause(0.0001)
+
+
+        return v_tgt_field, flag_new_target
 
 # -----------------------------------------------------------------------------------------------------------------
     def get_vtgt(self, xy):
