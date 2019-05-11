@@ -551,15 +551,15 @@ class L2M2019Env(OsimEnv):
         obs_dict['pelvis']['vel'] = [   dx_local, # (+) forward
                                         -dy_local, # (+) leftward
                                         dz_local, # (+) upward
-                                        -state_desc['joint_pos']['ground_pelvis'][0], # (+) pitch angular velocity
-                                        state_desc['joint_pos']['ground_pelvis'][1], # (+) roll angular velocity
-                                        state_desc['joint_pos']['ground_pelvis'][2]] # (+) yaw angular velocity
-                                        
+                                        -state_desc['joint_vel']['ground_pelvis'][0], # (+) pitch angular velocity
+                                        state_desc['joint_vel']['ground_pelvis'][1], # (+) roll angular velocity
+                                        state_desc['joint_vel']['ground_pelvis'][2]] # (+) yaw angular velocity
+
         # leg state
         for leg, side in zip(['r_leg', 'l_leg'], ['r', 'l']):
             obs_dict[leg] = {}
-            grf = state_desc['forces']['foot_{}'.format(side)][0:3]
-            grm = state_desc['forces']['foot_{}'.format(side)][3:6]
+            grf = [ f/(self.MASS*self.G) for f in state_desc['forces']['foot_{}'.format(side)][0:3] ] # forces normalized by bodyweight
+            grm = [ m/(self.MASS*self.G) for m in state_desc['forces']['foot_{}'.format(side)][3:6] ] # forces normalized by bodyweight
             grfx_local, grfy_local = rotate_frame(-grf[0], -grf[2], yaw)
             if leg == 'r_leg':
                 obs_dict[leg]['ground_reaction_forces'] = [ grfx_local, # (+) forward

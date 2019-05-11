@@ -25,8 +25,6 @@ class OsimReflexCtrl(object):
         self.t = 0
         self.mode = mode
         self.prosthetic = prosthetic
-        self.mass = 75 #approximate for intact model
-        self.g = 9.81 # gravity
 
         if self.mode is '3D':
             self.n_par = len(LocoCtrl.cp_keys)
@@ -63,59 +61,47 @@ class OsimReflexCtrl(object):
         self.ctrl.set_control_params_RL(s_leg, params)
 
 # -----------------------------------------------------------------------------------------------------------------
-    def _obs2reflexobs(self, obs):
+    def _obs2reflexobs(self, obs_dict):
         # refer to LocoCtrl.s_b_keys and LocoCtrl.s_l_keys
-        # osim coordinate
+        # coordinate in body frame
         #   [0] x: forward
-        #   [1] y: upward
-        #   [2] z: rightward
+        #   [1] y: leftward
+        #   [2] z: upward
 
         sensor_data = {'body':{}, 'r_leg':{}, 'l_leg':{}}
-        sensor_data['body']['theta'] = [obs['joint_pos']['ground_pelvis'][1],
-                                        -obs['joint_pos']['ground_pelvis'][0]]
-                                        #obs['joint_pos']['ground_pelvis'][2] ] # theta[2]: around local z axis (+) upward
-            # theta[0]: around local x axis (+) forward
-            # theta[1]: around local y axis (+) leftward
-        sensor_data['body']['d_pos'] = [obs['joint_vel']['ground_pelvis'][3],
-                                        -obs['joint_vel']['ground_pelvis'][5],
-                                        obs['joint_vel']['ground_pelvis'][4] ]
-            # pos[0]: local x (+) forward
-            # pos[1]: local y (+) leftward
-            # pos[2]: local z (+) upward
-        sensor_data['body']['dtheta'] = [obs['joint_vel']['ground_pelvis'][1],
-                                        -obs['joint_vel']['ground_pelvis'][0],
-                                        obs['joint_vel']['ground_pelvis'][2] ]
+        sensor_data['body']['theta'] = [obs_dict['pelvis']['roll'], # around local x axis
+                                        obs_dict['pelvis']['pitch']] # around local y axis
+
+        sensor_data['body']['d_pos'] = [obs_dict['pelvis']['vel'][0], # local x (+) forward
+                                        obs_dict['pelvis']['vel'][1]] # local y (+) leftward
+            
+        sensor_data['body']['dtheta'] = [obs_dict['pelvis']['vel'][4], # around local x axis
+                                        obs_dict['pelvis']['vel'][3]] # around local y axis
         
-        if self.prosthetic is True:
-            sensor_data['r_leg']['load_ipsi'] = -obs['forces']['pros_foot_r_0'][1]/(self.mass*self.g)
-        else:
-            sensor_data['r_leg']['load_ipsi'] = -obs['forces']['foot_r'][1]/(self.mass*self.g)
-        sensor_data['l_leg']['load_ipsi'] = -obs['forces']['foot_l'][1]/(self.mass*self.g)
-        for s_leg in ['r_leg', 'l_leg']:
-            s_legc = 'l_leg' if s_leg is 'r_leg' else 'r_leg'
-            s_l = 'r' if s_leg is 'r_leg' else 'l'
+        sensor_data['r_leg']['load_ipsi'] = obs_dict['r_leg']['ground_reaction_forces'][2]
+        sensor_data['l_leg']['load_ipsi'] = obs_dict['l_leg']['ground_reaction_forces'][2]
+
+        for s_leg, s_legc in zip(['r_leg', 'l_leg'], ['l_leg', 'r_leg']):
 
             sensor_data[s_leg]['contact_ipsi'] = 1 if sensor_data[s_leg]['load_ipsi'] > 0.1 else 0
             sensor_data[s_leg]['contact_contra'] = 1 if sensor_data[s_legc]['load_ipsi'] > 0.1 else 0
             sensor_data[s_leg]['load_contra'] = sensor_data[s_legc]['load_ipsi']
 
-            sensor_data[s_leg]['phi_hip'] = -obs['joint_pos']['hip_{}'.format(s_l)][0] + np.pi
-            sensor_data[s_leg]['phi_knee'] = obs['joint_pos']['knee_{}'.format(s_l)][0] + np.pi
-            sensor_data[s_leg]['phi_ankle'] = -obs['joint_pos']['ankle_{}'.format(s_l)][0] + .5*np.pi
-            sensor_data[s_leg]['dphi_knee'] = obs['joint_vel']['knee_{}'.format(s_l)][0]
+            sensor_data[s_leg]['phi_hip'] = obs_dict[s_leg]['joint']['hip'] + np.pi
+            sensor_data[s_leg]['phi_knee'] = obs_dict[s_leg]['joint']['knee'] + np.pi
+            sensor_data[s_leg]['phi_ankle'] = obs_dict[s_leg]['joint']['ankle'] + .5*np.pi
+            sensor_data[s_leg]['dphi_knee'] = obs_dict[s_leg]['d_joint']['knee']
 
             # alpha = hip - 0.5*knee
             sensor_data[s_leg]['alpha'] = sensor_data[s_leg]['phi_hip'] - .5*sensor_data[s_leg]['phi_knee']
-            dphi_hip = obs['joint_vel']['hip_{}'.format(s_l)][2]
+            dphi_hip = obs_dict[s_leg]['d_joint']['hip']
             sensor_data[s_leg]['dalpha'] = dphi_hip - .5*sensor_data[s_leg]['dphi_knee']
-            sensor_data[s_leg]['alpha_f'] = obs['joint_pos']['hip_{}'.format(s_l)][1] + .5*np.pi
+            sensor_data[s_leg]['alpha_f'] = -obs_dict[s_leg]['d_joint']['hip_abd'] + .5*np.pi
 
-            sensor_data[s_leg]['F_RF'] = obs['muscles']['rect_fem_{}'.format(s_l)]['fiber_force']/self.Fmax_RF
-            sensor_data[s_leg]['F_VAS'] = obs['muscles']['vasti_{}'.format(s_l)]['fiber_force']/self.Fmax_VAS
-
-            if self.prosthetic is False or s_leg is 'l_leg':
-                sensor_data[s_leg]['F_GAS'] = obs['muscles']['gastroc_{}'.format(s_l)]['fiber_force']/self.Fmax_GAS
-                sensor_data[s_leg]['F_SOL'] = obs['muscles']['soleus_{}'.format(s_l)]['fiber_force']/self.Fmax_SOL
+            sensor_data[s_leg]['F_RF'] = obs_dict[s_leg]['RF']['f']
+            sensor_data[s_leg]['F_VAS'] = obs_dict[s_leg]['VAS']['f']
+            sensor_data[s_leg]['F_GAS'] = obs_dict[s_leg]['GAS']['f']
+            sensor_data[s_leg]['F_SOL'] = obs_dict[s_leg]['SOL']['f']
 
         return sensor_data
 
