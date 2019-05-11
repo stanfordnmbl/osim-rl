@@ -217,7 +217,7 @@ class LocoCtrl(object):
         cp['HFL_3_PG'] = params[cp_map['HFL_3_PG']] *2.0
         cp['HFL_3_DG'] = params[cp_map['HFL_3_DG']] *1.0
         cp['HFL_6_PG'] = params[cp_map['HFL_6_PG']] *1.0
-        cp['HFL_6_DG'] = params[cp_map['HFL_6_DG']] *.5
+        cp['HFL_6_DG'] = params[cp_map['HFL_6_DG']] *.1
         cp['HFL_10_PG'] = params[cp_map['HFL_10_PG']] *1.0
 
         cp['GLU_3_PG'] = params[cp_map['GLU_3_PG']] *2.0
@@ -237,7 +237,7 @@ class LocoCtrl(object):
         cp['VAS_10_PG'] = params[cp_map['VAS_10_PG']] *.3
 
         cp['BFSH_2_PG'] = params[cp_map['BFSH_2_PG']] *2.0
-        cp['BFSH_7_DG_alpha'] = params[cp_map['BFSH_7_DG_alpha']] *0.5
+        cp['BFSH_7_DG_alpha'] = params[cp_map['BFSH_7_DG_alpha']] *0.2
         cp['BFSH_7_PG'] = params[cp_map['BFSH_7_PG']] *2.0
         cp['BFSH_8_DG'] = params[cp_map['BFSH_8_DG']] *1.0
         cp['BFSH_8_PG'] = params[cp_map['BFSH_8_DG']] *1.0

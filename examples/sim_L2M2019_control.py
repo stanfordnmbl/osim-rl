@@ -2,7 +2,7 @@ from osim.env import L2M2019Env
 from osim.control.osim_loco_reflex_song2019 import OsimReflexCtrl
 import numpy as np
 
-mode = '2D'
+mode = '3D'
 difficulty = 2
 seed=None
 sim_dt = 0.01
@@ -23,16 +23,16 @@ env.spec.timestep_limit = timstep_limit+100
 # set control parameters
 if mode is '2D':
     #params = np.loadtxt('./optim_data/cma/trial_190505_L2M2019CtrlEnv_2D_d0_best_w.txt')
-    xrecentbest = open("./optim_data/cma/trial_190505_L2M2019CtrlEnv_2D_d0_xrecentbest.dat", "r")
-    #params = np.ones(37)
+    #xrecentbest = open("./optim_data/cma/trial_190505_L2M2019CtrlEnv_2D_d0_xrecentbest.dat", "r")
+    params = np.ones(37)
 
     #params_3 = np.append(params, [1, 1, 1, 1, 1, 1, 1, 1])
     #np.savetxt('params_3D.txt', params_3)
 elif mode is '3D':
     #params = np.loadtxt('./optim_data/cma/trial_190505_L2M2019CtrlEnv_d0_best_w.txt')
-    params = np.loadtxt('./optim_data/params_3D_init.txt')
+    #params = np.loadtxt('./optim_data/params_3D_init.txt')
     #xrecentbest = open("./optim_data/cma/trial_190505_L2M2019CtrlEnv_d0_xrecentbest.dat", "r")
-    #params = np.ones(45)
+    params = np.ones(45)
 try:
     for line in xrecentbest:
         pass
@@ -67,8 +67,8 @@ while True:
     # params = myHigherLayeyController(obs_dict)
 
     locoCtrl.set_control_params(params)
-    action = locoCtrl.update(env.get_state_desc())
-    obs_dict, reward, done, info = env.step(action, project = True)
+    action = locoCtrl.update(obs_dict)
+    obs_dict, reward, done, info = env.step(action, project = True, obs_as_dict=True)
     total_reward += reward
     if done:
         break
