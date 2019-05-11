@@ -1,4 +1,4 @@
-from osim.env import L2M2019CtrlEnv
+from osim.env import L2M2019Env
 from osim.control.osim_loco_reflex_song2019 import OsimReflexCtrl
 from joblib import Parallel, delayed
 
@@ -12,7 +12,11 @@ params = np.ones(45)
 N_POP = 16 # 8 = 4 + floor(3*log(45))
 N_PROC = 2
 TIMEOUT = 10*60
-        
+      
+init_pose = np.array([1.5, .9, 10*np.pi/180, # forward speed, pelvis height, trunk lean
+        -3*np.pi/180, -30*np.pi/180, -10*np.pi/180, 10*np.pi/180, # [right] hip abduct, hip extend, knee extend, ankle extend
+        -3*np.pi/180, 5*np.pi/180, -40*np.pi/180, -0*np.pi/180]) # [left] hip abduct, hip extend, knee extend, ankle extend
+  
 def f_ind(n_gen, i_worker, params):
     flag_model = '3D'
     flag_ctrl_mode = '3D' # use 2D
@@ -27,9 +31,9 @@ def f_ind(n_gen, i_worker, params):
     while init_error:
         try:
             locoCtrl = OsimReflexCtrl(mode=flag_ctrl_mode, dt=sim_dt)
-            env = L2M2019CtrlEnv(locoCtrl=locoCtrl, seed=seed, difficulty=difficulty, visualize=False)
+            env = L2M2019Env(seed=seed, difficulty=difficulty, visualize=False)
             env.change_model(model=flag_model, difficulty=difficulty, seed=seed)
-            observation = env.reset(project=True, seed=seed)
+            obs_dict = env.reset(project=True, seed=seed, init_pose=init_pose, obs_as_dict=True)
             init_error = False
         except Exception as e_msg:
             error_count += 1
@@ -44,7 +48,9 @@ def f_ind(n_gen, i_worker, params):
     for i in range(timstep_limit+100):
         t += sim_dt
 
-        observation, reward, done, info = env.step(params, project=True)
+        locoCtrl.set_control_params(params)
+        action = locoCtrl.update(obs_dict)
+        obs_dict, reward, done, info = env.step(params, project=True, obs_as_dict=True)
         total_reward += reward
 
         if done:
