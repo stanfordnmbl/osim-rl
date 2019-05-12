@@ -2,7 +2,7 @@ from osim.env import L2M2019Env
 from osim.control.osim_loco_reflex_song2019 import OsimReflexCtrl
 import numpy as np
 
-mode = '3D'
+mode = '2D'
 difficulty = 2
 visualize=True
 seed=None
@@ -13,7 +13,6 @@ timstep_limit = int(round(sim_t/sim_dt))
 init_pose = np.array([1.5, .9, 10*np.pi/180, # forward speed, pelvis height, trunk lean
                 -3*np.pi/180, -30*np.pi/180, -10*np.pi/180, 10*np.pi/180, # [right] hip abduct, hip extend, knee extend, ankle extend
                 -3*np.pi/180, 5*np.pi/180, -40*np.pi/180, -0*np.pi/180]) # [left] hip abduct, hip extend, knee extend, ankle extend
-
 
 locoCtrl = OsimReflexCtrl(mode=mode, dt=sim_dt)
 env = L2M2019Env(visualize=visualize, seed=seed, difficulty=difficulty)
@@ -37,7 +36,7 @@ elif mode is '3D':
     #params = np.loadtxt('./optim_data/params_3D_init.txt')
     #xrecentbest = open("./optim_data/cma/trial_190505_L2M2019CtrlEnv_d0_xrecentbest.dat", "r")
     #last = np.fromstring(line, sep=' ')
-    #params = np.array(last[5:])    
+    #params = np.array(last[5:])
 
 total_reward = 0
 t = 0

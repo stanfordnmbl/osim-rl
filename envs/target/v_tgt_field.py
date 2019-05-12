@@ -98,7 +98,7 @@ class VTgtField(object):
             import matplotlib.pyplot as plt
             self.vis = {}
             self.vis['plt'] = plt
-            _, self.vis['axes'] = self.vis['plt'].subplots(2,1, figsize=(4, 6))
+            _, self.vis['axes'] = self.vis['plt'].subplots(2,1, figsize=(5, 6))
             X = self.vtgt_obj.map[0]
             Y = self.vtgt_obj.map[1]
             U = self.vtgt_obj.vtgt[0]
@@ -106,6 +106,22 @@ class VTgtField(object):
             R = np.sqrt(U**2 + V**2)
             self.vis['q0'] = self.vis['axes'][0].quiver(X, Y, U, V, R)
             self.vis['axes'][0].axis('equal')
+            self.vis['axes'][0].set_title('v$_{tgt}$ (global)')
+            self.vis['axes'][0].set_xlabel('x')
+            self.vis['axes'][0].set_ylabel('y')
+
+            v_tgt_field = self.vtgt_obj.get_vtgt_field_local(pose_agent)
+            X, Y = self.vtgt_obj._generate_grid(self.vtgt_obj.rng_get, self.vtgt_obj.res_get)
+            U = v_tgt_field[0]
+            V = v_tgt_field[1]
+            R = np.sqrt(U**2 + V**2)
+            self.vis['q1'] = self.vis['axes'][1].quiver(X, Y, U, V, R)
+            self.vis['axes'][1].axis('equal')
+            self.vis['axes'][1].set_title('v$_{tgt}$ (body)')
+            self.vis['axes'][1].set_xlabel('forward')
+            self.vis['axes'][1].set_ylabel('leftward')
+
+            self.vis['plt'].tight_layout()
             self.vis['plt'].pause(0.0001)
 
 
@@ -150,7 +166,7 @@ class VTgtField(object):
                 flag_new_target = 1
 
         v_tgt_field = self.vtgt_obj.get_vtgt_field_local(pose)
-        if self.visualize and (self.i%self.di_visualize==1 or self.t == self.dt):
+        if self.visualize and (self.di_visualize == 1 or self.i%self.di_visualize==1 or self.t == self.dt):
             if flag_new_target:
                 self.vis['q0'].remove()
                 X = self.vtgt_obj.map[0]
@@ -167,11 +183,11 @@ class VTgtField(object):
             U = v_tgt_field[0]
             V = v_tgt_field[1]
             R = np.sqrt(U**2 + V**2)
-            self.vis['axes'][1].clear()
-            self.vis['axes'][1].quiver(X, Y, U, V, R)
+            self.vis['q1'].remove()
+            self.vis['q1'] = self.vis['axes'][1].quiver(X, Y, U, V, R)
             self.vis['axes'][1].plot(0, 0, 'k.')
             self.vis['axes'][1].axis('equal')
-            
+
             self.vis['plt'].pause(0.0001)
 
 
