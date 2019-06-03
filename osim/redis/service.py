@@ -4,6 +4,9 @@ import redis
 from osim.redis import messages
 import json
 import numpy as np
+import msgpack
+import msgpack_numpy as m
+m.patch()
 import osim
 from osim.env import *
 import os
@@ -100,6 +103,7 @@ class OsimRlRedisService:
             try:
                 _redis = self.get_redis_connection()
                 command = self.get_next_command(_redis)
+                print("Command Service: ", command)
             except timeout_decorator.timeout_decorator.TimeoutError:
                 raise Exception("Timeout in step {} of simulation {}".format(self.current_step, self.simulation_count))
             command_response_channel = "default_response_channel"
@@ -107,7 +111,8 @@ class OsimRlRedisService:
             if self.verbose: print("Current Simulation : ", self.simulation_count)
             if self.seed_map and self.verbose and self.simulation_count < len(self.seed_map): print("Current SEED : ", self.seed_map[self.simulation_count])
             try:
-                command = json.loads(command.decode('utf-8'))
+                # command = json.loads(command.decode('utf-8'))
+                command = msgpack.unpackb(command, object_hook=m.decode, encoding="utf8")
                 if self.verbose: print("Received Request : ", command)
                 command_response_channel = command['response_channel']
                 if command['type'] == messages.OSIM_RL.PING:
@@ -118,7 +123,7 @@ class OsimRlRedisService:
                     _command_response['type'] = messages.OSIM_RL.PONG
                     _command_response['payload'] = {}
                     if self.verbose: print("Responding with : ", _command_response)
-                    _redis.rpush(command_response_channel, json.dumps(_command_response))
+                    _redis.rpush(command_response_channel, msgpack.packb(_command_response, default=m.encode, use_bin_type=True))
                 elif command['type'] == messages.OSIM_RL.ENV_CREATE:
                     """
                         ENV_CREATE
@@ -133,7 +138,7 @@ class OsimRlRedisService:
                         _redis.rpush( command_response_channel, self._error_template(_error_message))
                         return self._error_template(_error_message)
                     else:
-                        self.env = ProstheticsEnv(  visualize = self.visualize,
+                        self.env = L2M2019Env(  visualize = self.visualize,
                                                     difficulty = self.difficulty,
                                                     seed = self.seed_map[self.simulation_count],
                                                     report = self.report
@@ -159,7 +164,7 @@ class OsimRlRedisService:
                         _command_response['payload'] = {}
                         _command_response['payload']['observation'] = _observation
                         if self.verbose: print("Responding with : ", _command_response)
-                        _redis.rpush(command_response_channel, json.dumps(_command_response))
+                        _redis.rpush(command_response_channel, msgpack.packb(_command_response, default=m.encode, use_bin_type=True))
                 elif command['type'] == messages.OSIM_RL.ENV_RESET:
                     """
                         ENV_RESET
@@ -192,14 +197,14 @@ class OsimRlRedisService:
                         _command_response['payload'] = {}
                         _command_response['payload']['observation'] = _observation
                         if self.verbose: print("Responding with : ", _command_response)
-                        _redis.rpush(command_response_channel, json.dumps(_command_response))
+                        _redis.rpush(command_response_channel, msgpack.packb(_command_response, default=m.encode, use_bin_type=True))
                     else:
                         _command_response = {}
                         _command_response['type'] = messages.OSIM_RL.ENV_RESET_RESPONSE
                         _command_response['payload'] = {}
                         _command_response['payload']['observation'] = False
                         if self.verbose: print("Responding with : ", _command_response)
-                        _redis.rpush(command_response_channel, json.dumps(_command_response))
+                        _redis.rpush(command_response_channel, msgpack.packb(_command_response, default=m.encode, use_bin_type=True))
                 elif command['type'] == messages.OSIM_RL.ENV_STEP:
                     """
                         ENV_STEP
@@ -260,7 +265,7 @@ class OsimRlRedisService:
                             self.env_available = False
                     if self.verbose: print("Responding with : ", _command_response)
                     if self.verbose: print("Current Step : ", self.current_step)
-                    _redis.rpush(command_response_channel, json.dumps(_command_response))
+                    _redis.rpush(command_response_channel, msgpack.packb(_command_response, default=m.encode, use_bin_type=True))
                 elif command['type'] == messages.OSIM_RL.ENV_SUBMIT:
                     """
                         ENV_SUBMIT
@@ -274,21 +279,22 @@ class OsimRlRedisService:
                     _payload['simulation_rewards'] = self.simualation_rewards
                     _payload['simulation_times'] = self.simulation_times
                     _response['payload'] = _payload
-                    _redis.rpush(command_response_channel, json.dumps(_response))
+                    _redis.rpush(command_response_channel, msgpack.packb(_response, default=m.encode, use_bin_type=True))
+                elif command['type'] == messages.OSIM_RL.ENV_SUBMIT:
                     if self.verbose: print("Responding with : ", _response)
                     return _response
                 else:
                     _error = self._error_template(
                                     "UNKNOWN_REQUEST:{}".format(
-                                        json.dumps(command)))
-                    if self.verbose: print("Responding with : ", json.dumps(_error))
-                    _redis.rpush(command_response_channel, json.dumps(_error))
+                                        str(command)))
+                    if self.verbose:print("Responding with : ", _error)
+                    _redis.rpush(command_response_channel, msgpack.packb(_error, default=m.encode, use_bin_type=True))
                     return _error
 
             except Exception as e:
                 print("Error : ", str(e))
                 _redis.rpush(   command_response_channel,
-                                json.dumps(self._error_template(str(e))))
+                                msgpack.packb(self._error_template(str(e)), default=m.encode, use_bin_type=True))
                 return self._error_template(str(e))
 
 if __name__ == "__main__":

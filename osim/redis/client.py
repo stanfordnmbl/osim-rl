@@ -4,6 +4,9 @@ import os
 import pkg_resources
 import sys
 import numpy as np
+import msgpack
+import msgpack_numpy as m
+m.patch()
 import hashlib
 import random
 from osim.redis import messages
@@ -70,16 +73,17 @@ class Client(object):
             The client always pushes in the left
             and the service always pushes in the right
         """
-        if self.verbose: print("Request : ", json.dumps(_response))
-        # Push request in command_channel
-        _redis.lpush(self.command_channel, json.dumps(_request))
+        if self.verbose: print("Request : ", _response)
+        # Push request in command_channels
+        payload = msgpack.packb(_request, default=m.encode, use_bin_type=True)
+        _redis.lpush(self.command_channel, payload)
         ## TODO: Check if we can use `repr` for json.dumps string serialization
         # Wait with a blocking pop for the response
         _response = _redis.blpop(_request['response_channel'])[1]
         if self.verbose: print("Response : ", _response)
-        _response = json.loads(_response)
+        _response = msgpack.unpackb(_response, object_hook=m.decode, encoding="utf8")
         if _response['type'] == messages.OSIM_RL.ERROR:
-            raise Exception(json.dumps(_response))
+            raise Exception(str(_response))
         else:
             return _response
 
