@@ -299,7 +299,7 @@ class OsimRlRedisService:
 
 if __name__ == "__main__":
     import argparse
-    parser = argparse.ArgumentParser(description='Submit the result to crowdAI')
+    parser = argparse.ArgumentParser(description='Submit the result to AIcrowd')
     parser.add_argument('--port', dest='port', action='store', required=True)
     parser.add_argument('--service_id', dest='service_id', default='osim_rl_redis_service_id', required=False)
     parser.add_argument('--seed_map',
