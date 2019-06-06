@@ -1,10 +1,12 @@
-# NIPS2018: AI for prosthetics
+# NeurIPS 2019: Learn to Move - Walk Around
 
-This repository contains software required for participation in the NIPS 2018 Challenge: AI for prosthetics. See more details about the challenge [here](https://www.crowdai.org/challenges/nips-2018-ai-for-prosthetics-challenge). See full documentation of our reinforcement learning environment [here](https://osim-rl.stanford.edu). In this document we will give very basic steps to get you set up for the challenge!
+This repository contains software required for participation in the NeurIPS 2019 Challenge: Learn to Move - Walk Around. See more details about the challenge [here](https://www.aicrowd.com/challenges/neurips-2019-learn-to-move-walk-around). See full documentation of our reinforcement learning environment [here](https://osim-rl.stanford.edu). In this document we will give very basic steps to get you set up for the challenge!
 
-In this competition, you are tasked with developing a controller to enable a physiologically-based human model with a prosthetic leg to walk and run. You are provided with a human musculoskeletal model, a physics-based simulation environment where you can synthesize physically and physiologically accurate motion, and datasets of normal gait kinematics. You are scored based on how well your agent adapts to requested velocity vector changing in real time.
+Your task is to develop a controller for a physiologically plausible 3D human model to walk or run following velocity commands with minimum effort. You are provided with a human musculoskeletal model and a physics-based simulation environment, OpenSim. There will be three tracks:
 
-[![AI for prosthetics](https://s3-eu-west-1.amazonaws.com/kidzinski/nips-challenge/images/ai-prosthetics.jpg)](https://github.com/stanfordnmbl/osim-rl)
+1) “Best performance”
+2) “Novel ML solution”
+3) “Novel biomechanical solution,” where all the winners of each track will be awarded.
 
 To model physics and biomechanics we use [OpenSim](https://github.com/opensim-org/opensim-core) - a biomechanical physics environment for musculoskeletal simulations.
 
@@ -51,9 +53,9 @@ Note that `source activate opensim-rl` activates the anaconda virtual environmen
 
 To execute 200 iterations of the simulation enter the `python` interpreter and run the following:
 ```python
-from osim.env import ProstheticsEnv
+from osim.env import L2M2019Env
 
-env = ProstheticsEnv(visualize=True)
+env = L2M2019Env(visualize=True)
 observation = env.reset()
 for i in range(200):
     observation, reward, done, info = env.step(env.action_space.sample())
@@ -81,59 +83,11 @@ You can find details about the [observation object here](http://osim-rl.stanford
 
 ## Submission
 
-Assuming your controller is trained and is represented as a function `my_controller(observation)` returning an `action` you can submit it to [crowdAI](https://www.crowdai.org/challenges/nips-2018-ai-for-prosthetics-challenge) through interaction with an environment there:
-
-```python
-import opensim as osim
-from osim.http.client import Client
-from osim.env import ProstheticsEnv
-
-# Settings
-remote_base = "http://grader.crowdai.org:1730" # use port 1729 for Round 1
-crowdai_token = "[YOUR_CROWD_AI_TOKEN_HERE]"
-
-client = Client(remote_base)
-
-# Create environment
-observation = client.env_create(crowdai_token, env_id='ProstheticsEnv')
-
-# IMPLEMENTATION OF YOUR CONTROLLER
-# my_controller = ... (for example the one trained in keras_rl)
-
-while True:
-    [observation, reward, done, info] = client.env_step(my_controller(observation), True)
-    print(observation)
-    if done:
-        observation = client.env_reset()
-        if not observation:
-            break
-
-client.submit()
-```
-
-In the place of `[YOUR_CROWD_AI_TOKEN_HERE]` put your token from the profile page from [crowdai.org](http://crowdai.org/) website.
-
-## Evaluation
-
-Your task is to build a function `f` which takes the current state `observation` (a dictionary describing the current state) and returns the muscle excitations `action` (19-dimensional vector) maximizing the total reward. The trial ends either if the pelvis of the model falls below `0.6` meters or if you reach `300` iterations (corresponding to `10` seconds in the virtual environment). 
-
-### Round 1
-The objective is to run at a constant speed of 3 meters per second. The total reward is `9 * s - p * p` where `s` is the number of steps before reaching one of the stop criteria and `p` is the absolute difference between horizonal velocity and `3`.
- 
-### Round 2
-In the second round the task is also to follow a requested velocity vector. However, in this round the vector will change in time and it will be a random process. We will provide the distribution of this process in mid-July.
-
-You can test your model on your local machine. For submission, you will need to interact with the remote environment: [crowdAI](https://www.crowdai.org/challenges/nips-2018-ai-for-prosthetics-challenge) sends you the current `observation` and you need to send back the action you take in the given state. 
-
-Read more about [evaluation here](http://osim-rl.stanford.edu/docs/nips2018/evaluation/).
+In order to make a submission to AIcrowd, please refer to [this page](https://github.com/AIcrowd/neurips2019-learning-to-move-starter-kit)
 
 ## Rules
 
-In order to avoid overfitting to the training environment, the top participants will be asked to resubmit their solutions in the second round of the challenge. The final ranking will be based on the results from the second round.
-
-Additional rules:
-
-* Organizers reserve the right to modify challenge rules as required.
+Organizers reserve the right to modify challenge rules as required.
 
 ## Read more in [the official documentation](http://osim-rl.stanford.edu/)
 
