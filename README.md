@@ -4,9 +4,9 @@ This repository contains software required for participation in the NeurIPS 2019
 
 Your task is to develop a controller for a physiologically plausible 3D human model to walk or run following velocity commands with minimum effort. You are provided with a human musculoskeletal model and a physics-based simulation environment, OpenSim. There will be three tracks:
 
-1) “Best performance”
-2) “Novel ML solution”
-3) “Novel biomechanical solution,” where all the winners of each track will be awarded.
+1) **Best performance**
+2) **Novel ML solution**
+3) **Novel biomechanical solution**, where all the winners of each track will be awarded.
 
 To model physics and biomechanics we use [OpenSim](https://github.com/opensim-org/opensim-core) - a biomechanical physics environment for musculoskeletal simulations.
 
