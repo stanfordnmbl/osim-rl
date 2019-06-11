@@ -11,6 +11,11 @@
   - models/interface
   - models/advanced
 
+- title: 'NeurIPS 2019: Learn to move - Walk around'
+  docs:
+  - nips2019
+  - nips2019/environment
+
 - title: 'NIPS 2018: AI for prosthetics'
   docs:
   - nips2018
