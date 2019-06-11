@@ -37,6 +37,11 @@ The observation or the input to your controller consists of a local target veloc
 \\(V\\) is a \\( 2 \times 11 \times 11 \times \\) matrix, representing a \\(2D\\) vector field on an \\(11 \times 11 \\) grid. The \\(2D\\) vectors are target velocities, and the \\(11 \times 11 \\) grid is for every \\(0.5 \\) meter within \\(\pm 5\\) meters back-to-front and left-to-side. For example, in the figure below, the global target velocity map (top-left) shows that the velocity field converges to \\((2.9, 5.7)\\) and the human model is at \\((3.5, 0.0)\\) (end of the black line).
 Thus, the local target velocity map (bottom-left) shows that the human model should locomote to the right as the vector points towards the right (i.e. close to \\([0, 1]\\)).
 
+<table style="background-color: #ffffff">
+<caption align="bottom" style="padding-top: 0.3em; font-size: 0.8em">A 3D human musculoskeletal model (right) and target velocity maps (global map: top-left; local map: bottom-left).</caption>
+<tr><td><img src="./fig/L2M2019.png" alt=""/></td></tr>
+</table>
+
 \\(S\\) is a \\(97D\\) vector representing the body state.
 It consists of pelvis state, ground reaction forces joint angles and rates and muscle states.
 The keys of the observation dictionary should be self evident what the values represent.
