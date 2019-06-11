@@ -1,5 +1,5 @@
 ---
-title: Learn to Move - Walk Around
+title: L2M - Walk Around
 permalink: /docs/nips2019/
 redirect_from: /docs/nips2019/index.html
 ---
