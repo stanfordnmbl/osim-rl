@@ -10,7 +10,7 @@ Your task is to develop a controller for a physiologically plausible 3D human mo
 Formally, you build a policy \\(\pi:V \times S \rightarrow A\\) from the body state \\(S\\) and target velocity map \\(V\\) to action \\(A\\). The performance of your policy will be evaluated by the cumulative reward \\(J(\pi)\\) it receives from simulation.
 
 ## Human Model
-...todo
+...
 
 ## Reward
 
