@@ -39,7 +39,7 @@ Thus, the local target velocity map (bottom-left) shows that the human model sho
 
 <table style="background-color: #ffffff">
 <caption align="bottom" style="padding-top: 0.3em; font-size: 0.8em">A 3D human musculoskeletal model (right) and target velocity maps (global map: top-left; local map: bottom-left).</caption>
-<tr><td><img src="../fig/L2M2019.png" alt=""/></td></tr>
+<tr><td><img src="http://osim-rl.stanford.edu/docs/nips2019/fig/L2M2019.png" alt=""/></td></tr>
 </table>
 
 \\(S\\) is a \\(97D\\) vector representing the body state.
