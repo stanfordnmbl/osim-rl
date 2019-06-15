@@ -15,6 +15,7 @@
   docs:
   - nips2019
   - nips2019/environment
+  - nips2019/controller1
 
 - title: 'NIPS 2018: AI for prosthetics'
   docs:
@@ -32,7 +33,7 @@
   - nips2017/interface
   - nips2017/physics
   - nips2017/solutions
-  
+
 - title: 'Meta'
   docs:
   - faq
