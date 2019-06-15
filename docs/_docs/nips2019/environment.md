@@ -10,7 +10,26 @@ Your task is to develop a controller for a physiologically plausible 3D human mo
 Formally, you build a policy \\(\pi:V \times S \rightarrow A\\) from the body state \\(S\\) and target velocity map \\(V\\) to action \\(A\\). The performance of your policy will be evaluated by the cumulative reward \\(J(\pi)\\) it receives from simulation.
 
 ## Human Model
-...
+<img align="right" src="./fig/human_model.png" style="height:500px">
+
+* \\(3D\\) musculoskeletal model of healthy adult
+* \\(8\\) internal degrees of freedom (4 per leg)
+  * hip_abd (+: hip abduction)
+  * hip (+: extension)
+  * knee (+: extension)
+  * ankle (+: plantar flexion)
+* \\(22\\) muscles (11 per leg)
+  * HAB: hip abductor
+  * HAD: hip adductor
+  * HFL: hip flexor
+  * GLU: glutei (hip extensor)
+  * HAM: hamstrings (biarticular hip extensor and knee flexor)
+  * RF: rectus femoris (biarticular hip flexor and knee extensor)
+  * VAS: vastii (knee extensor)
+  * BFSH: biceps femoris, short head (knee flexor)
+  * GAS: gastrocnemius (biarticular knee flexor and ankle extensor)
+  * SOL: soleus (ankle extensor)
+  * TA: tibialis anterior (ankle flexor)
 
 ## Reward
 
@@ -39,7 +58,7 @@ Thus, the local target velocity map (bottom-left) shows that the human model sho
 
 <table style="background-color: #ffffff">
 <caption align="bottom" style="padding-top: 0.3em; font-size: 0.8em">A 3D human musculoskeletal model (right) and target velocity maps (global map: top-left; local map: bottom-left).</caption>
-<tr><td><img src="http://osim-rl.stanford.edu/docs/nips2019/fig/L2M2019.png" alt=""/></td></tr>
+<tr><td><img src="./fig/L2M2019.png" alt=""/></td></tr>
 </table>
 
 \\(S\\) is a \\(97D\\) vector representing the body state.
