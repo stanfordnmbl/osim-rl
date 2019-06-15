@@ -392,9 +392,19 @@ class L2M2019Env(OsimEnv):
                     'soleus': 'SOL',
                     'tib_ant': 'TA'}
 
-    INIT_POSE = np.array([0, 0.94, 0, # forward speed, pelvis height, trunk lean
-                    0*np.pi/180, 0*np.pi/180, 0*np.pi/180, 0*np.pi/180, # [right] hip adduct, hip flex, knee extend, ankle flex
-                    0*np.pi/180, 0*np.pi/180, 0*np.pi/180, 0*np.pi/180]) # [left] hip adduct, hip flex, knee extend, ankle flex
+    INIT_POSE = np.array([
+        0, # forward speed
+        0, # rightward speed
+        0.94, # pelvis height
+        0*np.pi/180, # trunk lean
+        0*np.pi/180, # [right] hip adduct
+        0*np.pi/180, # hip flex
+        0*np.pi/180, # knee extend
+        0*np.pi/180, # ankle flex
+        0*np.pi/180, # [left] hip adduct
+        0*np.pi/180, # hip flex
+        0*np.pi/180, # knee extend
+        0*np.pi/180]) # ankle flex
 
     def get_model_key(self):
         return self.model
@@ -462,16 +472,17 @@ class L2M2019Env(OsimEnv):
         QQ[1] = 0*np.pi/180 # roll
         QQ[2] = 0*np.pi/180 # yaw
         QQDot[3] = init_pose[0] # forward speed
-        QQ[4] = init_pose[1] # pelvis height
-        QQ[0] = -init_pose[2] # trunk lean: (+) backward
-        QQ[7] = -init_pose[3] # right hip abduct
-        QQ[6] = -init_pose[4] # right hip flex
-        QQ[13] = init_pose[5] # right knee extend
-        QQ[15] = -init_pose[6] # right ankle flex
-        QQ[10] = -init_pose[7] # left hip adduct
-        QQ[9] = -init_pose[8] # left hip flex
-        QQ[14] = init_pose[9] # left knee extend
-        QQ[16] = -init_pose[10] # left ankle flex
+        QQDot[5] = init_pose[1] # forward speed
+        QQ[4] = init_pose[2] # pelvis height
+        QQ[0] = -init_pose[3] # trunk lean: (+) backward
+        QQ[7] = -init_pose[4] # right hip abduct
+        QQ[6] = -init_pose[5] # right hip flex
+        QQ[13] = init_pose[6] # right knee extend
+        QQ[15] = -init_pose[7] # right ankle flex
+        QQ[10] = -init_pose[8] # left hip adduct
+        QQ[9] = -init_pose[9] # left hip flex
+        QQ[14] = init_pose[10] # left knee extend
+        QQ[16] = -init_pose[11] # left ankle flex
 
         state.setQ(QQ)
         state.setU(QQDot)
@@ -518,8 +529,8 @@ class L2M2019Env(OsimEnv):
         state_desc = self.get_state_desc()
 
         # update contact
-        r_contact = True if state_desc['forces']['foot_r'][1] < 0 else False
-        l_contact = True if state_desc['forces']['foot_l'][1] < 0 else False
+        r_contact = True if state_desc['forces']['foot_r'][1] < -0.05*(self.MASS*self.G) else False
+        l_contact = True if state_desc['forces']['foot_l'][1] < -0.05*(self.MASS*self.G) else False
 
         self.footstep['new'] = False
         if (not self.footstep['r_contact'] and r_contact) or (not self.footstep['l_contact'] and l_contact):

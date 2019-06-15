@@ -11,20 +11,11 @@ import numpy as np
 from envs.control.loco_reflex_song2019 import LocoCtrl
 
 class OsimReflexCtrl(object):
-    # from gait14dof22musc_planar_20170320
-    Fmax_RF = 2191.74098360656
-    Fmax_VAS = 9593.95082
-    Fmax_GAS = 4690.57377
-    Fmax_SOL = 7924.996721
 
-    Fmax_ABD = 4460.290481
-    Fmax_ADD = 3931.8
-
-    def __init__(self, dt=0.01, mode='3D', prosthetic=False):
+    def __init__(self, dt=0.01, mode='3D'):
         self.dt = dt
         self.t = 0
         self.mode = mode
-        self.prosthetic = prosthetic
 
         if self.mode is '3D':
             self.n_par = len(LocoCtrl.cp_keys)
@@ -33,7 +24,7 @@ class OsimReflexCtrl(object):
             self.n_par = 37
             control_dimension = 2
         self.cp_map = LocoCtrl.cp_map
-        self.ctrl = LocoCtrl(self.dt, control_dimension=control_dimension, params=np.ones(self.n_par), prosthetic=self.prosthetic)
+        self.ctrl = LocoCtrl(self.dt, control_dimension=control_dimension, params=np.ones(self.n_par))
         self.par_space = self.ctrl.par_space
 
 # -----------------------------------------------------------------------------------------------------------------
@@ -113,6 +104,9 @@ class OsimReflexCtrl(object):
                 self.ctrl.stim['r_leg']['HFL'], # (iliopsoas_r)
                 self.ctrl.stim['r_leg']['RF'], # (rect_fem_r)
                 self.ctrl.stim['r_leg']['VAS'], # (vasti_r)
+                self.ctrl.stim['r_leg']['GAS'], # (gastroc_r)
+                self.ctrl.stim['r_leg']['SOL'], # (soleus_r)
+                self.ctrl.stim['r_leg']['TA'], # (tib_ant_r)
                 self.ctrl.stim['l_leg']['HAM'], # (hamstring_l)
                 self.ctrl.stim['l_leg']['BFSH'], # (bifemsh_l)
                 self.ctrl.stim['l_leg']['GLU'], # (glut_max_l)
@@ -126,17 +120,15 @@ class OsimReflexCtrl(object):
         if self.mode is '3D':
             stim.insert(0, self.ctrl.stim['r_leg']['HAB']) # (abd_r)
             stim.insert(1, self.ctrl.stim['r_leg']['HAD']) # (add_r)
-            stim.insert(8, self.ctrl.stim['l_leg']['HAB']) # (abd_r)
-            stim.insert(9, self.ctrl.stim['l_leg']['HAD']) # (add_r)
+            stim.insert(11, self.ctrl.stim['l_leg']['HAB']) # (abd_r)
+            stim.insert(12, self.ctrl.stim['l_leg']['HAD']) # (add_r)
         elif self.mode is '2D':
+            Fmax_ABD = 4460.290481
+            Fmax_ADD = 3931.8
+
             stim.insert(0, .1)
-            stim.insert(1, .1*self.Fmax_ADD/self.Fmax_ABD)
-            stim.insert(8, .1)
-            stim.insert(9, .1*self.Fmax_ADD/self.Fmax_ABD)
+            stim.insert(1, .1*Fmax_ADD/Fmax_ABD)
+            stim.insert(11, .1)
+            stim.insert(12, .1*Fmax_ADD/Fmax_ABD)
 
-
-        if self.prosthetic is False:
-            stim.insert(8, self.ctrl.stim['r_leg']['GAS'])
-            stim.insert(9, self.ctrl.stim['r_leg']['SOL'])
-            stim.insert(10, self.ctrl.stim['r_leg']['TA'])
         return stim

@@ -79,7 +79,7 @@ class LocoCtrl(object):
         'GAS_2_FG',
         'SOL_1_FG',
         'TA_5_PG', 'TA_5_G_SOL',
-        'c0_f', 'cv_f', # 'theta_tgt_f', 'c0_f', 'cv_f',
+        'theta_tgt_f', 'c0_f', 'cv_f',
         'HAB_3_PG', 'HAB_3_DG', 'HAB_6_PG',
         'HAD_3_PG', 'HAD_3_DG', 'HAD_6_PG'
         ]
@@ -123,13 +123,11 @@ class LocoCtrl(object):
     cp_map = dict(zip(cp_keys, range(len(cp_keys))))
 
 # -----------------------------------------------------------------------------------------------------------------
-    def __init__(self, TIMESTEP, control_mode=1, control_dimension=3, params=np.ones(len(cp_keys)), prosthetic=True):
+    def __init__(self, TIMESTEP, control_mode=1, control_dimension=3, params=np.ones(len(cp_keys))):
         if self.DEBUG:
             print("===========================================")
             print("locomotion controller created in DEBUG mode")
             print("===========================================")
-
-        self.prosthetic = prosthetic
 
         self.control_mode = control_mode
         # 0: spinal control (no brain control)
@@ -253,13 +251,13 @@ class LocoCtrl(object):
         cp['TA_5_G_SOL'] = params[cp_map['TA_5_G_SOL']] *0.5
 
         if self.control_dimension == 3:
-            if len(params) != 45:
+            if len(params) != 46:
                 raise Exception('error in the number of params!!')
-            cp['theta_tgt_f'] = 0.0
-            cp['c0_f'] = params[cp_map['c0_f']] *20*np.pi/180 + 70*np.pi/180
+            cp['theta_tgt_f'] = params[cp_map['theta_tgt_f']] *5.0*np.pi/180
+            cp['c0_f'] = params[cp_map['c0_f']] *20*np.pi/180 + 60*np.pi/180
             cp['cv_f'] = params[cp_map['cv_f']] *10*np.pi/180
-            cp['HAB_3_PG'] = params[cp_map['HAB_3_PG']] *2.0
-            cp['HAB_3_DG'] = params[cp_map['HAB_3_DG']] *0.3
+            cp['HAB_3_PG'] = params[cp_map['HAB_3_PG']] *10.0
+            cp['HAB_3_DG'] = params[cp_map['HAB_3_DG']] *1
             cp['HAB_6_PG'] = params[cp_map['HAB_6_PG']] *2.0
             cp['HAD_3_PG'] = params[cp_map['HAD_3_PG']] *2.0
             cp['HAD_3_DG'] = params[cp_map['HAD_3_DG']] *0.3
@@ -528,27 +526,22 @@ class LocoCtrl(object):
             , 0)
         stim['BFSH'] = pre_stim + S_BFSH_2 + S_BFSH_7 + S_BFSH_8 + S_BFSH_9 + S_BFSH_10
 
-        if self.prosthetic is False or s_leg is 'l_leg':
-            S_GAS_2 = ph_st*np.maximum(
-                cp['GAS_2_FG']*s_l['F_GAS']
-                , 0)
-            stim['GAS'] = pre_stim + S_GAS_2
-            S_SOL_1 = ph_st*np.maximum(
-                cp['SOL_1_FG']*s_l['F_SOL']
-                , 0)
-            stim['SOL'] = pre_stim + S_SOL_1
+        S_GAS_2 = ph_st*np.maximum(
+            cp['GAS_2_FG']*s_l['F_GAS']
+            , 0)
+        stim['GAS'] = pre_stim + S_GAS_2
+        S_SOL_1 = ph_st*np.maximum(
+            cp['SOL_1_FG']*s_l['F_SOL']
+            , 0)
+        stim['SOL'] = pre_stim + S_SOL_1
 
-            S_TA_5 = np.maximum(
-                cp['TA_5_PG']*(s_l['phi_ankle'] - ankle_tgt)
-                , 0)
-            S_TA_5_st = -ph_st*np.maximum(
-                cp['TA_5_G_SOL']*S_SOL_1
-                , 0)
-            stim['TA'] = pre_stim + S_TA_5 + S_TA_5_st
-        else:
-            stim['GAS'] = pre_stim
-            stim['SOL'] = pre_stim
-            stim['TA'] = pre_stim
+        S_TA_5 = np.maximum(
+            cp['TA_5_PG']*(s_l['phi_ankle'] - ankle_tgt)
+            , 0)
+        S_TA_5_st = -ph_st*np.maximum(
+            cp['TA_5_G_SOL']*S_SOL_1
+            , 0)
+        stim['TA'] = pre_stim + S_TA_5 + S_TA_5_st
 
         for muscle in stim:
             stim[muscle] = np.clip(stim[muscle], 0.01, 1.0)
