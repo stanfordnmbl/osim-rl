@@ -392,6 +392,14 @@ class L2M2019Env(OsimEnv):
                     'soleus': 'SOL',
                     'tib_ant': 'TA'}
 
+    act2mus = [0, 1, 4, 7, 3, 2, 5, 6, 8, 9, 10, 11, 12, 15, 18, 14, 13, 16, 17, 19, 20, 21]
+    # maps muscle order in action to muscle order in gait14dof22musc_20170320.osim
+    # muscle order in action
+    #    HAB, HAD, HFL, GLU, HAM, RF, VAS, BFSH, GAS, SOL, TA 
+    # muscle order in gait14dof22musc_20170320.osim
+    #    HAB, HAD, HAM, BFSH, GLU, HFL, RF, VAS, GAS, SOL, TA
+    #    or abd, add, hamstrings, bifemsh, glut_max, iliopsoas, rect_fem, vasti, gastroc, soleus, tib_ant
+
     INIT_POSE = np.array([
         0, # forward speed
         0, # rightward speed
@@ -505,7 +513,8 @@ class L2M2019Env(OsimEnv):
         return self.get_observation()
 
     def step(self, action, project=True, obs_as_dict=False):
-        observation, reward, done, info = super(L2M2019Env, self).step(action, project=project, obs_as_dict=obs_as_dict)
+        action_mapped = [action[i] for i in self.act2mus]
+        observation, reward, done, info = super(L2M2019Env, self).step(action_mapped, project=project, obs_as_dict=obs_as_dict)
         self.t += self.osim_model.stepsize
         self.update_footstep()
 
