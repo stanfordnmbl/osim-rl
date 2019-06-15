@@ -2,9 +2,12 @@
 layout: page
 title: The core osim-rl team
 coreteam:
+  - github: smsong
+    name: Seungmoon Song
+    task: Project leader
   - github: kidzik
     name: Łukasz Kidziński
-    task: Project initiator & lead
+    task: Project initiator & co-lead
   - github: carmichaelong
     name: Carmichael Ong
     task: OpenSim modeling
