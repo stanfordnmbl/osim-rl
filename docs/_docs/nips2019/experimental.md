@@ -33,3 +33,16 @@ You can use it for supervised learning for bootstrapping your models (where for 
     }
     
 Note that in also contains inverse dynamics (predicted muscle activations from experiments) as well as EMG signals!
+
+[The third dataset](https://simtk.org/projects/muscleprops), used by Lance Rane in our NeurIPS 2018 challenge comes from the "Stabilization of Walking by Intrinsic Muscle Properties" study. It contains walking trajectories of gait with deviations due to disturbances. For more details please refer to
+
+    @article{john2013stabilisation,
+      title={Stabilisation of walking by intrinsic muscle properties revealed in a three-dimensional muscle-driven simulation},
+      author={John, Chand T and Anderson, Frank C and Higginson, Jill S and Delp, Scott L},
+      journal={Computer methods in biomechanics and biomedical engineering},
+      volume={16},
+      number={4},
+      pages={451--462},
+      year={2013},
+      publisher={Taylor \& Francis}
+    }
