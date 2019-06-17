@@ -31,6 +31,10 @@ Formally, you build a policy \\(\pi:V \times S \rightarrow A\\) from the body st
   * SOL: soleus (ankle extensor)
   * TA: tibialis anterior (ankle flexor)
 
+## Evaluation
+* Round 1 will be evaluated with *model=3D* and *difficulty=2*, where *difficulty* sets the level of the target velocity map.
+* Evaluation of Round 2 will be determined based on the leading teams performance in Round 1.
+
 ## Reward
 
 A simulation runs until either the pelvis of the human model falls below \\(0.6\\) meters or when it reaches \\(10\\) seconds (\\(i=1000\\)).
