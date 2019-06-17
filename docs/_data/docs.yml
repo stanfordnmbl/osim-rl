@@ -16,14 +16,14 @@
   - nips2019
   - nips2019/environment
   - nips2019/controller1
-
+  - nips2019/experimental
+  
 - title: 'NIPS 2018: AI for prosthetics'
   docs:
   - nips2018
   - nips2018/evaluation
   - nips2018/interface
   - nips2018/observation
-  - nips2018/experimental
   - nips2018/submission
 
 - title: 'NIPS 2017: Learning to&nbsp;Run'
