@@ -72,3 +72,7 @@ The keys of the observation dictionary should be self evident what the values re
 ## Action (output of your controller)
 
 The action space \\([0,1]^{22}\\) represents muscle activations of the \\(22\\) muscles, 11 per leg.
+
+## Submission
+
+Find the submission process [here](https://github.com/AIcrowd/neurips2019-learning-to-move-starter-kit)
