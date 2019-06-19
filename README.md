@@ -43,7 +43,7 @@ On **Linux/OSX**, run:
 These commands will create a virtual environment on your computer with the necessary simulation libraries installed. Next, you need to install our python reinforcement learning environment. Type (on all platforms):
 
     conda install -c conda-forge lapack git
-    pip install git+https://github.com/stanfordnmbl/osim-rl.git
+    pip install osim-rl
 
 If the command `python -c "import opensim"` runs smoothly, you are done! Otherwise, please refer to our [FAQ](http://osim-rl.stanford.edu/docs/faq/) section.
 
