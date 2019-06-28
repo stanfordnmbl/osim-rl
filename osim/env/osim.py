@@ -366,6 +366,8 @@ class OsimEnv(gym.Env):
 
 
 class L2M2019Env(OsimEnv):
+# to change later:
+# muscle v: normalize by max_contraction_velocity, 15 lopt / s
     model = '3D'
 
     # from gait14dof22musc_20170320.osim
@@ -414,6 +416,33 @@ class L2M2019Env(OsimEnv):
         0*np.pi/180, # knee extend
         0*np.pi/180]) # ankle flex
 
+    obs_vtgt_space = np.array([[-10] * 2*11*11, [10] * 2*11*11])
+
+    obs_body_space = np.array([[-1.0] * 97, [1.0] * 97])
+    obs_body_space[:,0] = [0, 3] # pelvis height
+    obs_body_space[:,1] = [-np.pi, np.pi] # pelvis pitch
+    obs_body_space[:,2] = [-np.pi, np.pi] # pelvis roll
+    obs_body_space[:,3] = [-20, 20] # pelvis vel (forward)
+    obs_body_space[:,4] = [-20, 20] # pelvis vel (leftward)
+    obs_body_space[:,5] = [-20, 20] # pelvis vel (upward)
+    obs_body_space[:,6] = [-10*np.pi, 10*np.pi] # pelvis angular vel (pitch)
+    obs_body_space[:,7] = [-10*np.pi, 10*np.pi] # pelvis angular vel (roll)
+    obs_body_space[:,8] = [-10*np.pi, 10*np.pi] # pelvis angular vel (yaw)
+    obs_body_space[:,[9 + x for x in [0, 44]]] = np.array([[-5, 5]]).transpose() # (r,l) ground reaction force normalized to bodyweight (forward)
+    obs_body_space[:,[10 + x for x in [0, 44]]] = np.array([[-5, 5]]).transpose() # (r, l) ground reaction force normalized to bodyweight (rightward)
+    obs_body_space[:,[11 + x for x in [0, 44]]] = np.array([[-10, 10]]).transpose() # (r, l) ground reaction force normalized to bodyweight (upward)
+    obs_body_space[:,[12 + x for x in [0, 44]]] = np.array([[-45*np.pi/180, 90*np.pi/180]]).transpose() # (r, l) joint: (+) hip abduction
+    obs_body_space[:,[13 + x for x in [0, 44]]] = np.array([[-180*np.pi/180, 45*np.pi/180]]).transpose() # (r, l) joint: (+) hip extension
+    obs_body_space[:,[14 + x for x in [0, 44]]] = np.array([[-180*np.pi/180, 0]]).transpose() # (r, l) joint: (+) knee extension
+    obs_body_space[:,[15 + x for x in [0, 44]]] = np.array([[-45*np.pi/180, 90*np.pi/180]]).transpose() # (r, l) joint: (+) ankle extension (plantarflexion)
+    obs_body_space[:,[16 + x for x in [0, 44]]] = np.array([[-5*np.pi, 5*np.pi]]).transpose() # (r, l) joint: (+) hip abduction
+    obs_body_space[:,[17 + x for x in [0, 44]]] = np.array([[-5*np.pi, 5*np.pi]]).transpose() # (r, l) joint: (+) hip extension
+    obs_body_space[:,[18 + x for x in [0, 44]]] = np.array([[-5*np.pi, 5*np.pi]]).transpose() # (r, l) joint: (+) knee extension
+    obs_body_space[:,[19 + x for x in [0, 44]]] = np.array([[-5*np.pi, 5*np.pi]]).transpose() # (r, l) joint: (+) ankle extension (plantarflexion)
+    obs_body_space[:,[20 + x for x in list(range(0, 33, 3)) + list(range(44, 77, 3))]] = np.array([[0, 2]]).transpose() # (r, l) muscle forces, normalized to maximum isometric force
+    obs_body_space[:,[21 + x for x in list(range(0, 33, 3)) + list(range(44, 77, 3))]] = np.array([[0, 2]]).transpose() # (r, l) muscle lengths, normalized to optimal length
+    obs_body_space[:,[22 + x for x in list(range(0, 33, 3)) + list(range(44, 77, 3))]] = np.array([[-20, 20]]).transpose() # (r, l) muscle velocities, normalized to optimal length per second
+
     def get_model_key(self):
         return self.model
 
@@ -460,6 +489,7 @@ class L2M2019Env(OsimEnv):
         # create target velocity field
         from envs.target import VTgtField
         self.vtgt = VTgtField(visualize=visualize, version=self.difficulty, dt=self.osim_model.stepsize)
+        self.obs_vtgt_space = self.vtgt.vtgt_space
 
     def reset(self, project=True, seed=None, init_pose=None, obs_as_dict=False):
         self.t = 0
@@ -511,6 +541,11 @@ class L2M2019Env(OsimEnv):
         if obs_as_dict:
             return self.get_observation_dict()
         return self.get_observation()
+
+    def load_model(self, model_path = None):
+        super(L2M2019Env, self).load_model(model_path)
+        observation_space = np.concatenate((self.obs_vtgt_space, self.obs_body_space), axis=1)
+        self.observation_space = convert_to_gym(observation_space)
 
     def step(self, action, project=True, obs_as_dict=False):
         action_mapped = [action[i] for i in self.act2mus]

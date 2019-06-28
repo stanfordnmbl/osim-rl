@@ -40,6 +40,8 @@ class VTgtField(object):
     ver['ver02']['rng_p_sink_r_th'] = np.array([[5, 7], [-90*np.pi/180, 90*np.pi/180]])
     ver['ver02']['r_target'] = .2
 
+    vtgt_space = np.array([ [-10] * 2*11*11, [10] * 2*11*11 ])
+
 # -----------------------------------------------------------------------------------------------------------------
     def __init__(self, visualize=True, version=1, dt=.01, dt_visualize=0.5):
         self.dt = dt
