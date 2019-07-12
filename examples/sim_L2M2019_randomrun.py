@@ -1,11 +1,13 @@
 from osim.env import L2M2019Env
 import numpy as np
 
+# this is the official setting for Learn to Move 2019 #
 mode = '3D'
 difficulty = 2
 seed = None
 project = True
 obs_as_dict = True
+# this is the official setting for Learn to Move 2019 #
 
 env = L2M2019Env(seed=seed, difficulty=difficulty)
 env.change_model(model=mode, difficulty=difficulty, seed=seed)
