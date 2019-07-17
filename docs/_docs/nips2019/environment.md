@@ -7,7 +7,9 @@ title: Environment
 </script>
 
 Your task is to develop a controller for a physiologically plausible 3D human model to move (walk or run) following velocity commands with minimum effort.
-Formally, you build a policy \\(\pi:V \times S \rightarrow A\\) from the body state \\(S\\) and target velocity map \\(V\\) to action \\(A\\). The performance of your policy will be evaluated by the cumulative reward \\(J(\pi)\\) it receives from simulation.
+Formally, you build a policy \\(\pi:V \times S \rightarrow A\\) from the body state \\(S\\) and target velocity map \\(V\\) to action \\(A\\).
+The performance of your policy will be evaluated by the cumulative reward \\(J(\pi)\\) it receives from simulation.
+The evaluation environment for Round 1 is set as `model='3D'`, `difficulty=2`, `project=True`, and `obs_as_dict=True`.
 
 ## Human Model
 <img align="right" src="http://osim-rl.stanford.edu/docs/nips2019/fig/human_model.png" style="height:400px">
@@ -75,4 +77,4 @@ The action space \\([0,1]^{22}\\) represents muscle activations of the \\(22\\) 
 
 ## Submission
 
-Find the submission process [here](https://github.com/AIcrowd/neurips2019-learning-to-move-starter-kit)
+Find the submission process [here](https://github.com/AIcrowd/neurips2019-learning-to-move-starter-kit).
