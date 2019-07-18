@@ -337,7 +337,7 @@ class OsimEnv(gym.Env):
     def get_action_space_size(self):
         return self.osim_model.get_action_space_size()
 
-    def reset(self, project = True, obs_as_dict=False):
+    def reset(self, project=True, obs_as_dict=True):
         self.osim_model.reset()
 
         if not project:
@@ -346,7 +346,7 @@ class OsimEnv(gym.Env):
             return get_observation_dict()
         return self.get_observation()
 
-    def step(self, action, project = True, obs_as_dict=False):
+    def step(self, action, project=True, obs_as_dict=True):
         self.prev_state_desc = self.get_state_desc()        
         self.osim_model.actuate(action)
         self.osim_model.integrate()
@@ -547,7 +547,7 @@ class L2M2019Env(OsimEnv):
         observation_space = np.concatenate((self.obs_vtgt_space, self.obs_body_space), axis=1)
         self.observation_space = convert_to_gym(observation_space)
 
-    def step(self, action, project=True, obs_as_dict=False):
+    def step(self, action, project=True, obs_as_dict=True):
         action_mapped = [action[i] for i in self.act2mus]
         observation, reward, done, info = super(L2M2019Env, self).step(action_mapped, project=project, obs_as_dict=obs_as_dict)
         self.t += self.osim_model.stepsize
