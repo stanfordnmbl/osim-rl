@@ -433,7 +433,7 @@ class L2M2019Env(OsimEnv):
     obs_body_space[:,[11 + x for x in [0, 44]]] = np.array([[-10, 10]]).transpose() # (r, l) ground reaction force normalized to bodyweight (upward)
     obs_body_space[:,[12 + x for x in [0, 44]]] = np.array([[-45*np.pi/180, 90*np.pi/180]]).transpose() # (r, l) joint: (+) hip abduction
     obs_body_space[:,[13 + x for x in [0, 44]]] = np.array([[-180*np.pi/180, 45*np.pi/180]]).transpose() # (r, l) joint: (+) hip extension
-    obs_body_space[:,[14 + x for x in [0, 44]]] = np.array([[-180*np.pi/180, 0]]).transpose() # (r, l) joint: (+) knee extension
+    obs_body_space[:,[14 + x for x in [0, 44]]] = np.array([[-180*np.pi/180, 15*np.pi/180]]).transpose() # (r, l) joint: (+) knee extension
     obs_body_space[:,[15 + x for x in [0, 44]]] = np.array([[-45*np.pi/180, 90*np.pi/180]]).transpose() # (r, l) joint: (+) ankle extension (plantarflexion)
     obs_body_space[:,[16 + x for x in [0, 44]]] = np.array([[-5*np.pi, 5*np.pi]]).transpose() # (r, l) joint: (+) hip abduction
     obs_body_space[:,[17 + x for x in [0, 44]]] = np.array([[-5*np.pi, 5*np.pi]]).transpose() # (r, l) joint: (+) hip extension
