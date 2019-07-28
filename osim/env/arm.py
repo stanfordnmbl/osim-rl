@@ -47,7 +47,7 @@ class Arm2DEnv(OsimEnv):
         theta = random.uniform(math.pi*9/8, math.pi*12/8)
         radius = random.uniform(0.5, 0.65)
         self.target_x = math.cos(theta) * radius 
-        self.target_y = math.sin(theta) * radius
+        self.target_y = math.sin(theta) * radius + 0.8
 
         state = self.osim_model.get_state()
 
