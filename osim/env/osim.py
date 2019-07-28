@@ -255,12 +255,6 @@ class OsimModel(object):
         # Integrate till the new endtime
         self.state = self.manager.integrate(self.stepsize * self.istep)
 
-
-class Spec(object):
-    def __init__(self, *args, **kwargs):
-        self.id = 0
-        self.timestep_limit = 300
-
 ## OpenAI interface
 # The amin purpose of this class is to provide wrap all 
 # the functions of OpenAI gym. It is still an abstract
@@ -343,7 +337,7 @@ class OsimEnv(gym.Env):
         if not project:
             return self.get_state_desc()
         if obs_as_dict:
-            return get_observation_dict()
+            return self.get_observation_dict()
         return self.get_observation()
 
     def step(self, action, project=True, obs_as_dict=True):
@@ -364,6 +358,11 @@ class OsimEnv(gym.Env):
     def render(self, mode='human', close=False):
         return
 
+
+class Spec(object):
+    def __init__(self, *args, **kwargs):
+        self.id = 0
+        self.timestep_limit = 300
 
 class L2M2019Env(OsimEnv):
 # to change later:
