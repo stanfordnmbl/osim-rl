@@ -106,10 +106,13 @@ class Arm2DEnv(OsimEnv):
 
 
 class Arm2DVecEnv(Arm2DEnv):
-    def reset(self, obs_as_dict=False):
+    def reset(self, obs_as_dict=False, verbose=True, logfile='arm_log.txt'):
         obs = super(Arm2DVecEnv, self).reset(obs_as_dict=obs_as_dict)
         if np.isnan(obs).any():
             obs = np.nan_to_num(obs)
+        self.verbose = verbose
+        if self.verbose:
+            self.log = Logfile(logfile)
         return obs
     def step(self, action, obs_as_dict=False):
         if np.isnan(action).any():
@@ -117,4 +120,16 @@ class Arm2DVecEnv(Arm2DEnv):
         obs, reward, done, info = super(Arm2DVecEnv, self).step(action, obs_as_dict=obs_as_dict)
         if np.isnan(obs).any():
             obs = np.nan_to_num(obs)
+        if self.verbose:
+            self.log.write(action)
+            self.log.write(obs)
         return obs, reward, done, info
+
+class Logfile(object):
+    def __init__(self,file_name):
+        self.file_name = file_name
+
+    def write(self,msg):
+        with open(self.file_name,'a') as myFile:
+            myFile.write('\n\n')
+            np.savetxt(myFile, msg, delimiter=',')
