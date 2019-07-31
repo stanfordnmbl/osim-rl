@@ -44,10 +44,14 @@ class Arm2DEnv(OsimEnv):
         return 16 #46
 
     def generate_new_target(self):
-        theta = random.uniform(math.pi*9/8, math.pi*12/8)
-        radius = random.uniform(0.5, 0.65)
+        theta = random.uniform(math.pi*0, math.pi*2/3)
+        radius = random.uniform(0.3, 0.65)
         self.target_x = math.cos(theta) * radius 
-        self.target_y = math.sin(theta) * radius + 0.8
+        self.target_y = -math.sin(theta) * radius + 0.8
+        self.target_x = -0.16056636337579086
+        self.target_y = 0.49340151308159397
+
+        print('\ntarget: [{} {}]'.format(self.target_x, self.target_y))
 
         state = self.osim_model.get_state()
 
@@ -59,8 +63,8 @@ class Arm2DEnv(OsimEnv):
         self.target_joint.getCoordinate(2).setLocked(state, True)
         self.osim_model.set_state(state)
         
-    def reset(self, random_target = True):
-        obs = super(Arm2DEnv, self).reset()
+    def reset(self, random_target=True, obs_as_dict=True):
+        obs = super(Arm2DEnv, self).reset(obs_as_dict=obs_as_dict)
         if random_target:
             self.generate_new_target()
         self.osim_model.reset_manager()
@@ -77,6 +81,8 @@ class Arm2DEnv(OsimEnv):
                                   opensim.Vec3(0, 0, -0.25),
                                   opensim.Vec3(0, 0, 0))
 
+        self.noutput = self.osim_model.noutput
+
         geometry = opensim.Ellipsoid(0.02, 0.02, 0.02);
         geometry.setColor(opensim.Green);
         blockos.attachGeometry(geometry)
@@ -91,7 +97,24 @@ class Arm2DEnv(OsimEnv):
         penalty = (state_desc["markers"]["r_radius_styloid"]["pos"][0] - self.target_x)**2 + (state_desc["markers"]["r_radius_styloid"]["pos"][1] - self.target_y)**2
         # print(state_desc["markers"]["r_radius_styloid"]["pos"])
         # print((self.target_x, self.target_y))
+        if np.isnan(penalty):
+            penalty = 1
         return 1.-penalty
 
     def get_reward(self):
         return self.reward()
+
+
+class Arm2DVecEnv(Arm2DEnv):
+    def reset(self, obs_as_dict=False):
+        obs = super(Arm2DVecEnv, self).reset(obs_as_dict=obs_as_dict)
+        if np.isnan(obs).any():
+            obs = np.nan_to_num(obs)
+        return obs
+    def step(self, action, obs_as_dict=False):
+        if np.isnan(action).any():
+            action = np.nan_to_num(action)
+        obs, reward, done, info = super(Arm2DVecEnv, self).step(action, obs_as_dict=obs_as_dict)
+        if np.isnan(obs).any():
+            obs = np.nan_to_num(obs)
+        return obs, reward, done, info
