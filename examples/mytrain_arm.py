@@ -36,7 +36,7 @@ args = parser.parse_args()
 # Load walking environment
 env = Arm2DVecEnv(args.visualize)
 #env = Arm2DVecEnv(visualize=True)
-env.reset()
+env.reset(verbose=True, logfile='arm_log.txt')
 
 nb_actions = env.action_space.shape[0]
 
