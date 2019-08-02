@@ -48,8 +48,8 @@ class Arm2DEnv(OsimEnv):
         radius = random.uniform(0.3, 0.65)
         self.target_x = math.cos(theta) * radius 
         self.target_y = -math.sin(theta) * radius + 0.8
-        self.target_x = -0.16056636337579086
-        self.target_y = 0.49340151308159397
+        #self.target_x = -0.16056636337579086 # produces nan for train_190730_1
+        #self.target_y = 0.49340151308159397
 
         print('\ntarget: [{} {}]'.format(self.target_x, self.target_y))
 
@@ -106,10 +106,8 @@ class Arm2DEnv(OsimEnv):
 
 
 class Arm2DVecEnv(Arm2DEnv):
-    def reset(self, obs_as_dict=False, verbose=True, logfile='arm_log.txt'):
+    def reset(self, obs_as_dict=False, verbose=False, logfile='arm_log.txt'):
         obs = super(Arm2DVecEnv, self).reset(obs_as_dict=obs_as_dict)
-        if np.isnan(obs).any():
-            obs = np.nan_to_num(obs)
         self.verbose = verbose
         if self.verbose:
             self.log = Logfile(logfile)
@@ -120,9 +118,11 @@ class Arm2DVecEnv(Arm2DEnv):
         obs, reward, done, info = super(Arm2DVecEnv, self).step(action, obs_as_dict=obs_as_dict)
         if np.isnan(obs).any():
             obs = np.nan_to_num(obs)
-        if self.verbose:
-            self.log.write(action)
-            self.log.write(obs)
+            done = True
+            reward -10
+        #if self.verbose:
+        #    self.log.write(action)
+        #    self.log.write(obs)
         return obs, reward, done, info
 
 class Logfile(object):
