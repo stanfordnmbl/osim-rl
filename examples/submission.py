@@ -2,7 +2,7 @@ import opensim as osim
 from osim.http.client import Client
 
 # Settings
-remote_base = "http://osim-rl-grader.aicrowd.com "
+remote_base = "http://127.0.0.1:5000"
 #crowdai_token = "a66245c8324e2d37b92f098a57ef3f99"
 crowdai_token = "f97727c493474bf00e23d62235341b31"
 
