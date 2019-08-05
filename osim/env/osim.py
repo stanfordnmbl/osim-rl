@@ -438,9 +438,9 @@ class L2M2019Env(OsimEnv):
     obs_body_space[:,[17 + x for x in [0, 44]]] = np.array([[-5*np.pi, 5*np.pi]]).transpose() # (r, l) joint: (+) hip extension
     obs_body_space[:,[18 + x for x in [0, 44]]] = np.array([[-5*np.pi, 5*np.pi]]).transpose() # (r, l) joint: (+) knee extension
     obs_body_space[:,[19 + x for x in [0, 44]]] = np.array([[-5*np.pi, 5*np.pi]]).transpose() # (r, l) joint: (+) ankle extension (plantarflexion)
-    obs_body_space[:,[20 + x for x in list(range(0, 33, 3)) + list(range(44, 77, 3))]] = np.array([[0, 2]]).transpose() # (r, l) muscle forces, normalized to maximum isometric force
-    obs_body_space[:,[21 + x for x in list(range(0, 33, 3)) + list(range(44, 77, 3))]] = np.array([[0, 2]]).transpose() # (r, l) muscle lengths, normalized to optimal length
-    obs_body_space[:,[22 + x for x in list(range(0, 33, 3)) + list(range(44, 77, 3))]] = np.array([[-20, 20]]).transpose() # (r, l) muscle velocities, normalized to optimal length per second
+    obs_body_space[:,[20 + x for x in list(range(0, 33, 3)) + list(range(44, 77, 3))]] = np.array([[0, 3]]).transpose() # (r, l) muscle forces, normalized to maximum isometric force
+    obs_body_space[:,[21 + x for x in list(range(0, 33, 3)) + list(range(44, 77, 3))]] = np.array([[0, 3]]).transpose() # (r, l) muscle lengths, normalized to optimal length
+    obs_body_space[:,[22 + x for x in list(range(0, 33, 3)) + list(range(44, 77, 3))]] = np.array([[-50, 50]]).transpose() # (r, l) muscle velocities, normalized to optimal length per second
 
     def get_model_key(self):
         return self.model
@@ -690,6 +690,10 @@ class L2M2019Env(OsimEnv):
                 res.append(obs_dict[leg][MUS]['l'])
                 res.append(obs_dict[leg][MUS]['v'])
         return res
+
+    def get_observation_clipped(self):
+        obs = self.get_observation()
+        return np.clip(obs, self.observation_space.low, self.observation_space.high)
 
     def get_observation_space_size(self):
         return 339
