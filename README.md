@@ -83,6 +83,9 @@ You can find details about the [observation object here](http://osim-rl.stanford
 
 ## Submission
 
+* Option 1: [**submit solution in docker container**](https://github.com/stanfordnmbl/neurips2019-learning-to-move-starter-kit)
+* Option 2: run controller on server environment: [**./examples/submission.py**](https://github.com/stanfordnmbl/osim-rl/blob/master/examples/submission.py)
+
 In order to make a submission to AIcrowd, please refer to [this page](https://github.com/AIcrowd/neurips2019-learning-to-move-starter-kit)
 
 ## Rules
