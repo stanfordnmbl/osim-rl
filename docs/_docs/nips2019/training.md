@@ -1,5 +1,5 @@
 ---
-title: Training example
+title: Training an arm
 ---
 
 Try out our toy environment `Arm2DEnv` and an example code for training a controller for the environment.
