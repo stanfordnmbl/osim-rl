@@ -794,8 +794,9 @@ class L2M2019Env(OsimEnv):
         # success bonus
         if not self.is_done() and (self.osim_model.istep >= self.spec.timestep_limit): #and self.failure_mode is 'success':
             # retrieve reward (i.e. do not penalize for the simulation terminating in a middle of a step)
-            reward_footstep_0 = self.d_reward['weight']['footstep']*self.d_reward['footstep']['del_t']
-            reward += reward_footstep_0 + 100
+            #reward_footstep_0 = self.d_reward['weight']['footstep']*self.d_reward['footstep']['del_t']
+            #reward += reward_footstep_0 + 100
+            reward += 10
 
         return reward
 
