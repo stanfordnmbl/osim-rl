@@ -44,13 +44,13 @@ class VTgtField(object):
     ver['ver02']['n_new_target'] = float("inf")
 
     # v03: consecutive sinks for walking (-180 < th < 180)
-    # same with v02, but n_target = 2
+    #       vs. v02: larger range; n_target = 2
     ver['ver03'] = {}
     ver['ver03']['res_map'] = np.array([2, 2])
     ver['ver03']['rng_xy0'] = np.array([[-20, 20], [-20, 20]])
     ver['ver03']['rng_get'] = np.array([[-5, 5], [-5, 5]])
     ver['ver03']['v_amp_rng'] = np.array([.8, 1.8])
-    ver['ver03']['rng_p_sink_r_th'] = np.array([[5, 7], [-90*np.pi/180, 90*np.pi/180]])
+    ver['ver03']['rng_p_sink_r_th'] = np.array([[5, 7], [-180*np.pi/180, 180*np.pi/180]])
     ver['ver03']['r_target'] = .2
     ver['ver03']['n_new_target'] = 2
 

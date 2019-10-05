@@ -3,7 +3,7 @@ from osim.control.osim_loco_reflex_song2019 import OsimReflexCtrl
 import numpy as np
 
 mode = '2D'
-difficulty = 2
+difficulty = 3
 visualize=True
 seed=None
 sim_dt = 0.01

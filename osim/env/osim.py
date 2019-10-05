@@ -453,11 +453,15 @@ class L2M2019Env(OsimEnv):
             self.time_limit = 1000
         if difficulty == 2:
             self.time_limit = 1000
+            print("difficulty 2 for Round 1")
+        if difficulty == 3:
+            self.time_limit = 2500 # 25 sec
+            print("difficulty 3 for Round 2")
         self.spec.timestep_limit = self.time_limit    
 
     def __init__(self, visualize=True, integrator_accuracy=5e-5, difficulty=2, seed=0, report=None):
-        if difficulty not in [0, 1, 2]:
-            raise ValueError("difficulty level should be in [0, 1, 2].")
+        if difficulty not in [0, 1, 2, 3]:
+            raise ValueError("difficulty level should be in [0, 1, 2, 3].")
         self.model_paths = {}
         self.model_paths['3D'] = os.path.join(os.path.dirname(__file__), '../models/gait14dof22musc_20170320.osim')
         self.model_paths['2D'] = os.path.join(os.path.dirname(__file__), '../models/gait14dof22musc_planar_20170320.osim')
@@ -713,10 +717,10 @@ class L2M2019Env(OsimEnv):
         #state_desc['muscles']
         #state_desc['markers']
         #state_desc['misc']
-        if self.difficulty in [0, 1, 2]:
+        if self.difficulty in [0, 1, 2, 3]:
             d['v_tgt_field'] = self.v_tgt_field # shape: (2, 11, 11)
         else:
-            raise ValueError("difficulty level should be in [0, 1, 2].")
+            raise ValueError("difficulty level should be in [0, 1, 2, 3].")
         return d
 
     def init_reward(self):
@@ -739,9 +743,11 @@ class L2M2019Env(OsimEnv):
         self.d_reward['footstep']['del_v'] = 0
 
     def get_reward(self):
+        if self.difficulty == 3: # Round 2
+            return self.get_reward_2()
         return self.get_reward_1()
 
-    def get_reward_1(self):
+    def get_reward_1(self): # for L2M2019 Round 1
         state_desc = self.get_state_desc()
         if not self.get_prev_state_desc():
             return 0
@@ -796,7 +802,68 @@ class L2M2019Env(OsimEnv):
             # retrieve reward (i.e. do not penalize for the simulation terminating in a middle of a step)
             #reward_footstep_0 = self.d_reward['weight']['footstep']*self.d_reward['footstep']['del_t']
             #reward += reward_footstep_0 + 100
-            reward += 10
+            reward += reward_footstep_0 + 10
+
+        return reward
+
+    def get_reward_2(self): # for L2M2019 Round 2
+        state_desc = self.get_state_desc()
+        if not self.get_prev_state_desc():
+            return 0
+
+        reward = 0
+        dt = self.osim_model.stepsize
+
+        # alive reward
+        # should be large enough to search for 'success' solutions (alive to the end) first
+        reward += self.d_reward['alive']
+
+        # effort ~ muscle fatigue ~ (muscle activation)^2 
+        ACT2 = 0
+        for muscle in sorted(state_desc['muscles'].keys()):
+            ACT2 += np.square(state_desc['muscles'][muscle]['activation'])
+        self.d_reward['effort'] += ACT2*dt
+        self.d_reward['footstep']['effort'] += ACT2*dt
+
+        self.d_reward['footstep']['del_t'] += dt
+
+        # reward from velocity (penalize from deviating from v_tgt)
+
+        p_body = [state_desc['body_pos']['pelvis'][0], -state_desc['body_pos']['pelvis'][2]]
+        v_body = [state_desc['body_vel']['pelvis'][0], -state_desc['body_vel']['pelvis'][2]]
+        v_tgt = self.vtgt.get_vtgt(p_body).T
+
+        self.d_reward['footstep']['del_v'] += (v_body - v_tgt)*dt
+
+        # simulation ends successfully
+        flag_success = (not self.is_done() # model did not fall down
+            and (self.osim_model.istep >= self.spec.timestep_limit) # reached end of simulatoin
+            and self.footstep['n'] > 5): # took more than 5 footsteps (to prevent standing still)
+
+        # footstep reward (when made a new step)
+        if self.footstep['new'] or flag_success:
+            # footstep reward: so that solution does not avoid making footsteps
+            # scaled by del_t, so that solution does not get higher rewards by making unnecessary (small) steps
+            reward_footstep_0 = self.d_reward['weight']['footstep']*self.d_reward['footstep']['del_t']
+
+            # deviation from target velocity
+            # the average velocity a step (instead of instantaneous velocity) is used
+            # as velocity fluctuates within a step in normal human walking
+            #reward_footstep_v = -self.reward_w['v_tgt']*(self.footstep['del_vx']**2)
+            reward_footstep_v = -self.d_reward['weight']['v_tgt']*np.linalg.norm(self.d_reward['footstep']['del_v'])/self.LENGTH0
+
+            # panalize effort
+            reward_footstep_e = -self.d_reward['weight']['effort']*self.d_reward['footstep']['effort']
+
+            self.d_reward['footstep']['del_t'] = 0
+            self.d_reward['footstep']['del_v'] = 0
+            self.d_reward['footstep']['effort'] = 0
+
+            reward += reward_footstep_0 + reward_footstep_v + reward_footstep_e
+
+        # if stayed enough at the first target
+        if self.flag_new_v_tgt_field:
+            reward += 500
 
         return reward
 
