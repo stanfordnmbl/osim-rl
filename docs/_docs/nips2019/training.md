@@ -9,11 +9,15 @@ Test `Arm2DEnv`:
 
     python -m examples.arm2d
 
-Train a control model (DDPG) for the environment:
+You can train a neural network model using existing frameworks. For example, to train a DDPG using `keras-rl` simply install `keras-rl` with following lines
+
+    pip install keras-rl
+
+Now, you can train a control model (DDPG) for the environment:
 
     python -m examples.train_arm --train --model sample
 
-Test a control model run
+To test a control model run
 
     python -m examples.train_arm --test --visualize --model examples/model_exp
 
