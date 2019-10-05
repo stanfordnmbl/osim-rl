@@ -21,6 +21,7 @@ class VTgtField(object):
     ver['ver00']['rng_p_sink_r_th'] = {}
     ver['ver00']['r_target'] = {}
     ver['ver00']['v_amp'] = np.array([1.4, 0])
+    ver['ver00']['n_new_target'] = 1
     
     # v01: consecutive sinks forward for walking
     ver['ver01'] = {}
@@ -30,6 +31,7 @@ class VTgtField(object):
     ver['ver01']['v_amp_rng'] = np.array([.8, 1.8])
     ver['ver01']['rng_p_sink_r_th'] = np.array([[5, 7], [0, 0]])
     ver['ver01']['r_target'] = .2
+    ver['ver01']['n_new_target'] = float("inf")
 
     # v02: consecutive sinks for walking (-180 < th < 180)
     ver['ver02'] = {}
@@ -39,6 +41,18 @@ class VTgtField(object):
     ver['ver02']['v_amp_rng'] = np.array([.8, 1.8])
     ver['ver02']['rng_p_sink_r_th'] = np.array([[5, 7], [-90*np.pi/180, 90*np.pi/180]])
     ver['ver02']['r_target'] = .2
+    ver['ver02']['n_new_target'] = float("inf")
+
+    # v03: consecutive sinks for walking (-180 < th < 180)
+    # same with v02, but n_target = 2
+    ver['ver03'] = {}
+    ver['ver03']['res_map'] = np.array([2, 2])
+    ver['ver03']['rng_xy0'] = np.array([[-20, 20], [-20, 20]])
+    ver['ver03']['rng_get'] = np.array([[-5, 5], [-5, 5]])
+    ver['ver03']['v_amp_rng'] = np.array([.8, 1.8])
+    ver['ver03']['rng_p_sink_r_th'] = np.array([[5, 7], [-90*np.pi/180, 90*np.pi/180]])
+    ver['ver03']['r_target'] = .2
+    ver['ver03']['n_new_target'] = 2
 
     vtgt_space = np.array([ [-10] * 2*11*11, [10] * 2*11*11 ])
 
@@ -53,8 +67,10 @@ class VTgtField(object):
     def reset(self, version=1, seed=None, pose_agent=np.array([0, 0, 0])):
         self.t = 0
         self.i = 0
+        self.i_target = 1;
+        self.t_target = 0
 
-        if version not in [0, 1, 2]:
+        if version not in [0, 1, 2, 3]:
             raise ValueError("vtgt version should be in [0, 1, 2].")
         self.ver['version'] = version
         # set parameters
@@ -65,10 +81,10 @@ class VTgtField(object):
         self.r_target = self.ver[s_ver]['r_target']
         self.rng_get = self.ver[s_ver]['rng_get']
         self.res_map = self.ver[s_ver]['res_map']
+        self.n_new_target = self.ver[s_ver]['n_new_target']
 
         self.res_get = np.array([   (self.rng_get[0,1]-self.rng_get[0,0]+1)/self.nn_get[0],
                                     (self.rng_get[1,1]-self.rng_get[1,0]+1)/self.nn_get[1]])
-        self.t_target = 0
         self.pose_agent = pose_agent
         self.rng_xy = (self.pose_agent[0:2] + self.rng_xy0.T).T
 
@@ -78,11 +94,10 @@ class VTgtField(object):
                 rng_xy=self.rng_xy, res_map=self.res_map,
                 rng_get=self.rng_get, res_get=self.res_get)
             self.create_vtgt_const(v_tgt=self.ver['ver00']['v_amp'])        
-        elif self.ver['version'] in [1, 2]:
+        elif self.ver['version'] in [1, 2, 3]:
             # map coordinate and vtgt
             self.vtgt_obj = VTgtSink(rng_xy=self.rng_xy, res_map=self.res_map,
                     rng_get=self.rng_get, res_get=self.res_get) 
-
 
             if seed:
                 np.random.seed(seed)
@@ -126,7 +141,6 @@ class VTgtField(object):
             self.vis['plt'].tight_layout()
             self.vis['plt'].pause(0.0001)
 
-
 # -----------------------------------------------------------------------------------------------------------------
     def create_vtgt_const(self, v_tgt):
         self.vtgt_obj.create_vtgt_const(v_tgt)
@@ -145,9 +159,9 @@ class VTgtField(object):
 
         self.pose_agent = pose
 
-        if self.ver['version'] is 0:
+        if self.i_target >= self.n_new_target:
             flag_new_target = 0
-        elif self.ver['version'] in [1, 2]:
+        else:
             if np.linalg.norm(self.p_sink - self.pose_agent[0:2]) < self.r_target:
                 self.t_target += self.dt
             else: # reset t_target if agent goes out of 
@@ -164,6 +178,7 @@ class VTgtField(object):
                 self.rng_xy = (self.pose_agent[0:2] + self.rng_xy0.T).T
                 self.vtgt_obj.create_map(self.rng_xy)
                 self.create_vtgt_sink(self.v_amp_rng)
+                self.i_target += 1
                 self.t_target = 0
                 flag_new_target = 1
 

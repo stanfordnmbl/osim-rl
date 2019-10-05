@@ -8,14 +8,15 @@ import matplotlib.pyplot as plt
 #...
 
 # --------------------------------------------------------------------
-#dt = .01
-dt = .5
+version = 3 # 2: Round 1; 3: Round 2
+
+dt = .01
+#dt = .5
 pose_agent = np.array([0, 0, 0]) # [x, y]
 
-vtgt_v1 = VTgtField(version=2, dt=dt)
-vtgt_v1.reset(version=2, seed=0)
+vtgt_v1 = VTgtField(version=version, dt=dt)
+vtgt_v1.reset(version=version, seed=0)
 
-p_sink = vtgt_v1.p_sink
 t_sim = 10;
 x = 0; y = 0; th = 0
 pose_t = np.array([[x], [y], [th]])
