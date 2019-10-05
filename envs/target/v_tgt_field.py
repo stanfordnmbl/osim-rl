@@ -168,7 +168,7 @@ class VTgtField(object):
                 flag_new_target = 1
 
         v_tgt_field = self.vtgt_obj.get_vtgt_field_local(pose)
-        if self.visualize and (self.di_visualize == 1 or self.i%self.di_visualize==1 or self.t == self.dt):
+        if self.visualize:
             if flag_new_target:
                 self.vis['q0'].remove()
                 X = self.vtgt_obj.map[0]
@@ -179,18 +179,19 @@ class VTgtField(object):
                 self.vis['q0'] = self.vis['axes'][0].quiver(X, Y, U, V, R)
                 self.vis['axes'][0].axis('equal')
 
-            self.vis['axes'][0].plot(pose[0], pose[1], 'k.')
-            
-            X, Y = self.vtgt_obj._generate_grid(self.vtgt_obj.rng_get, self.vtgt_obj.res_get)
-            U = v_tgt_field[0]
-            V = v_tgt_field[1]
-            R = np.sqrt(U**2 + V**2)
-            self.vis['q1'].remove()
-            self.vis['q1'] = self.vis['axes'][1].quiver(X, Y, U, V, R)
-            self.vis['axes'][1].plot(0, 0, 'k.')
-            self.vis['axes'][1].axis('equal')
+            if self.di_visualize == 1 or self.i%self.di_visualize==1 or self.t == self.dt:
+                self.vis['axes'][0].plot(pose[0], pose[1], 'k.')
+                
+                X, Y = self.vtgt_obj._generate_grid(self.vtgt_obj.rng_get, self.vtgt_obj.res_get)
+                U = v_tgt_field[0]
+                V = v_tgt_field[1]
+                R = np.sqrt(U**2 + V**2)
+                self.vis['q1'].remove()
+                self.vis['q1'] = self.vis['axes'][1].quiver(X, Y, U, V, R)
+                self.vis['axes'][1].plot(0, 0, 'k.')
+                self.vis['axes'][1].axis('equal')
 
-            self.vis['plt'].pause(0.0001)
+                self.vis['plt'].pause(0.0001)
 
 
         return v_tgt_field, flag_new_target
