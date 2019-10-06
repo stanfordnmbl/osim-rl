@@ -8,7 +8,11 @@ import matplotlib.pyplot as plt
 #...
 
 # --------------------------------------------------------------------
-version = 3 # 2: Round 1; 3: Round 2
+version = 3
+# 0: constant forward velocities
+# 1: consecutive sinks forward for walking
+# 2: consecutive sinks for walking (-90 < th < 90) (Round 1)
+# 3: consecutive sinks for walking (-180 < th < 180) (Round 2)
 
 dt = .01
 #dt = .5
@@ -31,6 +35,5 @@ for t in np.arange(0, t_sim, dt):
     y += np.asscalar(vtgt[1])*dt
 
     if flag_new_target:
-        print('time: {} sec'.format(t))
-        print('New Target!!!')
+        print('Target achieved at {} sec'.format(t))
 

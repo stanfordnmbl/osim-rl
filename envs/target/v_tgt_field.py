@@ -30,17 +30,17 @@ class VTgtField(object):
     ver['ver01']['rng_get'] = np.array([[-5, 5], [-5, 5]])
     ver['ver01']['v_amp_rng'] = np.array([.8, 1.8])
     ver['ver01']['rng_p_sink_r_th'] = np.array([[5, 7], [0, 0]])
-    ver['ver01']['r_target'] = .2
+    ver['ver01']['r_target'] = .3
     ver['ver01']['n_new_target'] = float("inf")
 
-    # v02: consecutive sinks for walking (-180 < th < 180)
+    # v02: consecutive sinks for walking (-90 < th < 90)
     ver['ver02'] = {}
     ver['ver02']['res_map'] = np.array([2, 2])
     ver['ver02']['rng_xy0'] = np.array([[-20, 20], [-20, 20]])
     ver['ver02']['rng_get'] = np.array([[-5, 5], [-5, 5]])
     ver['ver02']['v_amp_rng'] = np.array([.8, 1.8])
     ver['ver02']['rng_p_sink_r_th'] = np.array([[5, 7], [-90*np.pi/180, 90*np.pi/180]])
-    ver['ver02']['r_target'] = .2
+    ver['ver02']['r_target'] = .3
     ver['ver02']['n_new_target'] = float("inf")
 
     # v03: consecutive sinks for walking (-180 < th < 180)
@@ -51,7 +51,7 @@ class VTgtField(object):
     ver['ver03']['rng_get'] = np.array([[-5, 5], [-5, 5]])
     ver['ver03']['v_amp_rng'] = np.array([.8, 1.8])
     ver['ver03']['rng_p_sink_r_th'] = np.array([[5, 7], [-180*np.pi/180, 180*np.pi/180]])
-    ver['ver03']['r_target'] = .2
+    ver['ver03']['r_target'] = .3
     ver['ver03']['n_new_target'] = 2
 
     vtgt_space = np.array([ [-10] * 2*11*11, [10] * 2*11*11 ])
@@ -149,7 +149,7 @@ class VTgtField(object):
     def create_vtgt_sink(self, v_amp_rng):
         d_sink = np.linalg.norm(self.p_sink - self.pose_agent[0:2])
         v_phase0 = np.random.uniform(-np.pi, np.pi)
-        self.t_target0 = np.random.uniform(2, 4)
+        self.t0_target = np.random.uniform(2, 4)
         self.vtgt_obj.create_vtgt_sink(self.p_sink, d_sink, v_amp_rng, v_phase0=v_phase0)
 
 # -----------------------------------------------------------------------------------------------------------------
@@ -159,32 +159,34 @@ class VTgtField(object):
 
         self.pose_agent = pose
 
-        if self.i_target >= self.n_new_target:
-            flag_new_target = 0
+        if not hasattr(self, 'p_sink'):
+            flag_target_achieved = 0
         else:
             if np.linalg.norm(self.p_sink - self.pose_agent[0:2]) < self.r_target:
                 self.t_target += self.dt
             else: # reset t_target if agent goes out of 
                 self.t_target = 0
 
-            flag_new_target = 0
-            if self.t_target > self.t_target0:
-                del_p_sink_r = np.random.uniform(self.rng_p_sink_r_th[0,0], self.rng_p_sink_r_th[0,1])
-                del_p_sink_th = np.random.uniform(self.rng_p_sink_r_th[1,0], self.rng_p_sink_r_th[1,1])
-                self.path_th += del_p_sink_th
-                del_p_sink_x = np.cos(self.path_th)*del_p_sink_r
-                del_p_sink_y = np.sin(self.path_th)*del_p_sink_r
-                self.p_sink += np.array([del_p_sink_x, del_p_sink_y])
-                self.rng_xy = (self.pose_agent[0:2] + self.rng_xy0.T).T
-                self.vtgt_obj.create_map(self.rng_xy)
-                self.create_vtgt_sink(self.v_amp_rng)
+            flag_target_achieved = 0
+            if (self.t_target > self.t0_target # stayed at the target
+                and self.i_target <= self.n_new_target): # on a new target
+                if self.i_target < self.n_new_target: # if ... create new target
+                    del_p_sink_r = np.random.uniform(self.rng_p_sink_r_th[0,0], self.rng_p_sink_r_th[0,1])
+                    del_p_sink_th = np.random.uniform(self.rng_p_sink_r_th[1,0], self.rng_p_sink_r_th[1,1])
+                    self.path_th += del_p_sink_th
+                    del_p_sink_x = np.cos(self.path_th)*del_p_sink_r
+                    del_p_sink_y = np.sin(self.path_th)*del_p_sink_r
+                    self.p_sink += np.array([del_p_sink_x, del_p_sink_y])
+                    self.rng_xy = (self.pose_agent[0:2] + self.rng_xy0.T).T
+                    self.vtgt_obj.create_map(self.rng_xy)
+                    self.create_vtgt_sink(self.v_amp_rng)
                 self.i_target += 1
                 self.t_target = 0
-                flag_new_target = 1
+                flag_target_achieved = 1
 
         v_tgt_field = self.vtgt_obj.get_vtgt_field_local(pose)
         if self.visualize:
-            if flag_new_target:
+            if flag_target_achieved:
                 self.vis['q0'].remove()
                 X = self.vtgt_obj.map[0]
                 Y = self.vtgt_obj.map[1]
@@ -209,7 +211,7 @@ class VTgtField(object):
                 self.vis['plt'].pause(0.0001)
 
 
-        return v_tgt_field, flag_new_target
+        return v_tgt_field, flag_target_achieved
 
 # -----------------------------------------------------------------------------------------------------------------
     def get_vtgt(self, xy):
