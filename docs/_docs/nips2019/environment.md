@@ -74,6 +74,11 @@ The observation or the input to your controller consists of a local target veloc
 \\(V\\) is a \\( 2 \times 11 \times 11 \\) matrix, representing a \\(2D\\) vector field on an \\(11 \times 11 \\) grid. The \\(2D\\) vectors are target velocities, and the \\(11 \times 11 \\) grid is for every \\(0.5 \\) meter within \\(\pm 5\\) meters back-to-front and left-to-side. For example, in the figure below, the global target velocity map (top-left) shows that the velocity field converges to \\((5.4, -1.4)\\) and the human model is at \\((5.4, 0.0)\\) (end of the black line).
 Thus, the local target velocity map (bottom-left) shows that the human model should locomote to the right as the target velocity vector at \\((0.0, 0.0)\\) points towards the right (i.e. close to \\([0, -1]\\)).
 
+Target positions (the velocity sinks) in Round 1 are generated at the right side of the human model ( \\(x_{tgt} > (x_{pel}\\) ), while they generated in any directions in Round 2. Test the target velocity map:
+
+    python -m envs.target.test_v_tgt
+
+
 <table style="background-color: #ffffff">
 <caption align="bottom" style="padding-top: 0.3em; font-size: 0.8em">A 3D human musculoskeletal model (right) and target velocity maps (global map: top-left; local map: bottom-left).</caption>
 <tr><td><img src="http://osim-rl.stanford.edu/docs/nips2019/fig/L2M2019.png" alt=""/></td></tr>
