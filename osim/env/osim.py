@@ -838,7 +838,7 @@ class L2M2019Env(OsimEnv):
         # simulation ends successfully
         flag_success = (not self.is_done() # model did not fall down
             and (self.osim_model.istep >= self.spec.timestep_limit) # reached end of simulatoin
-            and self.footstep['n'] > 5): # took more than 5 footsteps (to prevent standing still)
+            and self.footstep['n'] > 5) # took more than 5 footsteps (to prevent standing still)
 
         # footstep reward (when made a new step)
         if self.footstep['new'] or flag_success:
