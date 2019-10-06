@@ -62,7 +62,7 @@ c_{eff} = \sum_{i \text{ in } step_i}^{} \sum_{m}^{muscles} A_m^2 \Delta t_i. $$
 
 There are some changes for Round 2:
 * Task bonus, \\(R_{target}\\)
-  * A large bonus if you stay near the target for enough time (2~4 sec)
+  * You will get this large bonus if the human model stays near the target for enough time (2~4 sec)
   * You can get this bonus 2 times in one trial: If you obtain the first one, a new target will be generated (i.e. target velocity map will change).
 * Maximum simulation time is \\(25\\) seconds (\\(i=2500\\))
   * The time is enough that a successful solution will be one that reaches and stays at the second target. This will avoid the issue of the successful solution terminating at an arbitrary gait phase, which results in a small but arbitrary difference in the reward.
