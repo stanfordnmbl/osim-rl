@@ -553,10 +553,6 @@ class L2M2019Env(OsimEnv):
     def step(self, action, project=True, obs_as_dict=True):
         action_mapped = [action[i] for i in self.act2mus]
 
-        self.prev_state_desc = self.get_state_desc()        
-        self.osim_model.actuate(action)
-        self.osim_model.integrate()
-
         super(L2M2019Env, self).step(action_mapped, project=project, obs_as_dict=obs_as_dict)
         self.t += self.osim_model.stepsize
         self.update_footstep()
@@ -874,7 +870,7 @@ class L2M2019Env(OsimEnv):
 
             reward += reward_footstep_0 + reward_footstep_v + reward_footstep_e
 
-        # if stayed enough at the first target
+        # task bonus: if stayed enough at the first target
         if self.flag_new_v_tgt_field:
             reward += 500
 
