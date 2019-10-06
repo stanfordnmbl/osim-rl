@@ -552,7 +552,12 @@ class L2M2019Env(OsimEnv):
 
     def step(self, action, project=True, obs_as_dict=True):
         action_mapped = [action[i] for i in self.act2mus]
-        observation, reward, done, info = super(L2M2019Env, self).step(action_mapped, project=project, obs_as_dict=obs_as_dict)
+
+        self.prev_state_desc = self.get_state_desc()        
+        self.osim_model.actuate(action)
+        self.osim_model.integrate()
+
+        super(L2M2019Env, self).step(action_mapped, project=project, obs_as_dict=obs_as_dict)
         self.t += self.osim_model.stepsize
         self.update_footstep()
 
@@ -560,7 +565,15 @@ class L2M2019Env(OsimEnv):
         self.pose = np.array([d['body_pos']['pelvis'][0], -d['body_pos']['pelvis'][2], d['joint_pos']['ground_pelvis'][2]])
         self.v_tgt_field, self.flag_new_v_tgt_field = self.vtgt.update(self.pose)
 
-        return observation, reward, done, info
+        if project:
+            if obs_as_dict:
+                obs = self.get_observation_dict()
+            else:
+                obs = self.get_observation()
+        else:
+            obs = self.get_state_desc()
+            
+        return [obs, self.get_reward(), self.is_done() or (self.osim_model.istep >= self.spec.timestep_limit), {}]
 
     def change_model(self, model='3D', difficulty=2, seed=0):
         if self.model != model:
