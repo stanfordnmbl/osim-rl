@@ -12,7 +12,7 @@ To win this track, one should:
 * submit a paper describing your novel biomechanical findings/approach in [Journal of NeuroEngineering and Rehabilitation format](https://jneuroengrehab.biomedcentral.com/submission-guidelines/preparing-your-manuscript/research-articles)
 
 
-Our review board led by Seungmoon Song ([smsong@stanford.edu](mailto:smsong@stanford.edu){:target='_blank'})) will select the paper that presents the most novel study in any physiological aspects of human locomotion using our simulation environment. The topics of interest include but are not limited to:
+Our review board led by Seungmoon Song ([smsong@stanford.edu](mailto:smsong@stanford.edu){:target='_blank'}) will select the paper that presents the most novel study in any physiological aspects of human locomotion using our simulation environment. The topics of interest include but are not limited to:
 * **motor control** (e.g. biologically plausible motor control models [Dzeladini et al., 2014; Song and Geyer, 2015; Aoi et al., 2019]
 * **optimality principle** (e.g. inverse optimization [Mombaur et al., 2010]; objective functions for predicting behaviors [Ackermann and Van den Bogert, 2010; Falisse et al., 2019]
 * **musculoskeletal biomechanics** (e.g. investigating effects of muscle components [Miller et al., 2010])
@@ -23,6 +23,11 @@ The prizes for the winner are:
 * [Xsens MVN Awinda & MVN Analyze software (1 year license)](https://www.xsens.com/products/xsens-mvn-animate/)
 * Travel grant (up to $1,000 to NeurIPS 2019 or Stanford)
 * Paper acceptance (upon revision) to the [Journal of NeuroEngineering and Rehabilitation](https://jneuroengrehab.biomedcentral.com/) with no publication fee
+
+
+### FAQ (will be updated)
+1. **What are the criteria in reviewing the papers?** In addition to the final score you received in the competition, we will be looking for similar things as in regular research papers: significance, relevance, originality, scientific soundness, and quality of presentation.
+2. **Can we change the human model or simulation environment?** You can do whatever you find necessary for your study and paper. For example, investigating how change in muscle properties affects walking behavior will be a perfectly valid study.
 
 
 ### References
