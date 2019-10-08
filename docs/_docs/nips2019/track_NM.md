@@ -27,7 +27,7 @@ The prizes for the winner are:
 
 ### FAQ (will be updated)
 1. **What are the criteria in reviewing the papers?** In addition to the final score you received in the competition, we will be looking for similar things as in regular research papers: significance, relevance, originality, scientific soundness, and quality of presentation.
-2. **Can we change the human model or simulation environment?** You can do whatever you find necessary for your study and paper. For example, investigating how change in muscle properties affects walking behavior will be a perfectly valid study.
+2. **Can we change the human model or simulation environment?** You can do whatever you find necessary for your study and paper. For example, investigating how changes in muscle properties affect walking behavior will be a perfectly valid study.
 
 
 ### References
