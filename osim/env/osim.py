@@ -742,6 +742,7 @@ class L2M2019Env(OsimEnv):
         self.d_reward['weight']['footstep'] = 10
         self.d_reward['weight']['effort'] = 1
         self.d_reward['weight']['v_tgt'] = 1
+        self.d_reward['weight']['v_tgt_R2'] = 3
 
         self.d_reward['alive'] = 0.1
         self.d_reward['effort'] = 0
@@ -859,7 +860,7 @@ class L2M2019Env(OsimEnv):
             # the average velocity a step (instead of instantaneous velocity) is used
             # as velocity fluctuates within a step in normal human walking
             #reward_footstep_v = -self.reward_w['v_tgt']*(self.footstep['del_vx']**2)
-            reward_footstep_v = -self.d_reward['weight']['v_tgt']*np.linalg.norm(self.d_reward['footstep']['del_v'])/self.LENGTH0
+            reward_footstep_v = -self.d_reward['weight']['v_tgt_R2']*np.linalg.norm(self.d_reward['footstep']['del_v'])/self.LENGTH0
 
             # panalize effort
             reward_footstep_e = -self.d_reward['weight']['effort']*self.d_reward['footstep']['effort']
