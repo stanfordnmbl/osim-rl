@@ -553,7 +553,7 @@ class L2M2019Env(OsimEnv):
     def step(self, action, project=True, obs_as_dict=True):
         action_mapped = [action[i] for i in self.act2mus]
 
-        super(L2M2019Env, self).step(action_mapped, project=project, obs_as_dict=obs_as_dict)
+        _, reward, done, info = super(L2M2019Env, self).step(action_mapped, project=project, obs_as_dict=obs_as_dict)
         self.t += self.osim_model.stepsize
         self.update_footstep()
 
@@ -569,7 +569,7 @@ class L2M2019Env(OsimEnv):
         else:
             obs = self.get_state_desc()
             
-        return [obs, self.get_reward(), self.is_done() or (self.osim_model.istep >= self.spec.timestep_limit), {}]
+        return obs, reward, done, info
 
     def change_model(self, model='3D', difficulty=3, seed=0):
         if self.model != model:
