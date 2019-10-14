@@ -113,9 +113,11 @@ class VTgtField(object):
 
         if self.visualize:
             import matplotlib.pyplot as plt
+            if hasattr(self, 'vis'):
+                self.vis['plt'].close(self.vis['hndl'])
             self.vis = {}
             self.vis['plt'] = plt
-            _, self.vis['axes'] = self.vis['plt'].subplots(2,1, figsize=(5, 6))
+            self.vis['hndl'], self.vis['axes'] = self.vis['plt'].subplots(2,1, figsize=(5, 6))
             X = self.vtgt_obj.map[0]
             Y = self.vtgt_obj.map[1]
             U = self.vtgt_obj.vtgt[0]
