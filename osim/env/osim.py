@@ -459,7 +459,7 @@ class L2M2019Env(OsimEnv):
             print("difficulty 3 for Round 2")
         self.spec.timestep_limit = self.time_limit    
 
-    def __init__(self, visualize=True, integrator_accuracy=5e-5, difficulty=2, seed=0, report=None):
+    def __init__(self, visualize=True, integrator_accuracy=5e-5, difficulty=3, seed=0, report=None):
         if difficulty not in [0, 1, 2, 3]:
             raise ValueError("difficulty level should be in [0, 1, 2, 3].")
         self.model_paths = {}
@@ -571,7 +571,7 @@ class L2M2019Env(OsimEnv):
             
         return [obs, self.get_reward(), self.is_done() or (self.osim_model.istep >= self.spec.timestep_limit), {}]
 
-    def change_model(self, model='3D', difficulty=2, seed=0):
+    def change_model(self, model='3D', difficulty=3, seed=0):
         if self.model != model:
             self.model = model
             self.load_model(self.model_paths[self.get_model_key()])
