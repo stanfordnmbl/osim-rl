@@ -378,8 +378,8 @@ class L2M2019Env(OsimEnv):
     footstep = {}
     footstep['n'] = 0
     footstep['new'] = False
-    footstep['r_contact'] = 0
-    footstep['l_contact'] = 0
+    footstep['r_contact'] = 1
+    footstep['l_contact'] = 1
 
     dict_muscle = { 'abd': 'HAB',
                     'add': 'HAD',
@@ -498,6 +498,12 @@ class L2M2019Env(OsimEnv):
         self.t = 0
         self.init_reward()
         self.vtgt.reset(version=self.difficulty, seed=seed)
+
+        self.footstep['n'] = 0
+        self.footstep['new'] = False
+        self.footstep['r_contact'] = 1
+        self.footstep['l_contact'] = 1
+
 
         # initialize state
         self.osim_model.state = self.osim_model.model.initializeState()
