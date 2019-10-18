@@ -459,7 +459,7 @@ class L2M2019Env(OsimEnv):
             print("difficulty 3 for Round 2")
         self.spec.timestep_limit = self.time_limit    
 
-    def __init__(self, visualize=True, integrator_accuracy=5e-5, difficulty=3, seed=0, report=None):
+    def __init__(self, visualize=True, integrator_accuracy=5e-5, difficulty=3, seed=None, report=None):
         if difficulty not in [0, 1, 2, 3]:
             raise ValueError("difficulty level should be in [0, 1, 2, 3].")
         self.model_paths = {}
@@ -491,7 +491,7 @@ class L2M2019Env(OsimEnv):
 
         # create target velocity field
         from envs.target import VTgtField
-        self.vtgt = VTgtField(visualize=visualize, version=self.difficulty, dt=self.osim_model.stepsize)
+        self.vtgt = VTgtField(visualize=visualize, version=self.difficulty, dt=self.osim_model.stepsize, seed=seed)
         self.obs_vtgt_space = self.vtgt.vtgt_space
 
     def reset(self, project=True, seed=None, init_pose=None, obs_as_dict=True):

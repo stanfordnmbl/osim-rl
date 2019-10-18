@@ -57,11 +57,14 @@ class VTgtField(object):
     vtgt_space = np.array([ [-10] * 2*11*11, [10] * 2*11*11 ])
 
 # -----------------------------------------------------------------------------------------------------------------
-    def __init__(self, visualize=True, version=1, dt=.01, dt_visualize=0.5):
+    def __init__(self, visualize=True, version=1, dt=.01, dt_visualize=0.5, seed=None):
         self.dt = dt
         self.visualize = visualize
         self.dt_visualize = dt_visualize
         self.di_visualize = int(dt_visualize/dt)
+
+        if seed:
+            np.random.seed(seed)
 
 # -----------------------------------------------------------------------------------------------------------------
     def reset(self, version=1, seed=None, pose_agent=np.array([0, 0, 0])):
