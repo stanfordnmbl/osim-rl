@@ -32,20 +32,17 @@ We support Windows, Linux, and Mac OSX (all in 64-bit). To install our simulator
 
 On **Windows**, open a command prompt and type:
 
-    conda create -n opensim-rl -c kidzik opensim python=3.6.1
+    conda create -n opensim-rl -c kidzik -c conda-forge opensim python=3.6.1
     activate opensim-rl
+    pip install osim-rl
 
 On **Linux/OSX**, run:
 
-    conda create -n opensim-rl -c kidzik opensim python=3.6.1
+    conda create -n opensim-rl -c kidzik -c conda-forge opensim python=3.6.1
     source activate opensim-rl
-
-These commands will create a virtual environment on your computer with the necessary simulation libraries installed. Next, you need to install our python reinforcement learning environment. Type (on all platforms):
-
-    conda install -c conda-forge lapack git
     pip install osim-rl
 
-If the command `python -c "import opensim"` runs smoothly, you are done! Otherwise, please refer to our [FAQ](http://osim-rl.stanford.edu/docs/faq/) section.
+These commands will create a virtual environment on your computer with the necessary simulation libraries installed. If the command `python -c "import opensim"` runs smoothly, you are done! Otherwise, please refer to our [FAQ](http://osim-rl.stanford.edu/docs/faq/) section.
 
 Note that `source activate opensim-rl` activates the anaconda virtual environment. You need to type it every time you open a new terminal.
 
