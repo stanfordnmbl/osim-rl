@@ -1,5 +1,0 @@
-numpy>=1.14.2
-redis>=2.10.6
-gym>=0.10.4
-msgpack>=0.6.1
-msgpack-numpy>=0.4.4.3
