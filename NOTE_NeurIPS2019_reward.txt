@@ -1,4 +1,0 @@
-pip install matplotlib
-
-pip install cma (cmaes)
-pip install joblib (cmaes: parallel computing)
