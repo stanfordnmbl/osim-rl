@@ -1,2 +1,0 @@
-include osim/models/Geometry/*.vtp
-include osim/models/*.osim
